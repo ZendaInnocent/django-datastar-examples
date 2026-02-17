@@ -26,9 +26,7 @@ class TestExampleCategories:
         assert content.count('badge bg-primary') >= 1  # Search (blue)
         assert content.count('badge bg-success') >= 3  # CRUD (green) - 3 examples
         assert content.count('#6B46C1') >= 4  # Real-time (purple) - 4 examples
-        assert (
-            content.count('badge bg-warning') >= 4
-        )  # Interactive (orange) - 4 examples
+        assert content.count('#FD7E14') >= 4  # Interactive (orange) - 4 examples
 
     def test_search_category_has_active_search(self):
         """Verify Search category contains Active Search example."""
@@ -76,8 +74,8 @@ class TestExampleCategories:
         response = client.get('/')
         content = response.content.decode('utf-8')
 
-        # Check Interactive badge is present
-        assert '<span class="badge bg-warning' in content
+        # Check Interactive badge is present (now uses #FD7E14 instead of bg-warning)
+        assert '#FD7E14' in content
 
         # Check Interactive examples are present
         assert 'TodoMVC' in content

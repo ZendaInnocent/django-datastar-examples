@@ -6,7 +6,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def notifications_view(request):
     notifications = Notification.objects.all()[:5]
     unread_count = Notification.objects.filter(read=False).count()
@@ -24,12 +24,12 @@ def notifications_mark_read_view(request):
     }))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('notifications/', views.notifications_view, name='notifications'),
 path('notifications/mark-read/', views.notifications_mark_read_view, name='notifications-mark-read'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;span id="notification-count"&gt;
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;span id="notification-count"&gt;
   {{ unread_count }}
 &lt;/span&gt;
 
@@ -39,7 +39,7 @@ path('notifications/mark-read/', views.notifications_mark_read_view, name='notif
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: SSE (Optional)</h6>
   <p class="small text-muted">For real-time updates, use Server-Sent Events:</p>
-  <pre class="bg-light p-3 rounded small"><code># For SSE updates, connect to an endpoint that yields:
+<pre class="bg-light p-3 rounded small"><code class="language-python"># For SSE updates, connect to an endpoint that yields:
 @dataclass
 class CountUpdate:
     count: int

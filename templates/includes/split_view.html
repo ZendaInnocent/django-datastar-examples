@@ -1,0 +1,84 @@
+{% comment %}
+  Split View Component - Displays code and live demo side-by-side on desktop
+  Reuses code_tabs.html from Story 2.3 for code display
+
+  Usage:
+    {% include 'includes/split_view.html' with demo_content=... %}
+
+  Or wrap content:
+    {% include 'includes/split_view.html' %}
+      {% block demo_content %}...{% endblock %}
+    {% endinclude %}
+{% endcomment %}
+
+<!-- Mobile View Tabs (visible on tablet/mobile) -->
+<div class="mobile-view-tabs d-md-none">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="tab-mobile-demo"
+        data-bs-toggle="tab"
+        data-bs-target="#mobile-demo"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="mobile-demo"
+      >
+        Demo
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="tab-mobile-code"
+        data-bs-toggle="tab"
+        data-bs-target="#mobile-code"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="mobile-code"
+      >
+        Code
+      </button>
+    </li>
+  </ul>
+</div>
+
+<!-- Split View Container (desktop) -->
+<div class="split-view-container d-none d-md-flex" data-split-view>
+  <!-- Left Panel: Code -->
+  <div class="split-view-code" id="split-code-panel">
+    {% include 'includes/code_tabs.html' %}
+  </div>
+
+  <!-- Draggable Divider -->
+  <div class="split-view-divider" id="split-divider" role="separator" aria-orientation="vertical" tabindex="0">
+    <div class="divider-handle" aria-hidden="true"></div>
+  </div>
+
+  <!-- Right Panel: Live Demo -->
+  <div class="split-view-demo" id="split-demo-panel">
+    {% block demo_content %}
+    {% endblock demo_content %}
+  </div>
+</div>
+
+<!-- Mobile Tab Content (visible on tablet/mobile) -->
+<div class="mobile-view-content d-md-none">
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="mobile-demo" role="tabpanel" aria-labelledby="tab-mobile-demo">
+      {% block mobile_demo_content %}
+      {% endblock mobile_demo_content %}
+    </div>
+    <div class="tab-pane fade" id="mobile-code" role="tabpanel" aria-labelledby="tab-mobile-code">
+      {% include 'includes/code_tabs.html' %}
+    </div>
+  </div>
+</div>
+
+<!-- Desktop-only content (for pages that just need demo) -->
+<div class="d-none d-md-block">
+  {% block desktop_demo_content %}
+  {% endblock desktop_demo_content %}
+</div>

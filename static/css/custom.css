@@ -1,6 +1,115 @@
 /* Custom CSS for django-datastar-examples */
 
-/* Copy Button Styles */
+/* ========================================
+   Sidebar Styles - Story 3.1
+   ======================================== */
+
+/* Sidebar wrapper for layout */
+.sidebar-wrapper {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+/* Main sidebar navigation */
+.sidebar {
+  width: 280px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+}
+
+/* Sidebar content container */
+.sidebar-content {
+  padding: 1rem 0;
+}
+
+/* Sidebar sections */
+.sidebar-section {
+  padding: 0.5rem 0;
+}
+
+.sidebar-section:not(:last-child) {
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 0.5rem;
+}
+
+/* Sidebar section headings */
+.sidebar-heading {
+  padding: 0.5rem 1.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6c757d;
+}
+
+/* Sidebar navigation */
+.sidebar .nav {
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar .nav-link {
+  padding: 0.5rem 1.5rem;
+  color: #212529;
+  font-size: 0.9rem;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #212529;
+}
+
+/* Active state - current page */
+.sidebar .nav-link.active {
+  color: #6B46C1; /* Datastar Purple */
+  background-color: rgba(107, 70, 193, 0.1);
+  border-left-color: #6B46C1;
+  font-weight: 500;
+}
+
+/* Focus state for accessibility */
+.sidebar .nav-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.25);
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+}
+
+/* Desktop layout - flexbox */
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    min-height: 100vh;
+  }
+}
+
+/* Hide sidebar on tablet and mobile - Story 3.2 will implement offcanvas */
+@media (max-width: 1023px) {
+  .sidebar-wrapper {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* ========================================
+   Copy Button Styles
+   ======================================== */
 .copy-button {
   position: absolute;
   top: 8px;

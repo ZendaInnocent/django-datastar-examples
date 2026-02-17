@@ -173,3 +173,7 @@ staticfiles
 .ruff_cache/
 .opencode/
 cache/
+
+_bmad/
+_bmad-output/
+AGENTS.md

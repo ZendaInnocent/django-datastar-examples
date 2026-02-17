@@ -35,7 +35,7 @@
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
   <p class="small text-muted mb-3">Create a view that handles pagination:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def click_to_load_view(request):
     page = int(request.GET.get('page', 1))
     items_per_page = 6
@@ -59,7 +59,7 @@ def click_to_load_more_view(request):
     }))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('click-to-load/', views.click_to_load_view, name='click-to-load'),
 path('click-to-load/more/', views.click_to_load_more_view, name='click-to-load-more'),</code></pre>
 

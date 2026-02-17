@@ -1,0 +1,97 @@
+<nav id="sidebar" class="sidebar" aria-label="Main navigation">
+  <div class="sidebar-content">
+    <!-- Examples Section -->
+    <div class="sidebar-section">
+      <h6 class="sidebar-heading">Examples</h6>
+      <ul class="nav flex-column">
+        {% url 'examples:index' as index_url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == index_url %} active{% endif %}" href="{{ index_url }}">Home</a>
+        </li>
+        {% url 'examples:active-search' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Active Search</a>
+        </li>
+        {% url 'examples:click-to-load' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Click to Load</a>
+        </li>
+        {% url 'examples:edit-row' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Edit Row</a>
+        </li>
+        {% url 'examples:delete-row' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Delete Row</a>
+        </li>
+        {% url 'examples:todo-mvc' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">TodoMVC</a>
+        </li>
+        {% url 'examples:inline-validation' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Inline Validation</a>
+        </li>
+        {% url 'examples:infinite-scroll' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Infinite Scroll</a>
+        </li>
+        {% url 'examples:lazy-tabs' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Lazy Tabs</a>
+        </li>
+        {% url 'examples:file-upload' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">File Upload</a>
+        </li>
+        {% url 'examples:sortable' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Sortable</a>
+        </li>
+        {% url 'examples:notifications' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Notifications</a>
+        </li>
+        {% url 'examples:bulk-update' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">Bulk Update</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Documentation Section -->
+    <div class="sidebar-section">
+      <h6 class="sidebar-heading">Documentation</h6>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#docs">Getting Started</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#docs">Core Concepts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#docs">Django Integration</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#docs">Best Practices</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Learning Paths Section -->
+    <div class="sidebar-section">
+      <h6 class="sidebar-heading">Learning Paths</h6>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#learning">Beginner Path</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#learning">Intermediate Path</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'examples:index' %}#learning">Advanced Path</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

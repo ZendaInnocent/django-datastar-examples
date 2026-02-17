@@ -63,6 +63,37 @@
       }
     });
 
+    // Touch events for mobile/tablet support
+    divider.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      container.classList.add('dragging');
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+
+      const touch = e.touches[0];
+      const containerRect = container.getBoundingClientRect();
+      const newWidth = touch.clientX - containerRect.left;
+      const maxWidth = containerRect.width - MIN_WIDTH;
+
+      if (newWidth >= MIN_WIDTH && newWidth <= maxWidth) {
+        codePanel.style.width = newWidth + 'px';
+
+        // Save preference to localStorage
+        const ratio = newWidth / containerRect.width;
+        localStorage.setItem('split-view-ratio', ratio.toString());
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchend', function() {
+      if (isDragging) {
+        isDragging = false;
+        container.classList.remove('dragging');
+      }
+    });
+
     // Keyboard accessibility for divider
     divider.addEventListener('keydown', function(e) {
       const step = 20;

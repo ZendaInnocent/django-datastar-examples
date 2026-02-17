@@ -34,7 +34,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def delete_row_view(request):
     contacts = Contact.objects.all()[:5]
     return render(request, 'delete_row.html', {'contacts': contacts})
@@ -47,13 +47,13 @@ def delete_row_remove_view(request):
     return ds.remove(selector=f'#contact-{contact_id}')</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('delete-row/', views.delete_row_view, name='delete-row'),
 path('delete-row/remove/', views.delete_row_remove_view, name='delete-row-remove'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Use <code>data-on:click</code> with confirmation:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;tr id="contact-{{ contact.pk }}"&gt;
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;tr id="contact-{{ contact.pk }}"&gt;
   &lt;td&gt;{{ contact.first_name }} {{ contact.last_name }}&lt;/td&gt;
   &lt;td&gt;
     &lt;button
@@ -66,7 +66,7 @@ path('delete-row/remove/', views.delete_row_remove_view, name='delete-row-remove
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Server Response</h6>
   <p class="small text-muted mb-3">Return a remove directive instead of HTML:</p>
-  <pre class="bg-light p-3 rounded small"><code># In the view, use ds.remove() to remove element
+<pre class="bg-light p-3 rounded small"><code class="language-python"># In the view, use ds.remove() to remove element
 return ds.remove(selector='#contact-{{ contact_id }}')</code></pre>
 </div>
 {% endblock howto_content %}

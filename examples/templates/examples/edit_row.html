@@ -34,7 +34,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def edit_row_view(request):
     contacts = Contact.objects.all()[:5]
     return render(request, 'edit_row.html', {'contacts': contacts})
@@ -50,13 +50,13 @@ def edit_row_update_view(request):
     return ds.fragment(render_to_string('fragments/contact_row.html', {'contact': contact}))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('edit-row/', views.edit_row_view, name='edit-row'),
 path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Toggle between view/edit mode using signals:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;tr id="contact-{{ contact.pk }}"&gt;
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;tr id="contact-{{ contact.pk }}"&gt;
   &lt;!-- View Mode --&gt;
   &lt;td&gt;{{ contact.first_name }}&lt;/td&gt;
   &lt;td&gt;
@@ -70,7 +70,7 @@ path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),</c
 &lt;/tr&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
-  <pre class="bg-light p-3 rounded small"><code>&lt;td&gt;{{ contact.first_name }} {{ contact.last_name }}&lt;/td&gt;
+<pre class="bg-light p-3 rounded small"><code class="language-django">&lt;td&gt;{{ contact.first_name }} {{ contact.last_name }}&lt;/td&gt;
 &lt;td&gt;{{ contact.email }}&lt;/td&gt;</code></pre>
 </div>
 {% endblock howto_content %}

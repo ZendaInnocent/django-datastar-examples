@@ -89,7 +89,7 @@ path('todo-mvc/delete/', views.todomvc_delete_view, name='todo-mvc-delete'),</co
 &lt;/ul&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragments</h6>
-  <pre class="bg-light p-3 rounded small"><code>&lt;li id="todo-{{ todo.pk }}"&gt;
+<pre class="bg-light p-3 rounded small"><code class="language-django">&lt;li id="todo-{{ todo.pk }}"&gt;
   &lt;input type="checkbox" {% if todo.completed %}checked{% endif %}&gt;
   {{ todo.title }}
 &lt;/li&gt;</code></pre>
