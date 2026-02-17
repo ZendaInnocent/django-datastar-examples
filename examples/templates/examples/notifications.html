@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'examples/fragments/howto_panel.html' with title="How to Build: Notifications" %}
+
+{% block howto_content %}
+<div class="container-fluid px-0">
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+def notifications_view(request):
+    notifications = Notification.objects.all()[:5]
+    unread_count = Notification.objects.filter(read=False).count()
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'unread_count': unread_count
+    })
+
+def notifications_mark_read_view(request):
+    ds = DjangoDatastar(request)
+    Notification.objects.filter(read=False).update(read=True)
+    return ds.fragment(render_to_string('fragments/notification_list.html', {
+        'notifications': Notification.objects.all()[:5],
+        'unread_count': 0
+    }))</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+path('notifications/', views.notifications_view, name='notifications'),
+path('notifications/mark-read/', views.notifications_mark_read_view, name='notifications-mark-read'),</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;span id="notification-count"&gt;
+  {{ unread_count }}
+&lt;/span&gt;
+
+&lt;button data-on:click="@post('{% url 'examples:notifications-mark-read' %}')"&gt;
+  Mark all as read
+&lt;/button&gt;</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: SSE (Optional)</h6>
+  <p class="small text-muted">For real-time updates, use Server-Sent Events:</p>
+  <pre class="bg-light p-3 rounded small"><code># For SSE updates, connect to an endpoint that yields:
+@dataclass
+class CountUpdate:
+    count: int
+
+def sse_count_view(request):
+    def generator():
+        while True:
+            yield CountUpdate(Notification.objects.filter(read=False).count())
+            time.sleep(5)
+    return ds.sse(generator())</code></pre>
+</div>
+{% endblock howto_content %}
+
+<div class="container py-5">
+  <nav class="mb-4">
+    <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
+  </nav>
+
+  <header class="mb-5">
+    <h1 class="h2">Notifications</h1>
+    <p class="text-muted">Real-time notification counter with SSE push updates</p>
+  </header>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">How it Works</h2>
+      <ol class="text-muted small">
+        <li>Notification count is stored in a signal</li>
+        <li>Page establishes SSE connection to receive updates</li>
+        <li>Server can push new counts via Server-Sent Events</li>
+        <li>Datastar automatically updates the UI when signal changes</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Notifications</h5>
+            <span class="badge bg-danger" id="notification-count">
+              {{ unread_count }}
+            </span>
+          </div>
+          <button
+            class="btn btn-outline-primary btn-sm"
+            data-on:click="@post('{% url 'examples:notifications-mark-read' %}')"
+          >
+            Mark all as read
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

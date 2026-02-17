@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'examples/fragments/example_sidebar.html' %}
+{% include 'examples/fragments/howto_panel.html' with title="How to Build: Click to Load" %}
+
+<button
+  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-none d-md-flex align-items-center gap-2"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#exampleSidebar"
+  aria-controls="exampleSidebar"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+  <span>Examples</span>
+</button>
+
+<button
+  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-md-none"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#exampleSidebar"
+  aria-controls="exampleSidebar"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+</button>
+
+{% block howto_content %}
+<div class="container-fluid px-0">
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
+  <p class="small text-muted mb-3">Create a view that handles pagination:</p>
+  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+def click_to_load_view(request):
+    page = int(request.GET.get('page', 1))
+    items_per_page = 6
+    items = Contact.objects.all()[(page-1)*items_per_page:page*items_per_page]
+    has_more = Contact.objects.count() > page * items_per_page
+    return render(request, 'click_to_load.html', {
+        'contacts': items,
+        'page': page,
+        'has_more': has_more
+    })
+
+def click_to_load_more_view(request):
+    ds = DjangoDatastar(request)
+    page = int(request.GET.get('page', 1))
+    contacts = Contact.objects.all()[(page-1)*items_per_page:page*items_per_page]
+    has_more = Contact.objects.count() > page * items_per_page
+    return ds.fragment(render_to_string('fragments/contact_list.html', {
+        'contacts': contacts,
+        'page': page,
+        'has_more': has_more
+    }))</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+path('click-to-load/', views.click_to_load_view, name='click-to-load'),
+path('click-to-load/more/', views.click_to_load_more_view, name='click-to-load-more'),</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
+  <p class="small text-muted mb-3">Use <code>data-on:click</code> to trigger the load:</p>
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-html">&lt;div id="contact-list"&gt;
+  {% include 'examples/fragments/contact_list.html' %}
+&lt;/div&gt;
+
+{% if has_more %}
+&lt;button
+  class="btn btn-primary"
+  data-on:click="@get('{% url 'examples:click-to-load-more' %}?page={{ page|add:1 }}')"
+&gt;
+  Load More
+&lt;/button&gt;
+{% endif %}</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
+  <p class="small text-muted mb-3">Return contacts wrapped in a unique ID for merging:</p>
+  <pre class="bg-light p-3 rounded small"><code class="language-html">&lt;div id="contact-{{ contact.pk }}"&gt;
+  {{ contact.first_name }} {{ contact.last_name }}
+&lt;/div&gt;</code></pre>
+</div>
+{% endblock howto_content %}
+
+<div class="container py-5">
+  <header class="mb-5">
+    <h1 class="h2">Click to Load</h1>
+    <p class="text-muted">Load more content when clicking "Load More" button (pagination)</p>
+  </header>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">How it Works</h2>
+      <ol class="text-muted small">
+        <li>Initial page shows first 6 contacts</li>
+        <li>Clicking "Load More" triggers a GET request with the next page number</li>
+        <li>Server returns HTML fragments with more contacts</li>
+        <li>Datastar appends new fragments to the list (using <code>id</code> merging)</li>
+        <li>Button is removed when no more data exists</li>
+      </ol>
+    </div>
+  </section>
+
+  <div id="contact-list">
+    {% include 'examples/fragments/contact_list.html' %}
+  </div>
+
+  {% if has_more %}
+  <div class="text-center mt-4" id="load-more-container">
+    <button
+      class="btn btn-primary"
+      data-on:click="@get('{% url 'examples:click-to-load-more' %}?page={{ page|add:1 }}')"
+    >
+      Load More
+    </button>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

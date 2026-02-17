@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'examples/fragments/example_sidebar.html' %}
+{% include 'examples/fragments/howto_panel.html' with title="How to Build: Edit Row" %}
+
+<button
+  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-none d-md-flex align-items-center gap-2"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#exampleSidebar"
+  aria-controls="exampleSidebar"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+  <span>Examples</span>
+</button>
+
+<button
+  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-md-none"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#exampleSidebar"
+  aria-controls="exampleSidebar"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+</button>
+
+{% block howto_content %}
+<div class="container-fluid px-0">
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+def edit_row_view(request):
+    contacts = Contact.objects.all()[:5]
+    return render(request, 'edit_row.html', {'contacts': contacts})
+
+def edit_row_update_view(request):
+    ds = DjangoDatastar(request)
+    contact_id = request.POST.get('id')
+    contact = get_object_or_404(Contact, pk=contact_id)
+    contact.first_name = request.POST.get('first_name')
+    contact.last_name = request.POST.get('last_name')
+    contact.email = request.POST.get('email')
+    contact.save()
+    return ds.fragment(render_to_string('fragments/contact_row.html', {'contact': contact}))</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+path('edit-row/', views.edit_row_view, name='edit-row'),
+path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
+  <p class="small text-muted mb-3">Toggle between view/edit mode using signals:</p>
+  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;tr id="contact-{{ contact.pk }}"&gt;
+  &lt;!-- View Mode --&gt;
+  &lt;td&gt;{{ contact.first_name }}&lt;/td&gt;
+  &lt;td&gt;
+    &lt;button data-on:click="$editMode[$contact.pk] = true"&gt;Edit&lt;/button&gt;
+  &lt;/td&gt;
+  &lt;!-- Edit Mode --&gt;
+  &lt;td&gt;
+    &lt;input data-bind:value="$editForm.first_name"&gt;
+    &lt;button data-on:click="@post('/update/', {params: {id: {{ contact.pk }}, ...}})">Save&lt;/button&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
+  <pre class="bg-light p-3 rounded small"><code>&lt;td&gt;{{ contact.first_name }} {{ contact.last_name }}&lt;/td&gt;
+&lt;td&gt;{{ contact.email }}&lt;/td&gt;</code></pre>
+</div>
+{% endblock howto_content %}
+
+<div class="container py-5">
+  <header class="mb-5">
+    <h1 class="h2">Edit Row</h1>
+    <p class="text-muted">Click on a table row to edit it inline</p>
+  </header>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">How it Works</h2>
+      <ol class="text-muted small">
+        <li>Click "Edit" button to toggle edit mode (using signal to show/hide)</li>
+        <li>Form appears inline with current values</li>
+        <li>Submit sends PUT request to <code>/edit-row/update/</code></li>
+        <li>Server returns updated row fragment</li>
+        <li>Datastar replaces the view mode with the updated content</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="contact-table">
+        {% for contact in contacts %}
+        {% include 'examples/fragments/contact_row.html' %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

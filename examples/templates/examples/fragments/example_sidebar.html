@@ -1,0 +1,66 @@
+{% load static %}
+{% block example_sidebar %}
+<div class="offcanvas offcanvas-start" tabindex="-1" id="exampleSidebar" aria-labelledby="exampleSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="exampleSidebarLabel">Examples</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <div class="list-group list-group-flush">
+      <a href="{% url 'examples:active-search' %}" class="list-group-item list-group-item-action {% if request.path == '/active-search/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">01</span>
+        Active Search
+      </a>
+      <a href="{% url 'examples:click-to-load' %}" class="list-group-item list-group-item-action {% if request.path == '/click-to-load/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">02</span>
+        Click to Load
+      </a>
+      <a href="{% url 'examples:edit-row' %}" class="list-group-item list-group-item-action {% if request.path == '/edit-row/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">03</span>
+        Edit Row
+      </a>
+      <a href="{% url 'examples:delete-row' %}" class="list-group-item list-group-item-action {% if request.path == '/delete-row/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">04</span>
+        Delete Row
+      </a>
+      <a href="{% url 'examples:todo-mvc' %}" class="list-group-item list-group-item-action {% if request.path == '/todo-mvc/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">05</span>
+        TodoMVC
+      </a>
+      <a href="{% url 'examples:inline-validation' %}" class="list-group-item list-group-item-action {% if request.path == '/inline-validation/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">06</span>
+        Inline Validation
+      </a>
+      <a href="{% url 'examples:infinite-scroll' %}" class="list-group-item list-group-item-action {% if request.path == '/infinite-scroll/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">07</span>
+        Infinite Scroll
+      </a>
+      <a href="{% url 'examples:lazy-tabs' %}" class="list-group-item list-group-item-action {% if request.path == '/lazy-tabs/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">08</span>
+        Lazy Tabs
+      </a>
+      <a href="{% url 'examples:file-upload' %}" class="list-group-item list-group-item-action {% if request.path == '/file-upload/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">09</span>
+        File Upload
+      </a>
+      <a href="{% url 'examples:sortable' %}" class="list-group-item list-group-item-action {% if request.path == '/sortable/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">10</span>
+        Sortable
+      </a>
+      <a href="{% url 'examples:notifications' %}" class="list-group-item list-group-item-action {% if request.path == '/notifications/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">11</span>
+        Notifications
+      </a>
+      <a href="{% url 'examples:bulk-update' %}" class="list-group-item list-group-item-action {% if request.path == '/bulk-update/' %}active{% endif %}">
+        <span class="badge bg-secondary me-2">12</span>
+        Bulk Update
+      </a>
+    </div>
+    <div class="p-3 border-top">
+      <a href="{% url 'examples:index' %}" class="btn btn-outline-secondary btn-sm w-100">
+        &larr; Back to Index
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock example_sidebar %}

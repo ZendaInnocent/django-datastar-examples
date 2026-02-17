@@ -1,0 +1,21 @@
+<li class="list-group-item d-flex align-items-center" id="todo-{{ todo.id }}">
+  <form
+    class="d-flex align-items-center gap-2 flex-grow-1"
+    data-on:submit__prevent="@post('{% url 'examples:todo-mvc-toggle' %}', {params: {id: {{ todo.id }}}})"
+  >
+    <input
+      type="checkbox"
+      class="form-check-input m-0"
+      {% if todo.completed %}checked{% endif %}
+    />
+    <span class="{% if todo.completed %}text-decoration-line-through{% endif %} flex-grow-1">
+      {{ todo.title }}
+    </span>
+  </form>
+  <button
+    class="btn btn-outline-danger btn-sm"
+    data-on:click="@post('{% url 'examples:todo-mvc-delete' %}', {params: {id: {{ todo.id }}}})"
+  >
+    &times;
+  </button>
+</li>

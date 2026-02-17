@@ -1,0 +1,7 @@
+{% for notification in notifications %}
+<div class="alert alert-{% if notification.read %}secondary{% else %}info{% endif %}" role="alert">
+  {{ notification.message }}
+</div>
+{% empty %}
+<div class="text-muted">No notifications</div>
+{% endfor %}

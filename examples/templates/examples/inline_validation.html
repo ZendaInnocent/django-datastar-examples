@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'examples/fragments/example_sidebar.html' %}
+{% include 'examples/fragments/howto_panel.html' with title="How to Build: Inline Validation" %}
+
+<button
+  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-none d-md-flex align-items-center gap-2"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#exampleSidebar"
+  aria-controls="exampleSidebar"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+  <span>Examples</span>
+</button>
+
+<button
+  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-md-none"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#exampleSidebar"
+  aria-controls="exampleSidebar"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+</button>
+
+{% block howto_content %}
+<div class="container-fluid px-0">
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+from django.core.validators import validate_email, ValidationError
+
+def inline_validation_view(request):
+    return render(request, 'inline_validation.html')
+
+def inline_validation_validate_view(request):
+    ds = DjangoDatastar(request)
+    field = request.GET.get('field')
+    value = request.GET.get('value', '')
+
+    errors = {}
+    if field == 'email':
+        try:
+            validate_email(value)
+        except ValidationError:
+            errors['email'] = 'Please enter a valid email address'
+    # ... validate other fields
+
+    return ds.fragment(render_to_string('fragments/validation_error.html', {
+        'field': field,
+        'errors': errors
+    }))</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+path('inline-validation/', views.inline_validation_view, name='inline-validation'),
+path('inline-validation/validate/', views.inline_validation_validate_view, name='inline-validation-validate'),</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
+  <p class="small text-muted mb-3">Use <code>data-on:blur</code> to validate when focus leaves:</p>
+  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;input
+  type="email"
+  name="email"
+  data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=email&value=' + $event.target.value)"
+&gt;
+&lt;div id="email-error"&gt;&lt;/div&gt;
+
+&lt;input
+  type="text"
+  name="username"
+  data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=username&value=' + $event.target.value)"
+&gt;
+&lt;div id="username-error"&gt;&lt;/div&gt;</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Error Fragment</h6>
+  <pre class="bg-light p-3 rounded small"><code>&lt;div id="{{ field }}-error" class="text-danger small"&gt;
+  {% for error in errors.values %}
+  {{ error }}
+  {% endfor %}
+&lt;/div&gt;</code></pre>
+</div>
+{% endblock howto_content %}
+
+<div class="container py-5">
+  <header class="mb-5">
+    <h1 class="h2">Inline Validation</h1>
+    <p class="text-muted">Validate form fields in real-time without page reload</p>
+  </header>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">How it Works</h2>
+      <ol class="text-muted small">
+        <li>User types in a field</li>
+        <li>On blur (focus leaves field), Datastar sends GET with field name and value</li>
+        <li>Server validates and returns error message fragment if invalid</li>
+        <li>Datastar merges error fragment below the field</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="Enter email"
+            data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=email&value=' + $event.target.value)"
+          />
+          <div id="email-error"></div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input
+            type="text"
+            name="username"
+            class="form-control"
+            placeholder="Enter username (min 3 chars)"
+            data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=username&value=' + $event.target.value)"
+          />
+          <div id="username-error"></div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Enter password (min 6 chars)"
+            data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=password&value=' + $event.target.value)"
+          />
+          <div id="password-error"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

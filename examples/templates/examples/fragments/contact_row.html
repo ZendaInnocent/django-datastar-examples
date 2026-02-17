@@ -1,0 +1,47 @@
+{% load static %}
+<tr id="contact-{{ contact.id }}">
+  <td>
+    {# Use $editMode to toggle between view and edit modes #}
+    <div data-show="$editMode">
+      <form
+        data-on:submit__prevent="@post('{% url 'examples:edit-row-update' %}')"
+        data-bind:model="$editForm"
+      >
+        <input type="hidden" name="id" value="{{ contact.id }}" />
+        <div class="d-flex gap-2">
+          <input type="text" name="first_name" class="form-control form-control-sm" value="{{ contact.first_name }}" />
+          <input type="text" name="last_name" class="form-control form-control-sm" value="{{ contact.last_name }}" />
+        </div>
+        <input type="email" name="email" class="form-control form-control-sm mt-2" value="{{ contact.email }}" />
+        <div class="mt-2">
+          <button type="submit" class="btn btn-success btn-sm">Save</button>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            {# data-on:click sets signal to false to exit edit mode #}
+            data-on:click="$editMode = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div data-show="!$editMode">
+      {{ contact.first_name }} {{ contact.last_name }}
+    </div>
+  </td>
+  <td>
+    <div data-show="!$editMode">{{ contact.email }}</div>
+  </td>
+  <td>
+    <div data-show="!$editMode">
+      <button
+        class="btn btn-outline-primary btn-sm"
+        {# data-on:click sets signal to true to enter edit mode #}
+        data-on:click="$editMode = true"
+      >
+        Edit
+      </button>
+    </div>
+  </td>
+</tr>

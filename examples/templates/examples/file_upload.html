@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'examples/fragments/howto_panel.html' with title="How to Build: File Upload" %}
+
+{% block howto_content %}
+<div class="container-fluid px-0">
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+def file_upload_view(request):
+    return render(request, 'file_upload.html')
+
+def file_upload_upload_view(request):
+    ds = DjangoDatastar(request)
+    uploaded_file = request.FILES.get('file')
+
+    if uploaded_file:
+        result = f'Uploaded: {uploaded_file.name} ({uploaded_file.size} bytes)'
+    else:
+        result = 'No file uploaded'
+
+    return ds.fragment(render_to_string('fragments/upload_result.html', {'result': result}))</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+path('file-upload/', views.file_upload_view, name='file-upload'),
+path('file-upload/upload/', views.file_upload_upload_view, name='file-upload-upload'),</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
+  <p class="small text-muted mb-3">Use multipart/form-data for file uploads:</p>
+  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;form
+  method="post"
+  action="{% url 'examples:file-upload-upload' %}"
+  enctype="multipart/form-data"
+  data-on:submit.prevent="@post('{% url 'examples:file-upload-upload' %}')"
+&gt;
+  {% csrf_token %}
+  &lt;input type="file" name="file"&gt;
+  &lt;button type="submit"&gt;Upload&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;div id="upload-result"&gt;
+  {% include 'examples/fragments/upload_result.html' %}
+&lt;/div&gt;</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
+  <pre class="bg-light p-3 rounded small"><code>&lt;div class="alert alert-success"&gt;
+  {{ result }}
+&lt;/div&gt;</code></pre>
+</div>
+{% endblock howto_content %}
+
+<div class="container py-5">
+  <nav class="mb-4">
+    <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
+  </nav>
+
+  <header class="mb-5">
+    <h1 class="h2">File Upload</h1>
+    <p class="text-muted">Upload files with progress indicator</p>
+  </header>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">How it Works</h2>
+      <ol class="text-muted small">
+        <li>Select a file using the file input</li>
+        <li>Form submission sends POST to <code>/file-upload/upload/</code></li>
+        <li>Server processes the file and returns result fragment</li>
+        <li>Datastar merges the result into the upload area</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form
+        method="post"
+        action="{% url 'examples:file-upload-upload' %}"
+        enctype="multipart/form-data"
+        data-on:submit__prevent="@post('{% url 'examples:file-upload-upload' %}', {params: {}})"
+      >
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Choose File</label>
+          <input type="file" name="file" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </form>
+
+      <div class="mt-4" id="upload-result">
+        {% include 'examples/fragments/upload_result.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

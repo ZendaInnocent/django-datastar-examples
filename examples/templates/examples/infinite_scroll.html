@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'examples/fragments/howto_panel.html' with title="How to Build: Infinite Scroll" %}
+
+{% block howto_content %}
+<div class="container-fluid px-0">
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+def infinite_scroll_view(request):
+    page = int(request.GET.get('page', 1))
+    items_per_page = 6
+    contacts = Contact.objects.all()[(page-1)*items_per_page:page*items_per_page]
+    has_more = Contact.objects.count() > page * items_per_page
+    return render(request, 'infinite_scroll.html', {
+        'contacts': contacts,
+        'page': page,
+        'has_more': has_more
+    })
+
+def infinite_scroll_load_view(request):
+    ds = DjangoDatastar(request)
+    page = int(request.GET.get('page', 1))
+    contacts = Contact.objects.all()[(page-1)*items_per_page:page*items_per_page]
+    has_more = Contact.objects.count() > page * items_per_page
+    return ds.fragment(render_to_string('fragments/contact_list.html', {
+        'contacts': contacts,
+        'has_more': has_more
+    }))</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
+  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+path('infinite-scroll/', views.infinite_scroll_view, name='infinite-scroll'),
+path('infinite-scroll/load/', views.infinite_scroll_load_view, name='infinite-scroll-load'),</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
+  <p class="small text-muted mb-3">Use <code>data-on:intersection</code> to detect when element is visible:</p>
+  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;div id="contact-list"&gt;
+  {% include 'examples/fragments/contact_list.html' %}
+&lt;/div&gt;
+
+{% if has_more %}
+&lt;div
+  id="sentinel"
+  data-on:intersection.window="@get('{% url 'examples:infinite-scroll-load' %}?page={{ page|add:1 }}')"
+&gt;
+  &lt;div class="spinner-border"&gt;Loading...&lt;/div&gt;
+&lt;/div&gt;
+{% endif %}</code></pre>
+
+  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: How It Works</h6>
+  <p class="small text-muted">The sentinel element sits at the bottom. When it scrolls into view, the intersection observer triggers the GET request to load more items.</p>
+</div>
+{% endblock howto_content %}
+
+<div class="container py-5">
+  <nav class="mb-4">
+    <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
+  </nav>
+
+  <header class="mb-5">
+    <h1 class="h2">Infinite Scroll</h1>
+    <p class="text-muted">Automatically load more content when scrolling to bottom</p>
+  </header>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">How it Works</h2>
+      <ol class="text-muted small">
+        <li>Initial page shows first 6 contacts</li>
+        <li>Intersection observer watches for "sentinel" element at bottom</li>
+        <li>When sentinel becomes visible, Datastar loads next page</li>
+        <li>Server returns HTML fragments that are appended to the list</li>
+        <li>Sentinel moves to bottom again for next scroll</li>
+      </ol>
+    </div>
+  </section>
+
+  <div id="contact-list">
+    {% include 'examples/fragments/contact_list.html' %}
+  </div>
+
+  {% if has_more %}
+  <div
+    id="sentinel"
+    data-on:intersection.window="@get('{% url 'examples:infinite-scroll-load' %}?page={{ page|add:1 }}')"
+  >
+    <div class="text-center py-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

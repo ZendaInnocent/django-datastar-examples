@@ -1,0 +1,159 @@
+{% load static %}
+{% block howto_panel %}
+<button
+  class="btn btn-outline-secondary position-fixed top-50 end-0 translate-middle-y me-3 rounded-pill shadow-sm d-flex align-items-center gap-2"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#howtoOffcanvas"
+  aria-controls="howtoOffcanvas"
+  style="z-index: 1050;"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+    <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.785c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.223-.877 1.377.139 2.798.62 3.68 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+  </svg>
+  <span class="d-none d-md-inline">How to Build</span>
+</button>
+
+<div
+  class="offcanvas offcanvas-end"
+  tabindex="-1"
+  id="howtoOffcanvas"
+  aria-labelledby="howtoOffcanvasLabel"
+>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="howtoOffcanvasLabel">{{ title|default:"How to Build" }}</h5>
+    <div class="btn-group" role="group" aria-label="Code/Preview toggle">
+      <input type="radio" class="btn-check" name="howtoViewMode" id="howtoCode" autocomplete="off" checked>
+      <label class="btn btn-outline-primary btn-sm" for="howtoCode">Code</label>
+      <input type="radio" class="btn-check" name="howtoViewMode" id="howtoPreview" autocomplete="off">
+      <label class="btn btn-outline-primary btn-sm" for="howtoPreview">Preview</label>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    {% block howto_content %}
+    {{ content|default:"" }}
+    {% endblock howto_content %}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const codeRadio = document.getElementById('howtoCode');
+  const previewRadio = document.getElementById('howtoPreview');
+  const offcanvas = document.getElementById('howtoOffcanvas');
+
+  // Find all code blocks in the offcanvas and add copy buttons
+  function addCopyButtons() {
+    const codeBlocks = offcanvas.querySelectorAll('pre');
+    codeBlocks.forEach(function(pre) {
+      if (pre.querySelector('.copy-btn')) return; // Already has copy button
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'btn btn-outline-secondary btn-sm copy-btn position-absolute top-0 end-0 m-2';
+      copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>';
+      copyBtn.style.cssText = 'z-index: 1;';
+
+      copyBtn.addEventListener('click', function() {
+        const code = pre.querySelector('code');
+        const text = code ? code.innerText : pre.innerText;
+        navigator.clipboard.writeText(text).then(function() {
+          copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>';
+          setTimeout(function() {
+            copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>';
+          }, 2000);
+        });
+      });
+
+      pre.style.position = 'relative';
+      pre.appendChild(copyBtn);
+    });
+  }
+
+  // Toggle between code and preview modes
+  function toggleView(mode) {
+    const preBlocks = offcanvas.querySelectorAll('pre');
+    const codeBlocks = offcanvas.querySelectorAll('pre code');
+
+    if (mode === 'code') {
+      // Show code view
+      preBlocks.forEach(function(pre) {
+        pre.style.display = 'block';
+      });
+    } else {
+      // Show preview (rendered HTML) - for template code, show as-is
+      // For actual HTML examples, we could render them, but for now just hide code blocks
+      preBlocks.forEach(function(pre) {
+        const code = pre.querySelector('code');
+        if (code && code.classList.contains('language-html')) {
+          // This is an HTML template example - could render it
+          pre.style.display = 'block';
+        }
+      });
+    }
+  }
+
+  // Listen for offcanvas shown event to add copy buttons
+  offcanvas.addEventListener('shown.bs.offcanvas', function() {
+    addCopyButtons();
+  });
+
+  // Also add copy buttons immediately if offcanvas is already open
+  if (offcanvas.classList.contains('show')) {
+    addCopyButtons();
+  }
+
+  // Toggle handlers
+  codeRadio.addEventListener('change', function() {
+    if (this.checked) {
+      const preBlocks = offcanvas.querySelectorAll('pre');
+      preBlocks.forEach(function(pre) {
+        pre.style.display = 'block';
+      });
+    }
+  });
+
+  previewRadio.addEventListener('change', function() {
+    if (this.checked) {
+      const preBlocks = offcanvas.querySelectorAll('pre');
+      const codeBlocks = offcanvas.querySelectorAll('pre code');
+      preBlocks.forEach(function(pre, index) {
+        const code = codeBlocks[index];
+        if (code) {
+          // Replace code block with rendered preview for HTML examples
+          const text = code.innerHTML
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+
+          // Create a preview container
+          const preview = document.createElement('div');
+          preview.className = 'howto-preview p-3 bg-light border rounded';
+          preview.innerHTML = text;
+          preview.style.display = 'block';
+
+          // Hide original and show preview
+          pre.style.display = 'none';
+          if (pre.nextSibling) {
+            pre.parentNode.insertBefore(preview, pre.nextSibling);
+          } else {
+            pre.parentNode.appendChild(preview);
+          }
+          preview.setAttribute('data-for-pre', pre.id || 'pre-' + index);
+        }
+      });
+    } else {
+      // Switch back to code view
+      const preBlocks = offcanvas.querySelectorAll('pre');
+      const previews = offcanvas.querySelectorAll('.howto-preview');
+      preBlocks.forEach(function(pre) {
+        pre.style.display = 'block';
+      });
+      previews.forEach(function(preview) {
+        preview.remove();
+      });
+    }
+  });
+});
+</script>
+{% endblock howto_panel %}

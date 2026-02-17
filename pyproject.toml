@@ -7,8 +7,17 @@ requires-python = ">=3.13"
 dependencies = [
     "datastar-py>=0.8.0",
     "django>=6.0.2",
+    "model-bakery>=1.23.0",
     "python-decouple>=3.8",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py", "*_test.py"]
+testpaths = ["examples/tests"]
+
+[tool.ruff]
+exclude = ["docs", "migrations"]
 
 [tool.ruff.format]
 quote-style = "single"
@@ -18,4 +27,6 @@ dev = [
     "djade>=1.7.0",
     "django-browser-reload>=1.21.0",
     "pre-commit>=4.5.1",
+    "pytest>=8.0.0",
+    "pytest-django>=4.8.0",
 ]

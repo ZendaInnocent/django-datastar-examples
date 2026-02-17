@@ -1,0 +1,9 @@
+{% if errors %}
+<div class="text-danger small mt-1" id="{{ field }}-error">
+  {{ errors|dict_get:field }}
+</div>
+{% else %}
+<div class="text-success small mt-1" id="{{ field }}-error">
+  Looks good!
+</div>
+{% endif %}
