@@ -6,7 +6,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def sortable_view(request):
     items = Item.objects.all()
     return render(request, 'sortable.html', {'items': items})
@@ -21,13 +21,13 @@ def sortable_reorder_view(request):
     return HttpResponse('Reordered')</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('sortable/', views.sortable_view, name='sortable'),
 path('sortable/reorder/', views.sortable_reorder_view, name='sortable-reorder'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Use HTML5 drag and drop with Datastar events:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;ul id="sortable-list"&gt;
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;ul id="sortable-list"&gt;
   {% for item in items %}
   &lt;li
     data-id="{{ item.id }}"
@@ -41,7 +41,7 @@ path('sortable/reorder/', views.sortable_reorder_view, name='sortable-reorder'),
 &lt;/ul&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Model</h6>
-  <pre class="bg-light p-3 rounded small"><code>class Item(models.Model):
+  <pre class="bg-light p-3 rounded small"><code class="language-python">class Item(models.Model):
     name = models.CharField(max_length=100)
     order = models.IntegerField(default=0)
 
@@ -81,7 +81,7 @@ path('sortable/reorder/', views.sortable_reorder_view, name='sortable-reorder'),
           class="list-group-item"
           data-on:dragstart.window="$dragSrc = $event.target; $event.dataTransfer.effectAllowed = 'move'"
           data-on:dragover.window="$event.preventDefault()"
-          data-on:drop.window="@post('{% url 'examples:sortable-reorder' %}', {params: {ids: [$dragSrc, $event.target].map(el => el.dataset.id)}})"
+          data-on:drop.window="@post('{% url 'examples:sortable-reorder' %}', {params: {ids: [$dragSrc, $event.target].map(el => el.dataset.id)}}"
           data-id="{{ item.id }}"
         >
           {{ item.name }}
@@ -92,5 +92,16 @@ path('sortable/reorder/', views.sortable_reorder_view, name='sortable-reorder'),
       </ul>
     </div>
   </div>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/core-concepts.md#signals" style="color: #6B46C1; text-decoration: none;">Signals in Datastar</a></li>
+        <li><a href="/docs/datastar-guide/datastar-actions-reference.md#post" style="color: #6B46C1; text-decoration: none;">POST Action</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#9-use-selectors-effectively" style="color: #6B46C1; text-decoration: none;">Selectors Best Practices</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

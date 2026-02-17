@@ -6,7 +6,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def bulk_update_view(request):
     contacts = Contact.objects.all()[:10]
     return render(request, 'bulk_update.html', {'contacts': contacts})
@@ -25,12 +25,12 @@ def bulk_update_update_view(request):
     }))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('bulk-update/', views.bulk_update_view, name='bulk-update'),
 path('bulk-update/update/', views.bulk_update_update_view, name='bulk-update-update'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;form id="bulk-form"&gt;
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;form id="bulk-form"&gt;
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
@@ -66,7 +66,7 @@ path('bulk-update/update/', views.bulk_update_update_view, name='bulk-update-upd
 &lt;/form&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
-  <pre class="bg-light p-3 rounded small"><code>&lt;tbody id="contact-table"&gt;
+  <pre class="bg-light p-3 rounded small"><code class="language-django">&lt;tbody id="contact-table"&gt;
   {% for contact in contacts %}
   &lt;tr&gt;
     &lt;td&gt;&lt;input type="checkbox" value="{{ contact.pk }}"&gt;&lt;/td&gt;
@@ -140,5 +140,16 @@ path('bulk-update/update/', views.bulk_update_update_view, name='bulk-update-upd
       </form>
     </div>
   </div>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/django-forms-integration.md" style="color: #6B46C1; text-decoration: none;">Django Forms Integration</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#6-business-isolation" style="color: #6B46C1; text-decoration: none;">Business Isolation</a></li>
+        <li><a href="/docs/datastar-guide/core-concepts.md#partial-templates" style="color: #6B46C1; text-decoration: none;">Partial Templates</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

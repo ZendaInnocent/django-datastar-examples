@@ -6,7 +6,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def lazy_tabs_view(request):
     return render(request, 'lazy_tabs.html')
 
@@ -24,13 +24,13 @@ def lazy_tabs_tab_view(request):
     }))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('lazy-tabs/', views.lazy_tabs_view, name='lazy-tabs'),
 path('lazy-tabs/tab/', views.lazy_tabs_tab_view, name='lazy-tabs-tab'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Click updates signal and fetches tab content:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;ul class="nav nav-tabs"&gt;
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;ul class="nav nav-tabs"&gt;
   &lt;li class="nav-item"&gt;
     &lt;button
       class="nav-link"
@@ -50,7 +50,7 @@ path('lazy-tabs/tab/', views.lazy_tabs_tab_view, name='lazy-tabs-tab'),</code></
 &lt;/div&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
-  <pre class="bg-light p-3 rounded small"><code>&lt;div id="tab-content"&gt;
+  <pre class="bg-light p-3 rounded small"><code class="language-django">&lt;div id="tab-content"&gt;
   {{ content }}
 &lt;/div&gt;</code></pre>
 </div>
@@ -111,5 +111,16 @@ path('lazy-tabs/tab/', views.lazy_tabs_tab_view, name='lazy-tabs-tab'),</code></
       <p>Select a tab to load content...</p>
     </div>
   </div>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/core-concepts.md#partial-templates" style="color: #6B46C1; text-decoration: none;">Partial Templates</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#2-use-partial-templates" style="color: #6B46C1; text-decoration: none;">Best Practices: Partial Templates</a></li>
+        <li><a href="/docs/datastar-guide/datastar-attributes-reference.md#data-on" style="color: #6B46C1; text-decoration: none;">Click Event Handling</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

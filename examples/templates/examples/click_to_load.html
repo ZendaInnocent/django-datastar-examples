@@ -119,5 +119,16 @@ path('click-to-load/more/', views.click_to_load_more_view, name='click-to-load-m
     </button>
   </div>
   {% endif %}
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/datastar-attributes-reference.md#data-on" style="color: #6B46C1; text-decoration: none;">Event Handling with data-on</a></li>
+        <li><a href="/docs/datastar-guide/common-patterns.md#pattern-3-live-search-with-results" style="color: #6B46C1; text-decoration: none;">Live Search Patterns</a></li>
+        <li><a href="/docs/datastar-guide/core-concepts.md#sse-events" style="color: #6B46C1; text-decoration: none;">Server-Sent Events (SSE)</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

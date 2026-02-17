@@ -1,0 +1,429 @@
+/* Custom CSS for django-datastar-examples */
+
+/* Copy Button Styles */
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.code-block-wrapper:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.copy-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.5);
+}
+
+.copy-button.copied {
+  background: rgba(40, 167, 69, 0.3);
+  border-color: rgba(40, 167, 69, 0.5);
+}
+
+/* Code block wrapper for positioning */
+.code-block-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Toast Container Styles */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  min-width: 250px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease;
+}
+
+.toast-success {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #dc3545;
+}
+
+.toast-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.toast-info {
+  background-color: #17a2b8;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast.hiding {
+  animation: slideOut 0.3s ease forwards;
+}
+
+/* Code Tabs Styles */
+.code-tabs-container {
+  margin-bottom: 1.5rem;
+}
+
+.code-tabs {
+  border-bottom: 2px solid #dee2e6;
+  margin-bottom: 0;
+}
+
+.code-tabs .nav-link {
+  color: #6c757d;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.code-tabs .nav-link:hover {
+  color: #6B46C1; /* Datastar Purple */
+  border-bottom-color: #d8c4f0;
+  background: transparent;
+}
+
+.code-tabs .nav-link.active {
+  color: #6B46C1; /* Datastar Purple */
+  border-bottom-color: #6B46C1;
+  background: transparent;
+  font-weight: 600;
+}
+
+.code-tabs .nav-link:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.code-tabs .nav-link:focus-visible {
+  outline: 2px solid #6B46C1;
+  outline-offset: -2px;
+}
+
+/* Tab Content - matches code block background */
+.code-tabs-container .tab-content {
+  background: #1E1E1E; /* Tomorrow Night theme background */
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.code-tabs-container .tab-pane {
+  padding: 0;
+}
+
+/* Ensure code blocks display properly in tabs */
+.code-tabs-container .code-block-wrapper {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.code-tabs-container .code-block-wrapper pre {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+/* Responsive tab behavior */
+@media (max-width: 768px) {
+  .code-tabs .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .code-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .code-tabs .nav-link {
+    white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ========================================
+   Split View Styles - Story 2.4
+   ======================================== */
+
+/* Desktop Split View Container */
+.split-view-container {
+  display: flex;
+  height: calc(100vh - 250px);
+  min-height: 400px;
+  gap: 0;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Left Panel: Code */
+.split-view-code {
+  width: 50%;
+  min-width: 300px;
+  overflow: auto;
+  background: #1E1E1E;
+  display: flex;
+  flex-direction: column;
+}
+
+.split-view-code .code-tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.split-view-code .tab-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Draggable Divider */
+.split-view-divider {
+  width: 8px;
+  background: #dee2e6;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.split-view-divider:hover,
+.split-view-divider:focus {
+  background: #6B46C1; /* Datastar Purple */
+  outline: none;
+}
+
+.split-view-divider:focus-visible {
+  box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.5);
+}
+
+.divider-handle {
+  width: 4px;
+  height: 40px;
+  background: #adb5bd;
+  border-radius: 2px;
+  transition: background 0.2s ease;
+}
+
+.split-view-divider:hover .divider-handle,
+.split-view-divider:focus .divider-handle {
+  background: #fff;
+}
+
+/* Right Panel: Live Demo */
+.split-view-demo {
+  flex: 1;
+  min-width: 300px;
+  overflow: auto;
+  padding: 1.5rem;
+  background: #fff;
+}
+
+/* ========================================
+   Mobile View Tabs (Demo/Code switching)
+   ======================================== */
+
+.mobile-view-tabs {
+  display: none;
+  border-bottom: 2px solid #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.mobile-view-tabs .nav-link {
+  color: #6c757d;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s ease;
+  background: transparent;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-view-tabs .nav-link:hover {
+  color: #6B46C1;
+  border-bottom-color: #d8c4f0;
+}
+
+.mobile-view-tabs .nav-link.active {
+  color: #6B46C1;
+  border-bottom-color: #6B46C1;
+  font-weight: 600;
+}
+
+.mobile-view-tabs .nav-link:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.mobile-view-tabs .nav-link:focus-visible {
+  outline: 2px solid #6B46C1;
+  outline-offset: -2px;
+}
+
+/* ========================================
+   Responsive: Tablet and Mobile
+   ======================================== */
+
+@media (max-width: 1023px) {
+  .split-view-container {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+  }
+
+  .split-view-code,
+  .split-view-demo {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .split-view-code {
+    height: 400px;
+    min-height: 300px;
+  }
+
+  .split-view-divider {
+    display: none;
+  }
+
+  /* Show mobile view tabs */
+  .mobile-view-tabs {
+    display: flex;
+  }
+
+  /* Hide split view panels by default on mobile */
+  .split-view-code,
+  .split-view-demo {
+    display: none;
+  }
+
+  /* Show active panel based on tab */
+  .split-view-code.active,
+  .split-view-demo.active {
+    display: block;
+  }
+
+  /* Demo on top by default */
+  .split-view-demo {
+    display: block;
+  }
+
+  .split-view-demo.active {
+    display: block;
+  }
+
+  .split-view-code.active {
+    display: block;
+  }
+
+  /* Hide desktop-only elements */
+  .split-view-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .split-view-code {
+    height: 350px;
+    min-height: 250px;
+  }
+
+  .split-view-demo {
+    padding: 1rem;
+  }
+
+  .mobile-view-tabs .nav-link {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+/* Dragging state */
+.split-view-container.dragging {
+  user-select: none;
+}
+
+.split-view-container.dragging * {
+  pointer-events: none;
+}
+
+.split-view-container.dragging .split-view-divider {
+  pointer-events: auto;
+}
+
+/* Ensure scrollable areas work during drag */
+.split-view-code.drag-active,
+.split-view-demo.drag-active {
+  pointer-events: auto;
+}

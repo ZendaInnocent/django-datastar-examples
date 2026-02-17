@@ -124,5 +124,16 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
   <section id="results">
     {% include 'examples/fragments/contact_list.html' %}
   </section>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/core-concepts.md#signals" style="color: #6B46C1; text-decoration: none;">Understanding Signals</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#7-debounce-input-events" style="color: #6B46C1; text-decoration: none;">Debouncing Input Events</a></li>
+        <li><a href="/docs/datastar-guide/core-concepts.md#sse-events" style="color: #6B46C1; text-decoration: none;">Server-Sent Events (SSE)</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

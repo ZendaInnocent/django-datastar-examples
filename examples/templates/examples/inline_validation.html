@@ -34,7 +34,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 from django.core.validators import validate_email, ValidationError
 
 def inline_validation_view(request):
@@ -59,13 +59,13 @@ def inline_validation_validate_view(request):
     }))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('inline-validation/', views.inline_validation_view, name='inline-validation'),
 path('inline-validation/validate/', views.inline_validation_validate_view, name='inline-validation-validate'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Use <code>data-on:blur</code> to validate when focus leaves:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;input
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;input
   type="email"
   name="email"
   data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=email&value=' + $event.target.value)"
@@ -80,7 +80,7 @@ path('inline-validation/validate/', views.inline_validation_validate_view, name=
 &lt;div id="username-error"&gt;&lt;/div&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Error Fragment</h6>
-  <pre class="bg-light p-3 rounded small"><code>&lt;div id="{{ field }}-error" class="text-danger small"&gt;
+<pre class="bg-light p-3 rounded small"><code class="language-django">&lt;div id="{{ field }}-error" class="text-danger small"&gt;
   {% for error in errors.values %}
   {{ error }}
   {% endfor %}
@@ -149,5 +149,16 @@ path('inline-validation/validate/', views.inline_validation_validate_view, name=
       </form>
     </div>
   </div>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/django-forms-integration.md#form-error-display" style="color: #6B46C1; text-decoration: none;">Form Error Display</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#7-debounce-input-events" style="color: #6B46C1; text-decoration: none;">Debouncing Input Events</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#3-handle-errors-gracefully" style="color: #6B46C1; text-decoration: none;">Error Handling</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

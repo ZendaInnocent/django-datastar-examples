@@ -122,3 +122,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Additional directories where Django will look for static files during development
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]

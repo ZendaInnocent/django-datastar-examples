@@ -6,7 +6,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def infinite_scroll_view(request):
     page = int(request.GET.get('page', 1))
     items_per_page = 6
@@ -29,13 +29,13 @@ def infinite_scroll_load_view(request):
     }))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('infinite-scroll/', views.infinite_scroll_view, name='infinite-scroll'),
 path('infinite-scroll/load/', views.infinite_scroll_load_view, name='infinite-scroll-load'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Use <code>data-on:intersection</code> to detect when element is visible:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;div id="contact-list"&gt;
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;div id="contact-list"&gt;
   {% include 'examples/fragments/contact_list.html' %}
 &lt;/div&gt;
 
@@ -92,5 +92,15 @@ path('infinite-scroll/load/', views.infinite_scroll_load_view, name='infinite-sc
     </div>
   </div>
   {% endif %}
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/datastar-attributes-reference.md#data-on-intersect" style="color: #6B46C1; text-decoration: none;">Intersection Observer</a></li>
+        <li><a href="/docs/datastar-guide/core-concepts.md#partial-templates" style="color: #6B46C1; text-decoration: none;">Partial Templates</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

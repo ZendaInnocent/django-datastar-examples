@@ -34,7 +34,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The Views</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def todomvc_view(request):
     filter_type = request.GET.get('filter', 'all')
     # Filter todos based on filter type
@@ -62,14 +62,14 @@ def todomvc_delete_view(request):
     return ds.remove(selector=f'#todo-{todo_id}')</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('todo-mvc/', views.todomvc_view, name='todo-mvc'),
 path('todo-mvc/add/', views.todomvc_add_view, name='todo-mvc-add'),
 path('todo-mvc/toggle/', views.todomvc_toggle_view, name='todo-mvc-toggle'),
 path('todo-mvc/delete/', views.todomvc_delete_view, name='todo-mvc-delete'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;form data-on:submit.prevent="@post('{% url 'examples:todo-mvc-add' %}')"&gt;
+<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;form data-on:submit.prevent="@post('{% url 'examples:todo-mvc-add' %}')"&gt;
   &lt;input data-bind:title="$newTodo"&gt;
   &lt;button type="submit"&gt;Add&lt;/button&gt;
 &lt;/form&gt;
@@ -153,5 +153,16 @@ path('todo-mvc/delete/', views.todomvc_delete_view, name='todo-mvc-delete'),</co
       </div>
     </div>
   </div>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/django-integration.md" style="color: #6B46C1; text-decoration: none;">Django Integration Patterns</a></li>
+        <li><a href="/docs/datastar-guide/best-practices.md#10-preserve-user-state" style="color: #6B46C1; text-decoration: none;">Preserving User State</a></li>
+        <li><a href="/docs/datastar-guide/python-sdk-api.md" style="color: #6B46C1; text-decoration: none;">Python SDK API</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

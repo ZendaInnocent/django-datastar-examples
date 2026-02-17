@@ -6,7 +6,7 @@
 {% block howto_content %}
 <div class="container-fluid px-0">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># views.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def file_upload_view(request):
     return render(request, 'file_upload.html')
 
@@ -22,13 +22,13 @@ def file_upload_upload_view(request):
     return ds.fragment(render_to_string('fragments/upload_result.html', {'result': result}))</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code># urls.py
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
 path('file-upload/', views.file_upload_view, name='file-upload'),
 path('file-upload/upload/', views.file_upload_upload_view, name='file-upload-upload'),</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Use multipart/form-data for file uploads:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code>&lt;form
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;form
   method="post"
   action="{% url 'examples:file-upload-upload' %}"
   enctype="multipart/form-data"
@@ -44,7 +44,7 @@ path('file-upload/upload/', views.file_upload_upload_view, name='file-upload-upl
 &lt;/div&gt;</code></pre>
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
-  <pre class="bg-light p-3 rounded small"><code>&lt;div class="alert alert-success"&gt;
+  <pre class="bg-light p-3 rounded small"><code class="language-django">&lt;div class="alert alert-success"&gt;
   {{ result }}
 &lt;/div&gt;</code></pre>
 </div>
@@ -93,5 +93,16 @@ path('file-upload/upload/', views.file_upload_upload_view, name='file-upload-upl
       </div>
     </div>
   </div>
+
+  <section class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Learn More</h2>
+      <ul class="mb-0">
+        <li><a href="/docs/datastar-guide/django-forms-integration.md#file-upload-pattern" style="color: #6B46C1; text-decoration: none;">File Upload Pattern</a></li>
+        <li><a href="/docs/datastar-guide/datastar-attributes-reference.md#data-indicator" style="color: #6B46C1; text-decoration: none;">Loading Indicators</a></li>
+        <li><a href="/docs/datastar-guide/django-forms-integration.md" style="color: #6B46C1; text-decoration: none;">Django Forms Integration</a></li>
+      </ul>
+    </div>
+  </section>
 </div>
 {% endblock content %}

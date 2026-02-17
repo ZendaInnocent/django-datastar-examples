@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,10 +10,15 @@
   <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
   <!-- Prism.js Line Numbers Plugin CSS -->
   <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 </head>
 <body>
   {% block content %}
   {% endblock content %}
+
+  <!-- Toast Container -->
+  <div class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.7/bundles/datastar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
@@ -22,5 +28,17 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <!-- Prism.js Line Numbers Plugin -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <!-- Custom JavaScript -->
+  <script src="{% static 'js/code-blocks.js' %}"></script>
+  <script src="{% static 'js/code-tabs.js' %}"></script>
+  <script src="{% static 'js/split-view.js' %}"></script>
+  <!-- Initialize line numbers for all code blocks -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('pre code[class*="language-"]').forEach(function(block) {
+        block.parentElement.classList.add('line-numbers');
+      });
+    });
+  </script>
 </body>
 </html>
