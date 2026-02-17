@@ -28,13 +28,9 @@ def active_search_view(request):
 @datastar_response
 def active_search_search_view(request):
     signals = read_signals(request)
-    # Handle both POST (Datastar signals) and GET (query params)
-    if signals is None:
-        query = request.GET.get('search', '').strip()
-    else:
-        query = signals.get('search', '').strip()
+    query = signals.get('search', '').strip()
 
-    if query:
+    if query is not None:
         contacts = Contact.objects.filter(
             models.Q(first_name__icontains=query)
             | models.Q(last_name__icontains=query)

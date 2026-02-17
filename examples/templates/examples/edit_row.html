@@ -1,38 +1,14 @@
 {% extends "examples_base.html" %}
 
 {% block content %}
-{% include 'examples/fragments/example_sidebar.html' %}
-{% include 'examples/fragments/howto_panel.html' with title="How to Build: Edit Row" %}
-
-<button
-  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-none d-md-flex align-items-center gap-2"
-  type="button"
-  data-bs-toggle="offcanvas"
-  data-bs-target="#exampleSidebar"
-  aria-controls="exampleSidebar"
-  style="z-index: 1050;"
->
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-  </svg>
-  <span>Examples</span>
-</button>
-
-<button
-  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-md-none"
-  type="button"
-  data-bs-toggle="offcanvas"
-  data-bs-target="#exampleSidebar"
-  aria-controls="exampleSidebar"
-  style="z-index: 1050;"
->
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-  </svg>
-</button>
 
 {% block howto_content %}
 <div class="container-fluid px-0">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">How to Build: Edit Row</h5>
+    </div>
+    <div class="card-body">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
 <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def edit_row_view(request):
@@ -72,6 +48,8 @@ path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),</c
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
 <pre class="bg-light p-3 rounded small"><code class="language-django">&lt;td&gt;{{ contact.first_name }} {{ contact.last_name }}&lt;/td&gt;
 &lt;td&gt;{{ contact.email }}&lt;/td&gt;</code></pre>
+    </div>
+  </div>
 </div>
 {% endblock howto_content %}
 
@@ -104,6 +82,7 @@ path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),</c
         </tr>
       </thead>
       <tbody id="contact-table">
+        <data-json-signals="expression"></div>
         {% for contact in contacts %}
         {% include 'examples/fragments/contact_row.html' %}
         {% endfor %}

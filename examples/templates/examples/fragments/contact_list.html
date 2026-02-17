@@ -1,16 +1,18 @@
-{% for contact in contacts %}
-<div class="card mb-2" id="contact-{{ contact.id }}">
-  <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <h5 class="mb-0">{{ contact.first_name }} {{ contact.last_name }}</h5>
-        <small class="text-muted">{{ contact.email }}</small>
+<section id="results">
+  {% for contact in contacts %}
+  <div class="card mb-2" id="contact-{{ contact.id }}">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0">{{ contact.first_name }} {{ contact.last_name }}</h5>
+          <small class="text-muted">{{ contact.email }}</small>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% empty %}
-<div class="text-center text-muted py-4">
-  No contacts found
-</div>
-{% endfor %}
+  {% empty %}
+  <div class="text-center text-muted py-4">
+    No contacts found
+  </div>
+  {% endfor %}
+</section>

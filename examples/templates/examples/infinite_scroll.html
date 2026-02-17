@@ -1,10 +1,14 @@
 {% extends "examples_base.html" %}
 
 {% block content %}
-{% include 'examples/fragments/howto_panel.html' with title="How to Build: Infinite Scroll" %}
 
 {% block howto_content %}
 <div class="container-fluid px-0">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">How to Build: Infinite Scroll</h5>
+    </div>
+    <div class="card-body">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
 <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
 def infinite_scroll_view(request):
@@ -50,6 +54,8 @@ path('infinite-scroll/load/', views.infinite_scroll_load_view, name='infinite-sc
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: How It Works</h6>
   <p class="small text-muted">The sentinel element sits at the bottom. When it scrolls into view, the intersection observer triggers the GET request to load more items.</p>
+    </div>
+  </div>
 </div>
 {% endblock howto_content %}
 

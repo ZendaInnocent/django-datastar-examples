@@ -1,38 +1,14 @@
 {% extends "examples_base.html" %}
 
 {% block content %}
-{% include 'examples/fragments/example_sidebar.html' %}
-{% include 'examples/fragments/howto_panel.html' with title="How to Build: Active Search" %}
-
-<button
-  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-none d-md-flex align-items-center gap-2"
-  type="button"
-  data-bs-toggle="offcanvas"
-  data-bs-target="#exampleSidebar"
-  aria-controls="exampleSidebar"
-  style="z-index: 1050;"
->
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-  </svg>
-  <span>Examples</span>
-</button>
-
-<button
-  class="btn btn-outline-secondary position-fixed top-50 start-0 translate-middle-y ms-3 rounded-pill shadow-sm d-md-none"
-  type="button"
-  data-bs-toggle="offcanvas"
-  data-bs-target="#exampleSidebar"
-  aria-controls="exampleSidebar"
-  style="z-index: 1050;"
->
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-  </svg>
-</button>
 
 {% block howto_content %}
 <div class="container-fluid px-0">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">How to Build: Active Search</h5>
+    </div>
+    <div class="card-body">
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
   <p class="small text-muted mb-3">Create two views - one to render the page, one to handle search requests. Use <code>read_signals</code> to read the search query from the client:</p>
 <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
@@ -51,7 +27,7 @@ def active_search_search_view(request):
     signals = read_signals(request)
     query = signals.get('search', '').strip()
 
-    if query:
+    if query is not None:
         contacts = Contact.objects.filter(
             Q(first_name__icontains=query) |
             Q(last_name__icontains=query) |
@@ -71,11 +47,11 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
 
   <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
   <p class="small text-muted mb-3">Use <code>data-bind</code> to connect input to a signal, and <code>data-on</code> with debounce to trigger the search. Datastar sends signals as JSON body:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-html">&lt;div data-signals="{search: ''}"&gt;
+  <pre class="bg-light p-3 rounded small mb-4"><code class="language-html">&lt;
   &lt;input
     type="text"
     placeholder="Search contacts..."
-    data-bind:search="$search.value"
+    data-bind:search
     data-on:input__debounce.200ms="@get('{% url 'examples:active-search-search' %}')"
   &gt;
 &lt;/div&gt;</code></pre>
@@ -89,6 +65,8 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
   &lt;/div&gt;
   {% endfor %}
 &lt;/div&gt;</code></pre>
+    </div>
+  </div>
 </div>
 {% endblock howto_content %}
 
@@ -96,7 +74,7 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
 {% include 'includes/split_view.html' %}
 
 {% block demo_content %}
-<div class="container py-5" data-signals="{search: ''}">
+<div class="container py-5">
   <header class="mb-5">
     <h1 class="h2">Active Search</h1>
     <p class="text-muted">Search a contacts database as you type with debounced input</p>
@@ -120,7 +98,7 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
       id="search-input"
       class="form-control form-control-lg"
       placeholder="Search contacts..."
-      data-bind:search="$search.value"
+      data-bind:search
       data-on:input__debounce.200ms="@get('{% url 'examples:active-search-search' %}')"
     />
   </section>
@@ -143,7 +121,7 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
 {% endblock demo_content %}
 
 {% block mobile_demo_content %}
-<div class="container py-4" data-signals="{search: ''}">
+<div class="container py-4">
   <header class="mb-4">
     <h1 class="h4">Active Search</h1>
     <p class="text-muted small">Search as you type</p>
@@ -155,7 +133,7 @@ path('active-search/search/', views.active_search_search_view, name='active-sear
       id="search-input-mobile"
       class="form-control"
       placeholder="Search contacts..."
-      data-bind:search="$search.value"
+      data-bind:search
       data-on:input__debounce.200ms="@get('{% url 'examples:active-search-search' %}')"
     />
   </section>
