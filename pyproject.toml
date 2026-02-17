@@ -12,3 +12,10 @@ dependencies = [
 
 [tool.ruff.format]
 quote-style = "single"
+
+[dependency-groups]
+dev = [
+    "djade>=1.7.0",
+    "django-browser-reload>=1.21.0",
+    "pre-commit>=4.5.1",
+]
