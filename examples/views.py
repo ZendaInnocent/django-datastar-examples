@@ -1,7 +1,6 @@
 from datastar_py import consts
 from datastar_py.django import DatastarResponse, datastar_response, read_signals
 from datastar_py.django import ServerSentEventGenerator as SSE
-from django import forms
 from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
 from django.db import models
@@ -10,6 +9,8 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+
+from examples.forms import ContactForm
 
 from .models import Contact, Item, Notification, Todo
 
@@ -94,25 +95,49 @@ def click_to_load_view(request):
 
 
 def edit_row_view(request):
-    contacts = Contact.objects.all()[:5]
+    contacts = Contact.objects.all()[:10]
     return render(request, 'examples/edit_row.html', {'contacts': contacts})
 
 
-@datastar_response
-def edit_row_update_view(request):
-    contact_id = request.POST.get('id')
-    first_name = request.POST.get('first_name')
-    last_name = request.POST.get('last_name')
-    email = request.POST.get('email')
+def contact_update_view(request):
+    signals = read_signals(request)
+    if signals is not None:
+        contact_id = signals.get('contactId')
+    else:
+        contact_id = 40
 
     contact = get_object_or_404(Contact, pk=contact_id)
-    contact.first_name = first_name
-    contact.last_name = last_name
-    contact.email = email
-    contact.save()
 
-    html = render_to_string('examples/fragments/contact_row.html', {'contact': contact})
-    yield SSE.patch_elements(html, selector=f'#contact-{contact_id}')
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+
+        contact.first_name = first_name
+        contact.last_name = last_name
+        contact.email = email
+        contact.save()
+        html = render_to_string(
+            'examples/fragments/contact_row.html', {'contact': contact}
+        )
+        return DatastarResponse(
+            SSE.patch_elements(html, selector=f'#contact-{contact_id}'),
+        )
+
+    form = ContactForm(
+        initial={
+            'first_name': contact.first_name,
+            'last_name': contact.last_name,
+            'email': contact.email,
+            'phone': contact.phone,
+        }
+    )
+    return DatastarResponse(
+        SSE.patch_elements(
+            render_to_string('examples/fragments/contact_form.html', {'form': form}),
+            selector=f'#contact-{contact.pk}',
+        )
+    )
 
 
 # ============================================================================
@@ -124,7 +149,6 @@ def edit_row_update_view(request):
 def delete_row_view(request):
     if request.headers.get('Datastar-Request'):
         signals = read_signals(request)
-        print(signals)
         contact_id = signals.get('contactId')
         contact = get_object_or_404(Contact, pk=contact_id)
         contact.delete()
@@ -241,12 +265,6 @@ def todomvc_filter_view(request):
 # ============================================================================
 # 6. Inline Validation
 # ============================================================================
-
-
-class ContactForm(forms.Form):
-    email = forms.EmailField(required=True)
-    username = forms.CharField(min_length=3, max_length=20)
-    password = forms.CharField(widget=forms.PasswordInput)
 
 
 def inline_validation_view(request):

@@ -1,0 +1,23 @@
+<tr id="contact-{{ contact.id }}">
+  <td>
+    <div class="d-flex gap-2">
+      {{ form.first_name }}
+      {{ form.last_name }}
+    </div>
+  </td>
+  <td>{{ form.email }}</td>
+  <td>
+    <div class="d-flex gap-2">
+      <button type="submit"
+              class="btn btn-success btn-sm"
+              data-on:click="@post('{% url 'examples:contact-update' %}', {contentType: 'form'})">
+        Save
+      </button>
+      <button type="button"
+              class="btn btn-secondary btn-sm"
+              data-on:click="@get('{% url 'examples:contact-update' %}')">
+        Cancel
+      </button>
+    </div>
+  </td>
+</tr>
