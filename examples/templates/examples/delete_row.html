@@ -31,14 +31,14 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="contact-table">
+        <tbody id="contact-table"data-signals="{contactId: ''}">
           {% for contact in contacts %}
             <tr id="contact-{{ contact.id }}">
               <td>{{ contact.first_name }} {{ contact.last_name }}</td>
               <td>{{ contact.email }}</td>
               <td>
                 <button class="btn btn-outline-danger btn-sm"
-                        data-on:click="if(confirm('Delete this contact?')) @post('{% url 'examples:delete-row-remove' %}', {params: {id: {{ contact.id }}}})">
+                        data-on:click="$contactId = `{{ contact.id }}`; confirm('Delete this contact?') && @delete('{% url "examples:delete-row" %}')">
                   Delete
                 </button>
               </td>

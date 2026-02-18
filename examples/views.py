@@ -120,18 +120,19 @@ def edit_row_update_view(request):
 # ============================================================================
 
 
+@csrf_exempt
 def delete_row_view(request):
-    contacts = Contact.objects.all()[:5]
+    if request.headers.get('Datastar-Request'):
+        signals = read_signals(request)
+        print(signals)
+        contact_id = signals.get('contactId')
+        contact = get_object_or_404(Contact, pk=contact_id)
+        contact.delete()
+
+        return DatastarResponse(SSE.remove_elements(selector=f'#contact-{contact_id}'))
+
+    contacts = Contact.objects.all()
     return render(request, 'examples/delete_row.html', {'contacts': contacts})
-
-
-@datastar_response
-def delete_row_remove_view(request):
-    contact_id = request.POST.get('id')
-    contact = get_object_or_404(Contact, pk=contact_id)
-    contact.delete()
-
-    yield SSE.remove_elements(selector=f'#contact-{contact_id}')
 
 
 # ============================================================================

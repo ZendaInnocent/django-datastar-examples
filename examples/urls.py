@@ -11,7 +11,6 @@ urlpatterns = [
     path('edit-row/', views.edit_row_view, name='edit-row'),
     path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),
     path('delete-row/', views.delete_row_view, name='delete-row'),
-    path('delete-row/remove/', views.delete_row_remove_view, name='delete-row-remove'),
     path('todo-mvc/', views.todomvc_view, name='todo-mvc'),
     path('todo-mvc/toggle/', views.todomvc_toggle_view, name='todo-mvc-toggle'),
     path('todo-mvc/delete/', views.todomvc_delete_view, name='todo-mvc-delete'),
