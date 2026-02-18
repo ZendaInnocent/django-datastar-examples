@@ -8,6 +8,7 @@ from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from .models import Contact, Item, Notification, Todo
@@ -139,20 +140,12 @@ def delete_row_remove_view(request):
 
 
 def todomvc_view(request):
-    filter_type = request.GET.get('filter', 'all')
-    if filter_type == 'active':
-        todos = Todo.objects.filter(completed=False)
-    elif filter_type == 'completed':
-        todos = Todo.objects.filter(completed=True)
-    else:
-        todos = Todo.objects.all()
-
+    todos = Todo.objects.all()
     return render(
         request,
         'examples/todomvc.html',
         {
             'todos': todos,
-            'filter': filter_type,
             'total_count': Todo.objects.count(),
             'active_count': Todo.objects.filter(completed=False).count(),
             'completed_count': Todo.objects.filter(completed=True).count(),
@@ -164,7 +157,6 @@ def todomvc_view(request):
 @datastar_response
 def todomvc_add_view(request):
     title = request.POST.get('title', '').strip()
-    print(title)
 
     if title:
         max_order = Todo.objects.order_by('-order').first()
@@ -179,15 +171,28 @@ def todomvc_add_view(request):
         )
 
 
+@csrf_exempt
+@require_http_methods(['POST'])
 @datastar_response
 def todomvc_toggle_view(request):
-    todo_id = request.POST.get('id')
+    signals = read_signals(request)
+    todo_id = signals.get('todoToggleId')
+
     todo = get_object_or_404(Todo, pk=todo_id)
     todo.completed = not todo.completed
     todo.save()
 
     html = render_to_string('examples/fragments/todo_item.html', {'todo': todo})
-    yield SSE.patch_elements(html, selector=f'#todo-{todo_id}')
+    yield SSE.patch_elements(
+        html,
+        selector=f'#todo-{todo_id}',
+        mode=consts.ElementPatchMode.REPLACE,
+    )
+    yield SSE.patch_signals(
+        {
+            'activeCount': Todo.objects.filter(completed=False).count(),
+        }
+    )
 
 
 @datastar_response
@@ -204,6 +209,25 @@ def todomvc_clear_view(request):
     Todo.objects.filter(completed=True).delete()
 
     todos = Todo.objects.all()
+    html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
+    yield SSE.patch_elements(html, selector='#todo-list')
+
+
+@datastar_response
+def todomvc_filter_view(request):
+    signals = read_signals(request)
+    if signals is not None:
+        filter_type = signals.get('filter')
+    else:
+        filter_type = 'all'
+
+    todos = Todo.objects.all()
+
+    if filter_type == 'active':
+        todos = todos.filter(completed=False)
+    elif filter_type == 'completed':
+        todos = todos.filter(completed=True)
+
     html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
     yield SSE.patch_elements(html, selector='#todo-list')
 
