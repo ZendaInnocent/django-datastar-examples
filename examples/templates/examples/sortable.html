@@ -2,112 +2,62 @@
 
 {% block content %}
 
-{% block howto_content %}
-<div class="container-fluid px-0">
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">How to Build: Sortable</h5>
+  <div class="container py-5">
+    <nav class="mb-4">
+      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
+    </nav>
+
+    <header class="mb-5">
+      <h1 class="h2">Sortable</h1>
+      <p class="text-muted">Reorderable list with drag-and-drop</p>
+    </header>
+
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>Items are rendered in a list</li>
+          <li>Drag and drop to reorder using Datastar's sort modifier</li>
+          <li>
+            On drop, POST to <code>/sortable/reorder/</code> with new order
+          </li>
+          <li>Server updates order field in database</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p class="text-muted small mb-3">Drag items to reorder</p>
+        <ul class="list-group" id="sortable-list">
+          {% for item in items %}
+            <li class="list-group-item"
+                data-on:dragstart.window="$dragSrc = $event.target; $event.dataTransfer.effectAllowed = 'move'"
+                data-on:dragover.window="$event.preventDefault()"
+                data-on:drop.window="@post('{% url 'examples:sortable-reorder' %}', {params: {ids: [$dragSrc, $event.target].map(el => el.dataset.id)}}"
+                data-id="{{ item.id }}">{{ item.name }}</li>
+          {% empty %}
+            <li class="list-group-item text-muted">No items yet</li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
-    <div class="card-body">
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
-def sortable_view(request):
-    items = Item.objects.all()
-    return render(request, 'sortable.html', {'items': items})
 
-def sortable_reorder_view(request):
-    ds = DjangoDatastar(request)
-    item_ids = request.POST.getlist('ids[]')
-
-    for index, item_id in enumerate(item_ids):
-        Item.objects.filter(pk=item_id).update(order=index)
-
-    return HttpResponse('Reordered')</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
-path('sortable/', views.sortable_view, name='sortable'),
-path('sortable/reorder/', views.sortable_reorder_view, name='sortable-reorder'),</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-  <p class="small text-muted mb-3">Use HTML5 drag and drop with Datastar events:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;ul id="sortable-list"&gt;
-  {% for item in items %}
-  &lt;li
-    data-id="{{ item.id }}"
-    data-on:dragstart.window="$dragSrc = $event.target; $event.dataTransfer.effectAllowed = 'move'"
-    data-on:dragover.window="$event.preventDefault()"
-    data-on:drop.window="@post('{% url 'examples:sortable-reorder' %}', {params: {ids: [$dragSrc, $event.target].map(el => el.dataset.id)}})"
-  &gt;
-    {{ item.name }}
-  &lt;/li&gt;
-  {% endfor %}
-&lt;/ul&gt;</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Model</h6>
-<pre class="bg-light p-3 rounded small"><code class="language-python">class Item(models.Model):
-    name = models.CharField(max_length=100)
-    order = models.IntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']</code></pre>
-    </div>
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Learn More</h2>
+        <ul class="mb-0">
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Signals in Datastar</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">POST Action</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Selectors Best Practices</a>
+          </li>
+        </ul>
+      </div>
+    </section>
   </div>
-</div>
-{% endblock howto_content %}
-
-<div class="container py-5">
-  <nav class="mb-4">
-    <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-  </nav>
-
-  <header class="mb-5">
-    <h1 class="h2">Sortable</h1>
-    <p class="text-muted">Reorderable list with drag-and-drop</p>
-  </header>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">How it Works</h2>
-      <ol class="text-muted small">
-        <li>Items are rendered in a list</li>
-        <li>Drag and drop to reorder using Datastar's sort modifier</li>
-        <li>On drop, POST to <code>/sortable/reorder/</code> with new order</li>
-        <li>Server updates order field in database</li>
-      </ol>
-    </div>
-  </section>
-
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <p class="text-muted small mb-3">Drag items to reorder</p>
-      <ul class="list-group" id="sortable-list">
-        {% for item in items %}
-        <li
-          class="list-group-item"
-          data-on:dragstart.window="$dragSrc = $event.target; $event.dataTransfer.effectAllowed = 'move'"
-          data-on:dragover.window="$event.preventDefault()"
-          data-on:drop.window="@post('{% url 'examples:sortable-reorder' %}', {params: {ids: [$dragSrc, $event.target].map(el => el.dataset.id)}}"
-          data-id="{{ item.id }}"
-        >
-          {{ item.name }}
-        </li>
-        {% empty %}
-        <li class="list-group-item text-muted">No items yet</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Learn More</h2>
-      <ul class="mb-0">
-        <li><a href="/docs/datastar-guide/core-concepts.md#signals" style="color: #6B46C1; text-decoration: none;">Signals in Datastar</a></li>
-        <li><a href="/docs/datastar-guide/datastar-actions-reference.md#post" style="color: #6B46C1; text-decoration: none;">POST Action</a></li>
-        <li><a href="/docs/datastar-guide/best-practices.md#9-use-selectors-effectively" style="color: #6B46C1; text-decoration: none;">Selectors Best Practices</a></li>
-      </ul>
-    </div>
-  </section>
-</div>
 {% endblock content %}

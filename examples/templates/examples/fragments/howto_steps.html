@@ -1,0 +1,9 @@
+<div class="howto-steps">
+  {% if example %}
+    <h6 class="text-uppercase text-muted small fw-bold mb-3">
+      Step {{ forloop.counter }}: {{ step.title }}
+    </h6>
+    <p class="small text-muted mb-3">{{ step.description }}</p>
+    <pre class="bg-light p-3 rounded small mb-4"><code class="language-{{ step.language }}">{{ step.code }}</code></pre>
+  {% endif %}
+</div>

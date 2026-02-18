@@ -1,6 +1,6 @@
 from datastar_py import consts
+from datastar_py.django import DatastarResponse, datastar_response, read_signals
 from datastar_py.django import ServerSentEventGenerator as SSE
-from datastar_py.django import datastar_response, read_signals
 from django import forms
 from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
@@ -8,6 +8,7 @@ from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_http_methods
 
 from .models import Contact, Item, Notification, Todo
 
@@ -22,28 +23,28 @@ def index_view(request):
 
 
 def active_search_view(request):
+    if request.headers.get('Datastar-Request'):
+        signals = read_signals(request)
+        query = signals.get('search', '').strip()
+        if query is not None:
+            contacts = Contact.objects.filter(
+                models.Q(first_name__icontains=query)
+                | models.Q(last_name__icontains=query)
+                | models.Q(email__icontains=query)
+            )[:10]
+        else:
+            contacts = Contact.objects.none()
+
+        html = render_to_string(
+            'examples/fragments/contact_list.html', {'contacts': contacts}
+        )
+
+        return DatastarResponse(
+            SSE.patch_elements(html, selector='#contact-list'),
+        )
+
     contacts = Contact.objects.all()[:10]
     return render(request, 'examples/active_search.html', {'contacts': contacts})
-
-
-@datastar_response
-def active_search_search_view(request):
-    signals = read_signals(request)
-    query = signals.get('search', '').strip()
-
-    if query is not None:
-        contacts = Contact.objects.filter(
-            models.Q(first_name__icontains=query)
-            | models.Q(last_name__icontains=query)
-            | models.Q(email__icontains=query)
-        )[:10]
-    else:
-        contacts = Contact.objects.none()
-
-    html = render_to_string(
-        'examples/fragments/contact_list.html', {'contacts': contacts}
-    )
-    yield SSE.patch_elements(html, selector='#results')
 
 
 # ============================================================================
@@ -52,36 +53,37 @@ def active_search_search_view(request):
 
 
 def click_to_load_view(request):
+    page = 1
     contacts = Contact.objects.all()
     items_per_page = 6
     paginator = Paginator(contacts, items_per_page)
-    page = int(request.GET.get('page', 1))
     page_obj = paginator.get_page(page)
+
+    if request.headers.get('Datastar-Request'):
+        signals = read_signals(request)
+        page = signals.get('page')
+        if page is not None:
+            page_obj = paginator.get_page(page)
+            html = render_to_string(
+                'examples/fragments/contact_list.html',
+                {'contacts': page_obj},
+            )
+
+            return DatastarResponse(
+                [
+                    SSE.patch_elements(
+                        html,
+                        selector='#contact-list',
+                        mode=consts.ElementPatchMode.APPEND,
+                    ),
+                    SSE.patch_signals({'hasMore': page_obj.has_next()}),
+                ]
+            )
 
     return render(
         request,
         'examples/click_to_load.html',
         {'contacts': page_obj},
-    )
-
-
-@datastar_response
-def click_to_load_more_view(request):
-    signals = read_signals(request)
-    contacts = Contact.objects.all()
-    items_per_page = 6
-    paginator = Paginator(contacts, items_per_page)
-    page = signals.get('page')
-    page_obj = paginator.get_page(page)
-
-    html = render_to_string(
-        'examples/fragments/contact_list.html',
-        {'contacts': page_obj},
-    )
-
-    yield SSE.patch_signals({'hasMore': page_obj.has_next()})
-    yield SSE.patch_elements(
-        html, selector='#contact-list', mode=consts.ElementPatchMode.APPEND
     )
 
 
@@ -158,9 +160,11 @@ def todomvc_view(request):
     )
 
 
+@require_http_methods(['POST'])
 @datastar_response
 def todomvc_add_view(request):
     title = request.POST.get('title', '').strip()
+    print(title)
 
     if title:
         max_order = Todo.objects.order_by('-order').first()
@@ -254,35 +258,36 @@ def inline_validation_validate_view(request):
 
 
 def infinite_scroll_view(request):
-    page = int(request.GET.get('page', 1))
+    page = 1
     items_per_page = 6
-    contacts = Contact.objects.all()[
-        (page - 1) * items_per_page : page * items_per_page
-    ]
-    has_more = Contact.objects.count() > page * items_per_page
+    contacts = Contact.objects.all()
+    paginator = Paginator(contacts, items_per_page)
+    page_obj = paginator.get_page(page)
+
+    if request.headers.get('Datastar-Request'):
+        signals = read_signals(request)
+        page = signals.get('page')
+        if page is not None:
+            page_obj = paginator.get_page(page)
+            html = render_to_string(
+                'examples/fragments/contact_list.html',
+                {'contacts': page_obj},
+            )
+            return DatastarResponse(
+                [
+                    SSE.patch_signals({'hasMore': page_obj.has_next()}),
+                    SSE.patch_elements(
+                        html,
+                        selector='#contact-list',
+                        mode=consts.ElementPatchMode.APPEND,
+                    ),
+                ]
+            )
 
     return render(
         request,
         'examples/infinite_scroll.html',
-        {'contacts': contacts, 'page': page, 'has_more': has_more},
-    )
-
-
-@datastar_response
-def infinite_scroll_load_view(request):
-    page = int(request.GET.get('page', 1))
-    items_per_page = 6
-    contacts = Contact.objects.all()[
-        (page - 1) * items_per_page : page * items_per_page
-    ]
-    has_more = Contact.objects.count() > page * items_per_page
-
-    html = render_to_string(
-        'examples/fragments/contact_list.html',
-        {'contacts': contacts, 'page': page, 'has_more': has_more},
-    )
-    yield SSE.patch_elements(
-        html, selector='#contact-list', mode=consts.ElementPatchMode.APPEND
+        {'contacts': page_obj},
     )
 
 

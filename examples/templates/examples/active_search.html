@@ -2,146 +2,86 @@
 
 {% block content %}
 
-{% block howto_content %}
-<div class="container-fluid px-0">
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">How to Build: Active Search</h5>
+  <!-- Split View Container -->
+  {% include 'includes/split_view.html' %}
+
+  {% block demo_content %}
+    <div class="container py-5">
+      <header class="mb-5">
+        <h1 class="h2">Active Search</h1>
+        <p class="text-muted">
+          Search a contacts database as you type with debounced input
+        </p>
+      </header>
+
+      <section class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 mb-3">How it Works</h2>
+          <ol class="text-muted small">
+            <li>
+              Type in the search box - input is bound to a signal via <code>data-bind:search</code>
+            </li>
+            <li>
+              After 200ms of not typing, Datastar sends a GET request to <code>/active-search/search/</code>
+            </li>
+            <li>Server returns an HTML fragment with matching contacts</li>
+            <li>Datastar merges the fragment into the DOM using fragment IDs</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="mb-4">
+        <input type="text"
+               id="search-input"
+               class="form-control form-control-lg"
+               placeholder="Search contacts..."
+               data-bind:search
+               data-on:input__debounce.200ms="@get('{% url 'examples:active-search' %}')" />
+      </section>
+
+      <section id="results">
+        {% include 'examples/fragments/contact_list.html' %}
+      </section>
+
+      <section class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 mb-3">Learn More</h2>
+          <ul class="mb-0">
+            <li>
+              <a href="" style="color: #6B46C1; text-decoration: none">Understanding Signals</a>
+            </li>
+            <li>
+              <a href="" style="color: #6B46C1; text-decoration: none">Debouncing Input Events</a>
+            </li>
+            <li>
+              <a href="" style="color: #6B46C1; text-decoration: none">Server-Sent Events (SSE)</a>
+            </li>
+          </ul>
+        </div>
+      </section>
     </div>
-    <div class="card-body">
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <p class="small text-muted mb-3">Create two views - one to render the page, one to handle search requests. Use <code>read_signals</code> to read the search query from the client:</p>
-<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
-from datastar_py.django import datastar_response, read_signals
-from datastar_py.django import ServerSentEventGenerator as SSE
-from django.db.models import Q
-from django.shortcuts import render
-from django.template.loader import render_to_string
+  {% endblock demo_content %}
 
-def active_search_view(request):
-    contacts = Contact.objects.all()[:10]
-    return render(request, 'active_search.html', {'contacts': contacts})
+  {% block mobile_demo_content %}
+    <div class="container py-4">
+      <header class="mb-4">
+        <h1 class="h4">Active Search</h1>
+        <p class="text-muted small">Search as you type</p>
+      </header>
 
-@datastar_response
-def active_search_search_view(request):
-    signals = read_signals(request)
-    query = signals.get('search', '').strip()
+      <section class="mb-3">
+        <input type="text"
+               id="search-input-mobile"
+               class="form-control"
+               placeholder="Search contacts..."
+               data-bind:search
+               data-on:input__debounce.200ms="@get('{% url 'examples:active-search' %}')" />
+      </section>
 
-    if query is not None:
-        contacts = Contact.objects.filter(
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query) |
-            Q(email__icontains=query)
-        )[:10]
-    else:
-        contacts = Contact.objects.none()
-
-    html = render_to_string('fragments/contact_list.html', {'contacts': contacts})
-    yield SSE.patch_elements(html, selector='#results')</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <p class="small text-muted mb-3">Add the routes for your views:</p>
-<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
-path('active-search/', views.active_search_view, name='active-search'),
-path('active-search/search/', views.active_search_search_view, name='active-search-search'),</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-  <p class="small text-muted mb-3">Use <code>data-bind</code> to connect input to a signal, and <code>data-on</code> with debounce to trigger the search. Datastar sends signals as JSON body:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-html">&lt;
-  &lt;input
-    type="text"
-    placeholder="Search contacts..."
-    data-bind:search
-    data-on:input__debounce.200ms="@get('{% url 'examples:active-search-search' %}')"
-  &gt;
-&lt;/div&gt;</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
-  <p class="small text-muted mb-3">Return an HTML fragment that Datastar will merge into the DOM:</p>
-  <pre class="bg-light p-3 rounded small"><code class="language-html">&lt;div id="results"&gt;
-  {% for contact in contacts %}
-  &lt;div id="contact-{{ contact.pk }}"&gt;
-    {{ contact.first_name }} {{ contact.last_name }}
-  &lt;/div&gt;
-  {% endfor %}
-&lt;/div&gt;</code></pre>
+      <section id="results-mobile">
+        {% include 'examples/fragments/contact_list.html' %}
+      </section>
     </div>
-  </div>
-</div>
-{% endblock howto_content %}
-
-<!-- Split View Container -->
-{% include 'includes/split_view.html' %}
-
-{% block demo_content %}
-<div class="container py-5">
-  <header class="mb-5">
-    <h1 class="h2">Active Search</h1>
-    <p class="text-muted">Search a contacts database as you type with debounced input</p>
-  </header>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">How it Works</h2>
-      <ol class="text-muted small">
-        <li>Type in the search box - input is bound to a signal via <code>data-bind:search</code></li>
-        <li>After 200ms of not typing, Datastar sends a GET request to <code>/active-search/search/</code></li>
-        <li>Server returns an HTML fragment with matching contacts</li>
-        <li>Datastar merges the fragment into the DOM using fragment IDs</li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="mb-4">
-    <input
-      type="text"
-      id="search-input"
-      class="form-control form-control-lg"
-      placeholder="Search contacts..."
-      data-bind:search
-      data-on:input__debounce.200ms="@get('{% url 'examples:active-search-search' %}')"
-    />
-  </section>
-
-  <section id="results">
-    {% include 'examples/fragments/contact_list.html' %}
-  </section>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Learn More</h2>
-      <ul class="mb-0">
-        <li><a href="/docs/datastar-guide/core-concepts.md#signals" style="color: #6B46C1; text-decoration: none;">Understanding Signals</a></li>
-        <li><a href="/docs/datastar-guide/best-practices.md#7-debounce-input-events" style="color: #6B46C1; text-decoration: none;">Debouncing Input Events</a></li>
-        <li><a href="/docs/datastar-guide/core-concepts.md#sse-events" style="color: #6B46C1; text-decoration: none;">Server-Sent Events (SSE)</a></li>
-      </ul>
-    </div>
-  </section>
-</div>
-{% endblock demo_content %}
-
-{% block mobile_demo_content %}
-<div class="container py-4">
-  <header class="mb-4">
-    <h1 class="h4">Active Search</h1>
-    <p class="text-muted small">Search as you type</p>
-  </header>
-
-  <section class="mb-3">
-    <input
-      type="text"
-      id="search-input-mobile"
-      class="form-control"
-      placeholder="Search contacts..."
-      data-bind:search
-      data-on:input__debounce.200ms="@get('{% url 'examples:active-search-search' %}')"
-    />
-  </section>
-
-  <section id="results-mobile">
-    {% include 'examples/fragments/contact_list.html' %}
-  </section>
-</div>
-{% endblock mobile_demo_content %}
+  {% endblock mobile_demo_content %}
 
 {% endblock content %}

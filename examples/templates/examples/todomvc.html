@@ -2,145 +2,89 @@
 
 {% block content %}
 
-{% block howto_content %}
-<div class="container-fluid px-0">
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">How to Build: TodoMVC</h5>
-    </div>
-    <div class="card-body">
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The Views</h6>
-<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
-def todomvc_view(request):
-    filter_type = request.GET.get('filter', 'all')
-    # Filter todos based on filter type
-    return render(request, 'todomvc.html', {'todos': todos, 'filter': filter_type})
+  <div class="container py-5">
+    <header class="mb-5">
+      <h1 class="h2">TodoMVC</h1>
+      <p class="text-muted">
+        Classic todo application with add, complete, delete, and filter
+      </p>
+    </header>
 
-def todomvc_add_view(request):
-    ds = DjangoDatastar(request)
-    title = request.POST.get('title', '').strip()
-    if title:
-        todo = Todo.objects.create(title=title, order=next_order)
-        return ds.fragment(render_to_string('fragments/todo_item.html', {'todo': todo}))
-    return HttpResponse('')
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>
+            <strong>Add:</strong> Form submission sends POST to <code>/todo-mvc/add/</code>
+          </li>
+          <li>
+            <strong>Toggle:</strong> Click checkbox sends POST to <code>/todo-mvc/toggle/</code>
+          </li>
+          <li>
+            <strong>Delete:</strong> Click delete sends POST to <code>/todo-mvc/delete/</code>
+          </li>
+          <li>
+            <strong>Filter:</strong> Clicking tabs navigates with filter query param
+          </li>
+          <li>
+            <strong>Clear:</strong> Clears all completed items
+          </li>
+        </ol>
+      </div>
+    </section>
 
-def todomvc_toggle_view(request):
-    ds = DjangoDatastar(request)
-    todo = get_object_or_404(Todo, pk=request.POST.get('id'))
-    todo.completed = not todo.completed
-    todo.save()
-    return ds.fragment(render_to_string('fragments/todo_item.html', {'todo': todo}))
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form class="d-flex gap-2 mb-4"
+              data-on:submit="@post('{% url 'examples:todo-mvc-add' %}', {contentType: 'form'}); $title=''">
+          {% csrf_token %}
+          <input type="text"
+                 name="title"
+                 class="form-control"
+                 placeholder="What needs to be done?"
+                 data-bind:title />
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
 
-def todomvc_delete_view(request):
-    ds = DjangoDatastar(request)
-    todo = get_object_or_404(Todo, pk=request.POST.get('id'))
-    todo.delete()
-    return ds.remove(selector=f'#todo-{todo_id}')</code></pre>
+        <ul class="list-group mb-3" id="todo-list">
+          {% include 'examples/fragments/todo_list.html' %}
+        </ul>
 
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-<pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
-path('todo-mvc/', views.todomvc_view, name='todo-mvc'),
-path('todo-mvc/add/', views.todomvc_add_view, name='todo-mvc-add'),
-path('todo-mvc/toggle/', views.todomvc_toggle_view, name='todo-mvc-toggle'),
-path('todo-mvc/delete/', views.todomvc_delete_view, name='todo-mvc-delete'),</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-<pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;form data-on:submit.prevent="@post('{% url 'examples:todo-mvc-add' %}')"&gt;
-  &lt;input data-bind:title="$newTodo"&gt;
-  &lt;button type="submit"&gt;Add&lt;/button&gt;
-&lt;/form&gt;
-
-&lt;ul id="todo-list"&gt;
-  {% for todo in todos %}
-  &lt;li id="todo-{{ todo.pk }}"&gt;
-    &lt;input
-      type="checkbox"
-      {% if todo.completed %}checked{% endif %}
-      data-on:change="@post('{% url 'examples:todo-mvc-toggle' %}', {params: {id: {{ todo.pk }}}})"
-    &gt;
-    {{ todo.title }}
-    &lt;button data-on:click="@post('{% url 'examples:todo-mvc-delete' %}', {params: {id: {{ todo.pk }}}})"&gt;X&lt;/button&gt;
-  &lt;/li&gt;
-  {% endfor %}
-&lt;/ul&gt;</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragments</h6>
-<pre class="bg-light p-3 rounded small"><code class="language-django">&lt;li id="todo-{{ todo.pk }}"&gt;
-  &lt;input type="checkbox" {% if todo.completed %}checked{% endif %}&gt;
-  {{ todo.title }}
-&lt;/li&gt;</code></pre>
-    </div>
-  </div>
-</div>
-{% endblock howto_content %}
-
-<div class="container py-5">
-  <header class="mb-5">
-    <h1 class="h2">TodoMVC</h1>
-    <p class="text-muted">Classic todo application with add, complete, delete, and filter</p>
-  </header>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">How it Works</h2>
-      <ol class="text-muted small">
-        <li><strong>Add:</strong> Form submission sends POST to <code>/todo-mvc/add/</code></li>
-        <li><strong>Toggle:</strong> Click checkbox sends POST to <code>/todo-mvc/toggle/</code></li>
-        <li><strong>Delete:</strong> Click delete sends POST to <code>/todo-mvc/delete/</code></li>
-        <li><strong>Filter:</strong> Clicking tabs navigates with filter query param</li>
-        <li><strong>Clear:</strong> Clears all completed items</li>
-      </ol>
-    </div>
-  </section>
-
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <form
-        class="d-flex gap-2 mb-4"
-        data-on:submit.prevent="@post('{% url 'examples:todo-mvc-add' %}')"
-      >
-        <input
-          type="text"
-          name="title"
-          class="form-control"
-          placeholder="What needs to be done?"
-          data-bind:title="$newTodo"
-        />
-        <button type="submit" class="btn btn-primary">Add</button>
-      </form>
-
-      <ul class="list-group mb-3" id="todo-list">
-        {% include 'examples/fragments/todo_list.html' %}
-      </ul>
-
-      <div class="d-flex justify-content-between align-items-center text-muted small">
-        <span>{{ active_count }} items left</span>
-        <div class="btn-group">
-          <a href="?filter=all" class="btn btn-sm {% if filter == 'all' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">All</a>
-          <a href="?filter=active" class="btn btn-sm {% if filter == 'active' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">Active</a>
-          <a href="?filter=completed" class="btn btn-sm {% if filter == 'completed' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">Completed</a>
+        <div class="d-flex justify-content-between align-items-center text-muted small">
+          <span>{{ active_count }} items left</span>
+          <div class="btn-group">
+            <a href="?filter=all"
+               class="btn btn-sm {% if filter == 'all' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">All</a>
+            <a href="?filter=active"
+               class="btn btn-sm {% if filter == 'active' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">Active</a>
+            <a href="?filter=completed"
+               class="btn btn-sm {% if filter == 'completed' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">Completed</a>
+          </div>
+          {% if completed_count > 0 %}
+            <button class="btn btn-sm btn-outline-danger"
+                    data-on:click="@post('{% url 'examples:todo-mvc-clear' %}')">
+              Clear completed
+            </button>
+          {% endif %}
         </div>
-        {% if completed_count > 0 %}
-        <button
-          class="btn btn-sm btn-outline-danger"
-          data-on:click="@post('{% url 'examples:todo-mvc-clear' %}')"
-        >
-          Clear completed
-        </button>
-        {% endif %}
       </div>
     </div>
-  </div>
 
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Learn More</h2>
-      <ul class="mb-0">
-        <li><a href="/docs/datastar-guide/django-integration.md" style="color: #6B46C1; text-decoration: none;">Django Integration Patterns</a></li>
-        <li><a href="/docs/datastar-guide/best-practices.md#10-preserve-user-state" style="color: #6B46C1; text-decoration: none;">Preserving User State</a></li>
-        <li><a href="/docs/datastar-guide/python-sdk-api.md" style="color: #6B46C1; text-decoration: none;">Python SDK API</a></li>
-      </ul>
-    </div>
-  </section>
-</div>
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Learn More</h2>
+        <ul class="mb-0">
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Django Integration Patterns</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Preserving User State</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Python SDK API</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
 {% endblock content %}

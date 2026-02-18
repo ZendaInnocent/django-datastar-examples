@@ -129,7 +129,7 @@ class TestDatastarEndpoints:
     def test_click_to_load_returns_sse(self, client):
         """Verify click to load returns SSE content type."""
         url = reverse('examples:click-to-load-more')
-        response = client.get(url, {'page': 1})
+        response = client.get(url, HTTP_DATASTAR_REQUEST='true')
         assert response.status_code == 200
         assert 'text/event-stream' in response.get('Content-Type', '')
 

@@ -5,17 +5,31 @@
    ======================================== */
 
 .theme-icon-light,
-.theme-icon-dark {
+.theme-icon-dark,
+.code-theme-icon-light,
+.code-theme-icon-dark {
   display: none;
 }
 
 .theme-icon-light { color: var(--bs-warning); }
 .theme-icon-dark { color: var(--bs-secondary); }
+.code-theme-icon-light { color: var(--bs-warning); }
+.code-theme-icon-dark { color: var(--bs-secondary); }
 
 [data-bs-theme="dark"] .theme-icon-light { display: block; }
 [data-bs-theme="dark"] .theme-icon-dark { display: none; }
 [data-bs-theme="light"] .theme-icon-light { display: none; }
 [data-bs-theme="light"] .theme-icon-dark { display: block; }
+
+/* Code theme icons - always visible regardless of page theme */
+.code-theme-icon-light { display: none; }
+.code-theme-icon-dark { display: block; }
+
+/* When code theme is light */
+[data-code-theme="light"] .code-theme-icon-light { display: block; }
+[data-code-theme="light"] .code-theme-icon-dark { display: none; }
+[data-code-theme="dark"] .code-theme-icon-light { display: none; }
+[data-code-theme="dark"] .code-theme-icon-dark { display: block; }
 
 /* ========================================
    Sticky Header
@@ -301,41 +315,50 @@
   gap: 4px;
   opacity: 0;
   transition: opacity 0.2s ease;
-  z-index: 10;
+  z-index: 100;
+  pointer-events: none;
 }
 
-.code-block-wrapper:hover .code-block-actions {
+.code-block-wrapper:hover .code-block-actions,
+.code-block-actions:hover {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Theme Toggle Button */
 .theme-toggle-button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 4px;
   padding: 4px 8px;
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  z-index: 101;
+  position: relative;
 }
 
 .theme-toggle-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.7);
 }
 
 /* Copy Button */
 .copy-button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 4px;
   padding: 4px 8px;
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  z-index: 101;
+  position: relative;
 }
 
 .copy-button:hover {
@@ -347,7 +370,7 @@
   border-color: rgba(40, 167, 69, 0.5);
 }
 
-/* Theme Icon Visibility */
+/* Theme Icon Visibility - Show active theme icon, hide inactive */
 .code-block-wrapper[data-code-theme="dark"] .theme-icon-light {
   display: none;
 }
@@ -362,6 +385,17 @@
 
 .code-block-wrapper[data-code-theme="light"] .theme-icon-dark {
   display: none;
+}
+
+/* Theme icons - use contrasting colors for both themes */
+.code-block-wrapper .theme-toggle-button .theme-icon-light,
+.code-block-wrapper .theme-toggle-button .theme-icon-dark {
+  color: #fff; /* Default for dark background */
+}
+
+.code-block-wrapper[data-code-theme="light"] .theme-toggle-button .theme-icon-light,
+.code-block-wrapper[data-code-theme="light"] .theme-toggle-button .theme-icon-dark {
+  color: #333; /* For light background */
 }
 
 /* Light Theme Styles for Code Blocks */

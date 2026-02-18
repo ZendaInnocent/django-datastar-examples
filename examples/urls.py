@@ -7,15 +7,7 @@ app_name = 'examples'
 urlpatterns = [
     path('', views.index_view, name='index'),
     path('active-search/', views.active_search_view, name='active-search'),
-    path(
-        'active-search/search/',
-        views.active_search_search_view,
-        name='active-search-search',
-    ),
     path('click-to-load/', views.click_to_load_view, name='click-to-load'),
-    path(
-        'click-to-load/more/', views.click_to_load_more_view, name='click-to-load-more'
-    ),
     path('edit-row/', views.edit_row_view, name='edit-row'),
     path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),
     path('delete-row/', views.delete_row_view, name='delete-row'),
@@ -32,11 +24,6 @@ urlpatterns = [
         name='inline-validation-validate',
     ),
     path('infinite-scroll/', views.infinite_scroll_view, name='infinite-scroll'),
-    path(
-        'infinite-scroll/load/',
-        views.infinite_scroll_load_view,
-        name='infinite-scroll-load',
-    ),
     path('lazy-tabs/', views.lazy_tabs_view, name='lazy-tabs'),
     path('lazy-tabs/tab/', views.lazy_tabs_tab_view, name='lazy-tabs-tab'),
     path('file-upload/', views.file_upload_view, name='file-upload'),

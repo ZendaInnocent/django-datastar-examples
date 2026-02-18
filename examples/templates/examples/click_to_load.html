@@ -2,76 +2,6 @@
 
 {% block content %}
 
-  {% block howto_content %}
-    <div class="container-fluid px-0">
-      <div class="card shadow-sm mb-4">
-        <div class="card-header bg-light">
-          <h5 class="mb-0">How to Build: Click to Load</h5>
-        </div>
-        <div class="card-body">
-          <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-          <p class="small text-muted mb-3">Create a view that handles pagination:</p>
-          <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
-def click_to_load_view(request):
-    page = int(request.GET.get('page', 1))
-    items_per_page = 6
-    items = Contact.objects.all()[(page-1)*items_per_page:page*items_per_page]
-    has_more = Contact.objects.count() > page * items_per_page
-    return render(request, 'click_to_load.html', {
-        'contacts': items,
-        'page': page,
-        'has_more': has_more
-    })
-
-def click_to_load_more_view(request):
-    ds = DjangoDatastar(request)
-    page = int(request.GET.get('page', 1))
-    contacts = Contact.objects.all()[(page-1)*items_per_page:page*items_per_page]
-    has_more = Contact.objects.count() > page * items_per_page
-    return ds.fragment(render_to_string('fragments/contact_list.html', {
-        'contacts': contacts,
-        'page': page,
-        'has_more': has_more
-    }))</code></pre>
-
-          <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-          <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
-path('click-to-load/', views.click_to_load_view, name='click-to-load'),
-path('click-to-load/more/', views.click_to_load_more_view, name='click-to-load-more'),</code></pre>
-
-          <h6 class="text-uppercase text-muted small fw-bold mb-3">
-            Step 3: The Template
-          </h6>
-          <p class="small text-muted mb-3">
-            Use <code>data-on:click</code> to trigger the load:
-          </p>
-          <pre class="bg-light p-3 rounded small mb-4"><code class="language-html">&lt;div id="contact-list"&gt;
-  {% include 'examples/fragments/contact_list.html' %}
-&lt;/div&gt;
-
-{% if has_more %}
-&lt;button
-  class="btn btn-primary"
-  data-on:click="@get('{% url 'examples:click-to-load-more' %}?page={{ page|add:1 }}')"
-&gt;
-  Load More
-&lt;/button&gt;
-{% endif %}</code></pre>
-
-          <h6 class="text-uppercase text-muted small fw-bold mb-3">
-            Step 4: The Fragment
-          </h6>
-          <p class="small text-muted mb-3">
-            Return contacts wrapped in a unique ID for merging:
-          </p>
-          <pre class="bg-light p-3 rounded small"><code class="language-html">&lt;div id="contact-{{ contact.pk }}"&gt;
-  {{ contact.first_name }} {{ contact.last_name }}
-&lt;/div&gt;</code></pre>
-        </div>
-      </div>
-    </div>
-  {% endblock howto_content %}
-
   <div class="container py-5">
     <header class="mb-5">
       <h1 class="h2">Click to Load</h1>
@@ -105,7 +35,7 @@ path('click-to-load/more/', views.click_to_load_more_view, name='click-to-load-m
       <div class="text-center my-4" id="load-more-container">
         <button class="btn btn-primary"
                 data-show="$hasMore"
-                data-on:click="$page=$page+1; @get('{% url "examples:click-to-load-more" %}');">
+                data-on:click="$page=$page+1; @get('{% url "examples:click-to-load" %}');">
           Load More
         </button>
       </div>

@@ -1,0 +1,44 @@
+{% load howto_tags %}
+{% if example and example.steps %}
+  <div class="howto-content">
+    {% for step in example.steps %}
+      <div class="howto-step mb-4">
+        <div class="d-flex align-items-center mb-2">
+          <span class="badge bg-secondary me-2">{{ forloop.counter }}</span>
+          <h6 class="text-uppercase text-muted small fw-bold mb-0">{{ step.title }}</h6>
+          <span class="badge bg-outline-primary ms-auto text-uppercase small"
+                style="border: 1px solid var(--bs-border-color);
+                       color: var(--bs-secondary-color)">
+            {{ step.language }}
+          </span>
+        </div>
+        {% if step.description %}
+          <p class="small text-muted mb-2">{{ step.description }}</p>
+        {% endif %}
+        <pre class="bg-light p-3 rounded small mb-0 line-numbers"><code class="language-{{ step.language }}">{{ step.code }}</code></pre>
+      </div>
+    {% endfor %}
+
+    {% if example.doc_links %}
+      <div class="howto-docs mt-4 pt-3 border-top">
+        <h6 class="text-uppercase text-muted small fw-bold mb-3">
+          <i class="bi bi-book me-1"></i>Learn More
+        </h6>
+        <ul class="mb-0">
+          {% for link in example.doc_links %}
+            <li>
+              <a href="{{ link.url }}" style="color: #6B46C1; text-decoration: none">
+                <i class="bi bi-arrow-right-circle me-1"></i>{{ link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="alert alert-info mb-0">
+    <i class="bi bi-info-circle me-2"></i>
+    HowTo content coming soon for this example.
+  </div>
+{% endif %}

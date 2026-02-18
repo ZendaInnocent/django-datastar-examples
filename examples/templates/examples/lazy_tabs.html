@@ -2,131 +2,73 @@
 
 {% block content %}
 
-{% block howto_content %}
-<div class="container-fluid px-0">
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">How to Build: Lazy Tabs</h5>
+  <div class="container py-5">
+    <nav class="mb-4">
+      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
+    </nav>
+
+    <header class="mb-5">
+      <h1 class="h2">Lazy Tabs</h1>
+      <p class="text-muted">Load tab content on demand when switching tabs</p>
+    </header>
+
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>Clicking a tab updates a signal with the tab name</li>
+          <li>
+            Signal change triggers GET request to <code>/lazy-tabs/tab/</code>
+          </li>
+          <li>Server returns content fragment for that tab</li>
+          <li>Datastar merges the new content into the tab pane</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+          <li class="nav-item">
+            <button class="nav-link {% if tab == 'home' %}active{% endif %}"
+                    data-on:click="$activeTab = 'home'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=home')">
+              Home
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link {% if tab == 'about' %}active{% endif %}"
+                    data-on:click="$activeTab = 'about'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=about')">
+              About
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link {% if tab == 'contact' %}active{% endif %}"
+                    data-on:click="$activeTab = 'contact'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=contact')">
+              Contact
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body" id="tab-content">
+        <p>Select a tab to load content...</p>
+      </div>
     </div>
-    <div class="card-body">
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 1: The View</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># views.py
-def lazy_tabs_view(request):
-    return render(request, 'lazy_tabs.html')
 
-def lazy_tabs_tab_view(request):
-    ds = DjangoDatastar(request)
-    tab = request.GET.get('tab', 'home')
-    content = {
-        'home': 'Welcome to the home tab!',
-        'about': 'About us content...',
-        'contact': 'Contact us at...',
-    }.get(tab, 'Content not found')
-    return ds.fragment(render_to_string('fragments/tab_content.html', {
-        'tab': tab,
-        'content': content
-    }))</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 2: The URL</h6>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-python"># urls.py
-path('lazy-tabs/', views.lazy_tabs_view, name='lazy-tabs'),
-path('lazy-tabs/tab/', views.lazy_tabs_tab_view, name='lazy-tabs-tab'),</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 3: The Template</h6>
-  <p class="small text-muted mb-3">Click updates signal and fetches tab content:</p>
-  <pre class="bg-light p-3 rounded small mb-4"><code class="language-django">&lt;ul class="nav nav-tabs"&gt;
-  &lt;li class="nav-item"&gt;
-    &lt;button
-      class="nav-link"
-      data-on:click="$activeTab = 'home'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=home')"
-    &gt;Home&lt;/button&gt;
-  &lt;/li&gt;
-  &lt;li class="nav-item"&gt;
-    &lt;button
-      class="nav-link"
-      data-on:click="$activeTab = 'about'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=about')"
-    &gt;About&lt;/button&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div id="tab-content"&gt;
-  &lt;p&gt;Select a tab...&lt;/p&gt;
-&lt;/div&gt;</code></pre>
-
-  <h6 class="text-uppercase text-muted small fw-bold mb-3">Step 4: The Fragment</h6>
-<pre class="bg-light p-3 rounded small"><code class="language-django">&lt;div id="tab-content"&gt;
-  {{ content }}
-&lt;/div&gt;</code></pre>
-    </div>
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Learn More</h2>
+        <ul class="mb-0">
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Partial Templates</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Best Practices: Partial Templates</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Click Event Handling</a>
+          </li>
+        </ul>
+      </div>
+    </section>
   </div>
-</div>
-{% endblock howto_content %}
-
-<div class="container py-5">
-  <nav class="mb-4">
-    <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-  </nav>
-
-  <header class="mb-5">
-    <h1 class="h2">Lazy Tabs</h1>
-    <p class="text-muted">Load tab content on demand when switching tabs</p>
-  </header>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">How it Works</h2>
-      <ol class="text-muted small">
-        <li>Clicking a tab updates a signal with the tab name</li>
-        <li>Signal change triggers GET request to <code>/lazy-tabs/tab/</code></li>
-        <li>Server returns content fragment for that tab</li>
-        <li>Datastar merges the new content into the tab pane</li>
-      </ol>
-    </div>
-  </section>
-
-  <div class="card shadow-sm">
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs">
-        <li class="nav-item">
-          <button
-            class="nav-link {% if tab == 'home' %}active{% endif %}"
-            data-on:click="$activeTab = 'home'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=home')"
-          >
-            Home
-          </button>
-        </li>
-        <li class="nav-item">
-          <button
-            class="nav-link {% if tab == 'about' %}active{% endif %}"
-            data-on:click="$activeTab = 'about'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=about')"
-          >
-            About
-          </button>
-        </li>
-        <li class="nav-item">
-          <button
-            class="nav-link {% if tab == 'contact' %}active{% endif %}"
-            data-on:click="$activeTab = 'contact'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=contact')"
-          >
-            Contact
-          </button>
-        </li>
-      </ul>
-    </div>
-    <div class="card-body" id="tab-content">
-      <p>Select a tab to load content...</p>
-    </div>
-  </div>
-
-  <section class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Learn More</h2>
-      <ul class="mb-0">
-        <li><a href="/docs/datastar-guide/core-concepts.md#partial-templates" style="color: #6B46C1; text-decoration: none;">Partial Templates</a></li>
-        <li><a href="/docs/datastar-guide/best-practices.md#2-use-partial-templates" style="color: #6B46C1; text-decoration: none;">Best Practices: Partial Templates</a></li>
-        <li><a href="/docs/datastar-guide/datastar-attributes-reference.md#data-on" style="color: #6B46C1; text-decoration: none;">Click Event Handling</a></li>
-      </ul>
-    </div>
-  </section>
-</div>
 {% endblock content %}
