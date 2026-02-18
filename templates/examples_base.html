@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block sidebar %}
-<div class="sidebar-wrapper">
   {% include 'includes/sidebar.html' %}
-</div>
 {% endblock sidebar %}
+
+{% block breadcrumbs %}
+  {% include 'includes/breadcrumbs.html' %}
+{% endblock breadcrumbs %}

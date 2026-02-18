@@ -1,11 +1,17 @@
 /**
  * Code Blocks JavaScript
- * Handles Prism.js initialization and copy-to-clipboard functionality
+ * Handles Prism.js initialization, copy-to-clipboard, and theme toggle functionality
  */
+
+// Global code block theme preference (can be overridden per block)
+const CODE_BLOCK_THEME_KEY = 'codeBlockTheme';
 
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize copy buttons for existing code blocks
   initCopyButtons();
+
+  // Initialize theme toggle buttons
+  initThemeToggles();
 });
 
 /**
@@ -16,8 +22,8 @@ function initCopyButtons() {
   document.querySelectorAll('pre code[class*="language-"]').forEach(function(block) {
     const pre = block.parentElement;
 
-    // Skip if already wrapped
-    if (pre.classList.contains('code-block-wrapper')) {
+    // Skip if already wrapped (check parent for wrapper)
+    if (pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) {
       return;
     }
 
@@ -35,18 +41,105 @@ function initCopyButtons() {
 }
 
 /**
- * Wrap a code block with a copy button
+ * Initialize theme toggle buttons for all code blocks
+ */
+function initThemeToggles() {
+  document.querySelectorAll('.theme-toggle-button').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const codeId = button.getAttribute('data-code-id');
+      toggleCodeBlockTheme(codeId);
+    });
+  });
+}
+
+/**
+ * Toggle theme for a specific code block
+ */
+function toggleCodeBlockTheme(codeId) {
+  const codeElement = document.getElementById(codeId);
+  if (!codeElement) return;
+
+  const wrapper = codeElement.closest('.code-block-wrapper');
+  if (!wrapper) return;
+
+  const currentTheme = wrapper.getAttribute('data-code-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+  // Update the wrapper's theme attribute
+  wrapper.setAttribute('data-code-theme', newTheme);
+
+  // Re-highlight the code with the new theme
+  rehighlightCode(codeElement, newTheme);
+
+  // Store preference in localStorage (global for all code blocks)
+  localStorage.setItem(CODE_BLOCK_THEME_KEY, newTheme);
+}
+
+/**
+ * Re-highlight code with the appropriate theme
+ */
+function rehighlightCode(codeElement, theme) {
+  // Store the raw code content
+  const rawCode = codeElement.textContent;
+
+  // Get the language class
+  const languageClass = Array.from(codeElement.classList).find(cls => cls.startsWith('language-'));
+  const language = languageClass ? languageClass.replace('language-', '') : 'plaintext';
+
+  // Clear and re-set the content to trigger re-highlighting
+  codeElement.textContent = rawCode;
+
+  // Re-apply Prism highlighting
+  if (window.Prism) {
+    Prism.highlightElement(codeElement);
+  }
+}
+
+/**
+ * Wrap a code block with action buttons (theme toggle and copy)
  */
 function wrapCodeBlock(pre, codeId) {
+  // Get stored theme preference or default to dark
+  const storedTheme = localStorage.getItem(CODE_BLOCK_THEME_KEY) || 'dark';
+
   // Create wrapper div
   const wrapper = document.createElement('div');
   wrapper.className = 'code-block-wrapper';
+  wrapper.setAttribute('data-code-theme', storedTheme);
 
   // Insert wrapper before pre
   pre.parentNode.insertBefore(wrapper, pre);
 
   // Move pre into wrapper
   wrapper.appendChild(pre);
+
+  // Create actions container
+  const actionsDiv = document.createElement('div');
+  actionsDiv.className = 'code-block-actions';
+
+  // Create theme toggle button
+  const themeBtn = document.createElement('button');
+  themeBtn.className = 'theme-toggle-button';
+  themeBtn.setAttribute('type', 'button');
+  themeBtn.setAttribute('aria-label', 'Toggle code block theme');
+  themeBtn.setAttribute('data-code-id', codeId);
+  themeBtn.innerHTML = `
+    <span class="theme-icon theme-icon-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+      </svg>
+    </span>
+    <span class="theme-icon theme-icon-light">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+      </svg>
+    </span>
+  `;
+
+  // Add click handler for theme toggle
+  themeBtn.addEventListener('click', function() {
+    toggleCodeBlockTheme(codeId);
+  });
 
   // Create copy button
   const copyBtn = document.createElement('button');
@@ -68,13 +161,17 @@ function wrapCodeBlock(pre, codeId) {
     </span>
   `;
 
-  // Add click handler
+  // Add click handler for copy
   copyBtn.addEventListener('click', function() {
     copyToClipboard(codeId, copyBtn);
   });
 
-  // Insert button at start of wrapper
-  wrapper.insertBefore(copyBtn, pre);
+  // Add buttons to actions container
+  actionsDiv.appendChild(themeBtn);
+  actionsDiv.appendChild(copyBtn);
+
+  // Insert actions at start of wrapper
+  wrapper.insertBefore(actionsDiv, pre);
 }
 
 /**

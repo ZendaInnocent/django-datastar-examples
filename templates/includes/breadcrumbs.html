@@ -1,0 +1,11 @@
+{% if show_breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-3">
+    <li class="breadcrumb-item">
+      <a href="{% url 'examples:index' %}"><i class="bi bi-house-door-fill me-1"></i>Home</a>
+    </li>
+    <li class="breadcrumb-item">Examples</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ current_page_name }}</li>
+  </ol>
+</nav>
+{% endif %}
