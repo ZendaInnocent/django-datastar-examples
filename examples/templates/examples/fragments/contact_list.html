@@ -1,5 +1,4 @@
-<section id="results">
-  {% for contact in contacts %}
+{% for contact in contacts %}
   <div class="card mb-2" id="contact-{{ contact.id }}">
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
@@ -10,9 +9,6 @@
       </div>
     </div>
   </div>
-  {% empty %}
-  <div class="text-center text-muted py-4">
-    No contacts found
-  </div>
-  {% endfor %}
-</section>
+{% empty %}
+  <div class="text-center text-muted py-4">No contacts found</div>
+{% endfor %}

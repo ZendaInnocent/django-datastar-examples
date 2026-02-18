@@ -85,8 +85,8 @@
                      id="search-input"
                      placeholder="Search examples and docs..."
                      aria-label="Search"
-                     data-bind:search_query="$searchQuery"
-                     data-on:input__debounce.300ms="@get('/search/instant/')"
+                     data-bind:search_query
+                     data-on:input__debounce.300ms="@get('{% url "examples:search-instant" %}')"
                      autocomplete="off">
             </div>
             <!-- Search Results Container -->

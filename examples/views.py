@@ -2,6 +2,7 @@ from datastar_py import consts
 from datastar_py.django import ServerSentEventGenerator as SSE
 from datastar_py.django import datastar_response, read_signals
 from django import forms
+from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
 from django.db import models
 from django.http import HttpResponse
@@ -51,30 +52,34 @@ def active_search_search_view(request):
 
 
 def click_to_load_view(request):
-    page = int(request.GET.get('page', 1))
+    contacts = Contact.objects.all()
     items_per_page = 6
-    items = Contact.objects.all()[(page - 1) * items_per_page : page * items_per_page]
-    has_more = Contact.objects.count() > page * items_per_page
+    paginator = Paginator(contacts, items_per_page)
+    page = int(request.GET.get('page', 1))
+    page_obj = paginator.get_page(page)
+
     return render(
         request,
         'examples/click_to_load.html',
-        {'contacts': items, 'page': page, 'has_more': has_more},
+        {'contacts': page_obj},
     )
 
 
 @datastar_response
 def click_to_load_more_view(request):
-    page = int(request.GET.get('page', 1))
+    signals = read_signals(request)
+    contacts = Contact.objects.all()
     items_per_page = 6
-    contacts = Contact.objects.all()[
-        (page - 1) * items_per_page : page * items_per_page
-    ]
-    has_more = Contact.objects.count() > page * items_per_page
+    paginator = Paginator(contacts, items_per_page)
+    page = signals.get('page')
+    page_obj = paginator.get_page(page)
 
     html = render_to_string(
         'examples/fragments/contact_list.html',
-        {'contacts': contacts, 'page': page, 'has_more': has_more},
+        {'contacts': page_obj},
     )
+
+    yield SSE.patch_signals({'hasMore': page_obj.has_next()})
     yield SSE.patch_elements(
         html, selector='#contact-list', mode=consts.ElementPatchMode.APPEND
     )
