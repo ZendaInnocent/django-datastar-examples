@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_browser_reload',
+    'debug_toolbar',
     'examples',
 ]
 
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
@@ -127,4 +129,9 @@ STATIC_URL = 'static/'
 # Additional directories where Django will look for static files during development
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
 ]
