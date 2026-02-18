@@ -69,7 +69,7 @@
           </div>
           {% if completed_count > 0 %}
             <button class="btn btn-sm btn-outline-danger"
-                    data-on:click="@post('{% url 'examples:todo-mvc-clear' %}')">
+                    data-on:click="confirm('You are clearning all completed tasks. Are you sure?') && @post('{% url 'examples:todo-mvc-clear' %}')">
               Clear completed
             </button>
           {% endif %}

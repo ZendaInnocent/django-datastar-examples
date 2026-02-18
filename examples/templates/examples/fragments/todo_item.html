@@ -10,7 +10,7 @@
     {{ todo.title }}
   </span>
   <button class="btn btn-outline-danger btn-sm"
-          data-on:click="@post('{% url 'examples:todo-mvc-delete' %}')">
+          data-on:click="$todoToggleId={{ todo.id }}; confirm('Delete todo?') && @post('{% url 'examples:todo-mvc-delete' %}')">
     <i class="bi bi-x fs-5"></i>
   </button>
 </li>

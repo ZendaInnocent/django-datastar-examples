@@ -167,7 +167,7 @@ def todomvc_add_view(request):
         yield SSE.patch_elements(
             html,
             selector='#todo-list',
-            mode=consts.ElementPatchMode.APPEND,
+            mode=consts.ElementPatchMode.PREPEND,
         )
 
 
@@ -195,15 +195,20 @@ def todomvc_toggle_view(request):
     )
 
 
+@csrf_exempt
+@require_http_methods(['POST'])
 @datastar_response
 def todomvc_delete_view(request):
-    todo_id = request.POST.get('id')
+    signals = read_signals(request)
+    todo_id = signals.get('todoToggleId')
     todo = get_object_or_404(Todo, pk=todo_id)
     todo.delete()
 
     yield SSE.remove_elements(selector=f'#todo-{todo_id}')
 
 
+@csrf_exempt
+@require_http_methods(['POST'])
 @datastar_response
 def todomvc_clear_view(request):
     Todo.objects.filter(completed=True).delete()
