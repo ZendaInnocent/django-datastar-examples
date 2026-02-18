@@ -402,3 +402,47 @@ def bulk_update_update_view(request):
         'examples/fragments/contact_table.html', {'contacts': remaining_contacts}
     )
     yield SSE.patch_elements(html, selector='#contact-table')
+
+
+# ============================================================================
+# Search Functionality (Story 4.1)
+# ============================================================================
+
+
+def search_view(request):
+    """Search page view (for direct URL access)."""
+    query = request.GET.get('q', '')
+    results = []
+
+    if query:
+        from .search import search as perform_search
+
+        results = perform_search(query)
+
+    return render(request, 'examples/search.html', {'results': results, 'query': query})
+
+
+@datastar_response
+def search_instant_view(request):
+    """Datastar endpoint for instant search results."""
+    signals = read_signals(request)
+    query = signals.get('search_query', '').strip()
+
+    if not query:
+        # Return empty state
+        html = render_to_string(
+            'examples/fragments/search_results.html',
+            {'results': [], 'query': query, 'empty': True},
+        )
+        yield SSE.patch_elements(html, selector='#search-results')
+        return
+
+    # Perform search
+    from .search import search as perform_search
+
+    results = perform_search(query, limit=10)
+
+    html = render_to_string(
+        'examples/fragments/search_results.html', {'results': results, 'query': query}
+    )
+    yield SSE.patch_elements(html, selector='#search-results')

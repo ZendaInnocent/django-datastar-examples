@@ -1,0 +1,70 @@
+{% extends 'examples_base.html' %}
+
+{% block title %}
+  Search - Django + Datastar Examples
+{% endblock title %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Search</h1>
+
+      <div class="mb-4">
+        <form method="get" action="{% url 'examples:search' %}">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text bg-transparent border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text"
+                   class="form-control border-start-0"
+                   id="search-input"
+                   name="q"
+                   placeholder="Search examples and docs..."
+                   value="{{ query }}"
+                   aria-label="Search">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+
+      {% if query %}
+        <h5 class="mb-3">Results for "{{ query }}"</h5>
+
+        {% if results %}
+          <div class="list-group">
+            {% for result in results %}
+              <a href="{{ result.url }}"
+                 class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                  <h6 class="mb-1">
+                    {% if result.type == 'example' %}
+                      <i class="bi bi-play-circle me-2 text-purple"></i>
+                    {% else %}
+                      <i class="bi bi-book me-2 text-purple"></i>
+                    {% endif %}
+                    {{ result.title }}
+                  </h6>
+                  <span class="badge bg-secondary">{{ result.category }}</span>
+                </div>
+                <p class="mb-1 text-muted">{{ result.description }}</p>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            No results found for "{{ query }}". Try searching for something else.
+          </div>
+        {% endif %}
+
+      {% else %}
+        <div class="text-center text-muted py-5">
+          <i class="bi bi-search mb-3 d-block"
+             style="font-size: 3rem;
+                    opacity: 0.3"></i>
+          <p class="mb-0">Enter a search term to find examples and documentation</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}

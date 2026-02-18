@@ -60,4 +60,7 @@ urlpatterns = [
     path(
         'bulk-update/update/', views.bulk_update_update_view, name='bulk-update-update'
     ),
+    # Search (Story 4.1)
+    path('search/', views.search_view, name='search'),
+    path('search/instant/', views.search_instant_view, name='search-instant'),
 ]

@@ -24,9 +24,25 @@ quote-style = "single"
 
 [dependency-groups]
 dev = [
-    "djade>=1.7.0",
     "django-browser-reload>=1.21.0",
+    "djlint>=1.36.4",
     "pre-commit>=4.5.1",
     "pytest>=8.0.0",
     "pytest-django>=4.8.0",
+    "pytest-playwright>=0.7.2",
 ]
+
+
+[tool.djlint]
+profile="django"
+indent=2
+format_css=true
+preserve_blank_lines=true
+use_gitignore=true
+ignore="T002,H030,H031"
+max_blank_lines=2
+max_line_length=80
+format_js=true
+
+[tool.djlint.js]
+indent_size=2

@@ -25,7 +25,10 @@ repos:
     hooks:
       - id: django-upgrade
 
-  - repo: https://github.com/adamchainz/djade-pre-commit
-    rev: '1.7.0'
+  - repo: https://github.com/djlint/djLint
+    rev: v1.36.4
     hooks:
-      - id: djade
+      - id: djlint-reformat-django
+      - id: djlint-django
+        args:
+          - --ignore=T002,H030,H031,H021

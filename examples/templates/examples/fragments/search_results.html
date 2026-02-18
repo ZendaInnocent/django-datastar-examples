@@ -1,0 +1,42 @@
+{% load static %}
+{% if empty %}
+  <div class="text-center text-muted small py-3">
+    <em>Type to search examples and documentation</em>
+  </div>
+{% elif results %}
+  <div class="search-results-list"
+       role="listbox"
+       aria-label="Search results">
+    {% for result in results %}
+      <a href="{{ result.url }}"
+         class="search-result-item text-decoration-none"
+         data-result-url="{{ result.url }}"
+         role="option"
+         aria-selected="false"
+         tabindex="-1">
+        <div class="search-result-icon">
+          {% if result.type == 'example' %}
+            <i class="bi bi-play-circle"></i>
+          {% else %}
+            <i class="bi bi-book"></i>
+          {% endif %}
+        </div>
+        <div class="search-result-content">
+          <div class="search-result-title">{{ result.title }}</div>
+          <div class="search-result-description">{{ result.description }}</div>
+        </div>
+        <span class="badge bg-secondary search-result-badge">{{ result.category }}</span>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="search-results-empty">
+    <div class="text-muted">
+      <i class="bi bi-search mb-2 d-block"
+         style="font-size: 2rem;
+                opacity: 0.5"></i>
+      <p class="mb-0">No results found for "{{ query }}"</p>
+      <small class="text-muted">Try searching for something else</small>
+    </div>
+  </div>
+{% endif %}

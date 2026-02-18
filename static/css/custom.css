@@ -518,6 +518,18 @@
   color: var(--bs-body-color);
 }
 
+/* Keyboard navigation focus indicator - Story 4-3 */
+.search-result-item:focus-visible {
+  outline: 2px solid #6B46C1;
+  outline-offset: -2px;
+}
+
+/* Active state (keyboard selected) gets stronger highlight */
+.search-result-item.active {
+  background-color: rgba(107, 70, 193, 0.15);
+  border-left: 3px solid #6B46C1;
+}
+
 .search-result-icon {
   flex-shrink: 0;
   width: 2rem;
@@ -569,17 +581,9 @@
 }
 
 /* Search modal adjustments */
-#search-modal .modal-body {
-  padding-top: 0.5rem;
-}
-
-#search-input {
-  font-size: 1.125rem;
-}
-
 #search-input:focus {
-  box-shadow: none;
   border-color: #6B46C1;
+  box-shadow: none;
 }
 
 #search-input::placeholder {
@@ -591,4 +595,78 @@
   background-color: rgba(255, 235, 59, 0.4);
   padding: 0 2px;
   border-radius: 2px;
+}
+
+/* ========================================
+   Recent Searches - Story 4-4
+   ======================================== */
+
+.recent-searches {
+  border-top: 1px solid var(--bs-border-color);
+  padding-top: 0.5rem;
+}
+
+.recent-searches-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.recent-searches-header small {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.recent-search-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.recent-search-item:last-child {
+  border-bottom: none;
+}
+
+.recent-search-item:hover {
+  background-color: rgba(107, 70, 193, 0.1);
+}
+
+.recent-search-item .search-icon {
+  color: var(--bs-secondary-color);
+  margin-right: 0.75rem;
+}
+
+.recent-search-item .recent-query {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-search-item .remove-btn {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  color: var(--bs-secondary-color);
+  text-decoration: none;
+  padding: 0.25rem;
+}
+
+.recent-search-item:hover .remove-btn {
+  opacity: 1;
+}
+
+.recent-search-item .remove-btn:hover {
+  color: var(--bs-danger);
+}
+
+.recent-searches-empty {
+  padding: 1rem;
+  text-align: center;
+  color: var(--bs-secondary-color);
 }
