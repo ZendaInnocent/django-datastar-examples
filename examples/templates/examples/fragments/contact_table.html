@@ -1,18 +1,38 @@
-{% for contact in contacts %}
-<tr>
-  <td>
-    <input
-      type="checkbox"
-      name="selected_ids"
-      value="{{ contact.id }}"
-      class="form-check-input contact-checkbox"
-    />
-  </td>
-  <td>{{ contact.first_name }} {{ contact.last_name }}</td>
-  <td>{{ contact.email }}</td>
-</tr>
-{% empty %}
-<tr>
-  <td colspan="3" class="text-center text-muted">No contacts found</td>
-</tr>
-{% endfor %}
+<table class="table" id="contact-table">
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox"
+               class="form-check-input"
+               data-indicator:_fetching
+               data-bind:_all
+               data-on:change="$selections = Array(10).fill($_all)"
+               data-attr:disabled="$_fetching" />
+      </th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contact in contacts %}
+      <tr>
+        <td>
+          <input type="checkbox"
+                 name="selected_ids"
+                 value="{{ contact.id }}"
+                 class="form-check-input contact-checkbox"
+                 data-bind:selections
+                 data-attr:disabled="$_fetching" />
+        </td>
+        <td>{{ contact.first_name }} {{ contact.last_name }}</td>
+        <td>{{ contact.email }}</td>
+        <td>{{ contact.is_active|yesno:"Active,Inactive" }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="3" class="text-center text-muted">No contacts found</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

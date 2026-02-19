@@ -3,9 +3,6 @@
 {% block content %}
 
   <div class="container py-5">
-    <nav class="mb-4">
-      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-    </nav>
 
     <header class="mb-5">
       <h1 class="h2">Bulk Update</h1>
@@ -28,36 +25,20 @@
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <form id="bulk-form">
+        <form id="bulk-form"
+              data-signals="{selections: Array(10).fill(false)}"
+              data-on:submit="@post('{% url "examples:bulk-update-update" %}', {contentType: 'form'}); $_all=false; $selections = Array(10).fill(false);">
           <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-on:change__prevent="@document.querySelectorAll('.contact-checkbox').forEach(cb => cb.checked = $event.target.checked)" />
-                  </th>
-                  <th>Name</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody id="contact-table">
-                {% include 'examples/fragments/contact_table.html' %}
-              </tbody>
-            </table>
+            {% include 'examples/fragments/contact_table.html' %}
           </div>
 
           <div class="d-flex gap-2 align-items-center">
             <select name="action" class="form-select" style="width: auto;">
               <option value="">Select action...</option>
-              <option value="delete">Delete selected</option>
+              <option value="activate">Activate selected</option>
+              <option value="deactivate">Deactivate selected</option>
             </select>
-            <button type="submit"
-                    class="btn btn-primary"
-                    data-on:submit__prevent="@post('{% url 'examples:bulk-update-update' %}', {params: {selected_ids: Array.from(document.querySelectorAll('.contact-checkbox:checked')).map(cb => cb.value)}})">
-              Apply
-            </button>
+            <button type="submit" class="btn btn-primary">Apply</button>
           </div>
         </form>
       </div>

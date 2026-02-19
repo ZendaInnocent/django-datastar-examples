@@ -489,23 +489,27 @@ def bulk_update_view(request):
     return render(request, 'examples/bulk_update.html', {'contacts': contacts})
 
 
+@csrf_exempt
 @datastar_response
 def bulk_update_update_view(request):
     selected_ids = request.POST.getlist('selected_ids')
     action = request.POST.get('action')
 
-    if action == 'delete' and selected_ids:
-        Contact.objects.filter(pk__in=selected_ids).delete()
+    if action == 'activate' and selected_ids:
+        Contact.objects.filter(pk__in=selected_ids).update(is_active=True)
 
-    remaining_contacts = Contact.objects.all()[:10]
+    if action == 'deactivate' and selected_ids:
+        Contact.objects.filter(pk__in=selected_ids).update(is_active=False)
+
+    contacts = Contact.objects.all()[:10]
     html = render_to_string(
-        'examples/fragments/contact_table.html', {'contacts': remaining_contacts}
+        'examples/fragments/contact_table.html', {'contacts': contacts}
     )
     yield SSE.patch_elements(html, selector='#contact-table')
 
 
 # ============================================================================
-# Search Functionality (Story 4.1)
+# Search Functionality
 # ============================================================================
 
 
