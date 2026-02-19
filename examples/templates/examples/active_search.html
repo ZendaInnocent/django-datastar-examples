@@ -2,86 +2,57 @@
 
 {% block content %}
 
-  <!-- Split View Container -->
-  {% include 'includes/split_view.html' %}
+  <div class="container py-5">
+    <header class="mb-5">
+      <h1 class="h2">Active Search</h1>
+      <p class="text-muted">
+        Search a contacts database as you type with debounced input
+      </p>
+    </header>
 
-  {% block demo_content %}
-    <div class="container py-5">
-      <header class="mb-5">
-        <h1 class="h2">Active Search</h1>
-        <p class="text-muted">
-          Search a contacts database as you type with debounced input
-        </p>
-      </header>
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>
+            Type in the search box - input is bound to a signal via <code>data-bind:search</code>
+          </li>
+          <li>
+            After 200ms of not typing, Datastar sends a GET request to <code>/active-search/</code>
+          </li>
+          <li>Server returns an HTML fragment with matching contacts</li>
+          <li>Datastar merges the fragment into the DOM using fragment IDs</li>
+        </ol>
+      </div>
+    </section>
 
-      <section class="card shadow-sm mb-4">
-        <div class="card-body">
-          <h2 class="h5 mb-3">How it Works</h2>
-          <ol class="text-muted small">
-            <li>
-              Type in the search box - input is bound to a signal via <code>data-bind:search</code>
-            </li>
-            <li>
-              After 200ms of not typing, Datastar sends a GET request to <code>/active-search/search/</code>
-            </li>
-            <li>Server returns an HTML fragment with matching contacts</li>
-            <li>Datastar merges the fragment into the DOM using fragment IDs</li>
-          </ol>
-        </div>
-      </section>
+    <section class="mb-4">
+      <input type="text"
+             id="search-input"
+             class="form-control form-control-lg"
+             placeholder="Search contacts..."
+             data-bind:search
+             data-on:input__debounce.200ms="@get('{% url 'examples:active-search' %}')" />
+    </section>
 
-      <section class="mb-4">
-        <input type="text"
-               id="search-input"
-               class="form-control form-control-lg"
-               placeholder="Search contacts..."
-               data-bind:search
-               data-on:input__debounce.200ms="@get('{% url 'examples:active-search' %}')" />
-      </section>
+    {% include 'examples/fragments/contact_list.html' %}
 
-      <section id="results">
-        {% include 'examples/fragments/contact_list.html' %}
-      </section>
-
-      <section class="card shadow-sm mb-4">
-        <div class="card-body">
-          <h2 class="h5 mb-3">Learn More</h2>
-          <ul class="mb-0">
-            <li>
-              <a href="" style="color: #6B46C1; text-decoration: none">Understanding Signals</a>
-            </li>
-            <li>
-              <a href="" style="color: #6B46C1; text-decoration: none">Debouncing Input Events</a>
-            </li>
-            <li>
-              <a href="" style="color: #6B46C1; text-decoration: none">Server-Sent Events (SSE)</a>
-            </li>
-          </ul>
-        </div>
-      </section>
-    </div>
-  {% endblock demo_content %}
-
-  {% block mobile_demo_content %}
-    <div class="container py-4">
-      <header class="mb-4">
-        <h1 class="h4">Active Search</h1>
-        <p class="text-muted small">Search as you type</p>
-      </header>
-
-      <section class="mb-3">
-        <input type="text"
-               id="search-input-mobile"
-               class="form-control"
-               placeholder="Search contacts..."
-               data-bind:search
-               data-on:input__debounce.200ms="@get('{% url 'examples:active-search' %}')" />
-      </section>
-
-      <section id="results-mobile">
-        {% include 'examples/fragments/contact_list.html' %}
-      </section>
-    </div>
-  {% endblock mobile_demo_content %}
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Learn More</h2>
+        <ul class="mb-0">
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Understanding Signals</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Debouncing Input Events</a>
+          </li>
+          <li>
+            <a href="" style="color: #6B46C1; text-decoration: none">Server-Sent Events (SSE)</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
 
 {% endblock content %}

@@ -26,6 +26,7 @@ def active_search_view(request):
     if request.headers.get('Datastar-Request'):
         signals = read_signals(request)
         query = signals.get('search', '').strip()
+
         if query is not None:
             contacts = Contact.objects.filter(
                 models.Q(first_name__icontains=query)
@@ -55,17 +56,18 @@ def active_search_view(request):
 def click_to_load_view(request):
     page = 1
     contacts = Contact.objects.all()
-    items_per_page = 6
+    items_per_page = 2
     paginator = Paginator(contacts, items_per_page)
     page_obj = paginator.get_page(page)
 
     if request.headers.get('Datastar-Request'):
         signals = read_signals(request)
         page = signals.get('page')
+
         if page is not None:
             page_obj = paginator.get_page(page)
             html = render_to_string(
-                'examples/fragments/contact_list.html',
+                'examples/fragments/contact_list_append.html',
                 {'contacts': page_obj},
             )
 
@@ -231,6 +233,7 @@ def todomvc_clear_view(request):
     todos = Todo.objects.all()
     html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
     yield SSE.patch_elements(html, selector='#todo-list')
+    yield SSE.patch_signals({'filter': 'all'})
 
 
 @datastar_response

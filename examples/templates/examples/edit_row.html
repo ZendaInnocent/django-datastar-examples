@@ -12,10 +12,13 @@
       <div class="card-body">
         <h2 class="h5 mb-3">How it Works</h2>
         <ol class="text-muted small">
-          <li>Click "Edit" button to toggle edit mode (using signal to show/hide)</li>
+          <li>Click "Edit" button to request the form for editing.</li>
           <li>Form appears inline with current values</li>
           <li>
-            Submit sends PUT request to <code>/edit-row/update/</code>
+            Cancel sends GET request to <code>/get-contact/</code>
+          </li>
+          <li>
+            Save sends POST request to <code>/contact-update/</code>
           </li>
           <li>Server returns updated row fragment</li>
           <li>Datastar replaces the view mode with the updated content</li>

@@ -14,10 +14,10 @@
         <ol class="text-muted small">
           <li>Click "Delete" button to show confirmation</li>
           <li>
-            Confirm delete sends POST request to <code>/delete-row/remove/</code>
+            Confirm delete sends POST request to <code>/delete-row/</code>
           </li>
           <li>Server returns a remove directive</li>
-          <li>Datastar removes the element from the DOM with animation</li>
+          <li>Datastar removes the element from the DOM</li>
         </ol>
       </div>
     </section>
@@ -38,7 +38,7 @@
               <td>{{ contact.email }}</td>
               <td>
                 <button class="btn btn-outline-danger btn-sm"
-                        data-on:click="$contactId = `{{ contact.id }}`; confirm('Delete this contact?') && @delete('{% url "examples:delete-row" %}')">
+                        data-on:click="$contactId = `{{ contact.id }}`; confirm('Delete this contact? {{ contact.first_name }}') && @delete('{% url "examples:delete-row" %}')">
                   Delete
                 </button>
               </td>
