@@ -4,7 +4,13 @@
 <nav id="sidebar" class="sidebar" aria-label="Main navigation">
 
   <!-- Mobile Toggle Button -->
-  <button class="sidebar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="sidebar-nav" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="sidebar-toggler d-lg-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebar-nav"
+          aria-controls="sidebar-nav"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
     <i class="bi bi-list"></i>
   </button>
 
@@ -17,80 +23,93 @@
       <ul class="nav flex-column">
         {% url 'examples:index' as index_url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == index_url %} active{% endif %}" href="{{ index_url }}">
+          <a class="nav-link{% if request.path == index_url %} active{% endif %}"
+             href="{{ index_url }}">
             <i class="bi bi-house"></i><span class="nav-link-text">Home</span>
           </a>
         </li>
         {% url 'examples:active-search' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
             <i class="bi bi-search"></i><span class="nav-link-text">Active Search</span>
           </a>
         </li>
         {% url 'examples:click-to-load' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-hand-index"></i><span class="nav-link-text">Click to Load</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-arrow-down-circle"></i><span class="nav-link-text">Click to Load</span>
           </a>
         </li>
         {% url 'examples:edit-row' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
             <i class="bi bi-pencil"></i><span class="nav-link-text">Edit Row</span>
           </a>
         </li>
         {% url 'examples:delete-row' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
             <i class="bi bi-trash"></i><span class="nav-link-text">Delete Row</span>
           </a>
         </li>
         {% url 'examples:todo-mvc' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-check2-square"></i><span class="nav-link-text">TodoMVC</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-list-check"></i><span class="nav-link-text">TodoMVC</span>
           </a>
         </li>
         {% url 'examples:inline-validation' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-shield-check"></i><span class="nav-link-text">Inline Validation</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-check-circle"></i><span class="nav-link-text">Inline Validation</span>
           </a>
         </li>
         {% url 'examples:infinite-scroll' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-arrow-down-circle"></i><span class="nav-link-text">Infinite Scroll</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-infinity"></i><span class="nav-link-text">Infinite Scroll</span>
           </a>
         </li>
         {% url 'examples:lazy-tabs' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-folder"></i><span class="nav-link-text">Lazy Tabs</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-tablet"></i><span class="nav-link-text">Lazy Tabs</span>
           </a>
         </li>
         {% url 'examples:file-upload' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-upload"></i><span class="nav-link-text">File Upload</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-cloud-upload"></i><span class="nav-link-text">File Upload</span>
           </a>
         </li>
         {% url 'examples:sortable' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
             <i class="bi bi-arrow-down-up"></i><span class="nav-link-text">Sortable</span>
           </a>
         </li>
         {% url 'examples:notifications' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
             <i class="bi bi-bell"></i><span class="nav-link-text">Notifications</span>
           </a>
         </li>
         {% url 'examples:bulk-update' as url %}
         <li class="nav-item">
-          <a class="nav-link{% if request.path == url %} active{% endif %}" href="{{ url }}">
-            <i class="bi bi-list-check"></i><span class="nav-link-text">Bulk Update</span>
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-check2-square"></i><span class="nav-link-text">Bulk Update</span>
           </a>
         </li>
       </ul>
@@ -118,28 +137,6 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'examples:index' %}#docs">
             <i class="bi bi-book"></i><span class="nav-link-text">Best Practices</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Learning Paths Section -->
-    <div class="sidebar-section">
-      <h6 class="sidebar-heading">Learning Paths</h6>
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'examples:index' %}#learning">
-            <i class="bi bi-mortarboard"></i><span class="nav-link-text">Beginner Path</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'examples:index' %}#learning">
-            <i class="bi bi-graph-up-arrow"></i><span class="nav-link-text">Intermediate Path</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'examples:index' %}#learning">
-            <i class="bi bi-star"></i><span class="nav-link-text">Advanced Path</span>
           </a>
         </li>
       </ul>

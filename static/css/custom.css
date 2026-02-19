@@ -1,6 +1,83 @@
 /* Custom CSS - Keep minimal, use Bootstrap utilities */
 
 /* ========================================
+   Logo Gradient
+   ======================================== */
+
+.logo-gradient {
+  background: linear-gradient(135deg, #8B5CF6 0%, #2DD4BF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* Dark mode - brighter gradient for contrast */
+[data-bs-theme="dark"] .logo-gradient {
+  background: linear-gradient(135deg, #A78BFA 0%, #5EEAD4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========================================
+   Color Palette Customization
+   Modern purple/teal theme with full dark mode support
+   ======================================== */
+
+:root {
+  /* Primary - Purple (modern tech feel) */
+  --bs-primary: #6B46C1;
+  --bs-primary-rgb: 107, 70, 193;
+
+  /* Secondary - Teal accent */
+  --bs-secondary: #0d9488;
+  --bs-secondary-rgb: 13, 148, 136;
+
+  /* Info - Light blue */
+  --bs-info: #0ea5e9;
+
+  /* Warning - Amber */
+  --bs-warning: #f59e0b;
+
+  /* Sidebar colors */
+  --sidebar-active-bg: rgba(var(--bs-primary-rgb), 0.15);
+  --sidebar-active-color: var(--bs-primary);
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #0f172a;
+  --bs-body-color: #e2e8f0;
+  --bs-tertiary-bg: #1e293b;
+  --bs-secondary-bg: #1e293b;
+
+  /* Darker, more visible sidebar active state */
+  --sidebar-active-bg: rgba(167, 139, 250, 0.25);
+  --sidebar-active-color: #c4b5fd;
+}
+
+/* Sidebar dark mode specific */
+[data-bs-theme="dark"] .sidebar {
+  background-color: #0f172a;
+  border-right-color: #1e293b;
+}
+
+/* ========================================
+   Default Link Styles
+   Theme-aware link colors
+   ======================================== */
+
+a:not(.btn):not(.nav-link):not(.card):not([class*="text-"]) {
+  color: var(--bs-link-color, var(--bs-body-color));
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:not(.btn):not(.nav-link):not(.card):not([class*="text-"]):hover {
+  color: var(--bs-primary);
+}
+
+/* ========================================
    Theme Icons (Bootstrap Icons)
    ======================================== */
 
@@ -11,31 +88,63 @@
   display: none;
 }
 
-.theme-icon-light { color: var(--bs-warning); }
-.theme-icon-dark { color: var(--bs-secondary); }
+.theme-icon-light {
+  color: var(--bs-warning);
+}
+.theme-icon-dark {
+  color: var(--bs-secondary);
+}
 /* Code theme icons in navbar - use high contrast colors for visibility in both themes */
 /* Default (light page theme) */
-.code-theme-icon-dark { color: #495057; }  /* Dark grey - visible on light navbar */
-.code-theme-icon-light { color: #ffc107; }  /* Amber/gold - visible on light navbar */
+.code-theme-icon-dark {
+  color: #495057;
+} /* Dark grey - visible on light navbar */
+.code-theme-icon-light {
+  color: #ffc107;
+} /* Amber/gold - visible on light navbar */
 
 /* Dark page theme */
-[data-bs-theme="dark"] .code-theme-icon-dark { color: #e9ecef; }  /* Light grey - visible on dark navbar */
-[data-bs-theme="dark"] .code-theme-icon-light { color: #ffc107; }  /* Amber/gold - visible on dark navbar */
+[data-bs-theme='dark'] .code-theme-icon-dark {
+  color: #e9ecef;
+} /* Light grey - visible on dark navbar */
+[data-bs-theme='dark'] .code-theme-icon-light {
+  color: #ffc107;
+} /* Amber/gold - visible on dark navbar */
 
-[data-bs-theme="dark"] .theme-icon-light { display: block; }
-[data-bs-theme="dark"] .theme-icon-dark { display: none; }
-[data-bs-theme="light"] .theme-icon-light { display: none; }
-[data-bs-theme="light"] .theme-icon-dark { display: block; }
+[data-bs-theme='dark'] .theme-icon-light {
+  display: block;
+}
+[data-bs-theme='dark'] .theme-icon-dark {
+  display: none;
+}
+[data-bs-theme='light'] .theme-icon-light {
+  display: none;
+}
+[data-bs-theme='light'] .theme-icon-dark {
+  display: block;
+}
 
 /* Code theme icons - always visible regardless of page theme */
-.code-theme-icon-light { display: none; }
-.code-theme-icon-dark { display: block; }
+.code-theme-icon-light {
+  display: none;
+}
+.code-theme-icon-dark {
+  display: block;
+}
 
 /* When code theme is light */
-[data-code-theme="light"] .code-theme-icon-light { display: block; }
-[data-code-theme="light"] .code-theme-icon-dark { display: none; }
-[data-code-theme="dark"] .code-theme-icon-light { display: none; }
-[data-code-theme="dark"] .code-theme-icon-dark { display: block; }
+[data-code-theme='light'] .code-theme-icon-light {
+  display: block;
+}
+[data-code-theme='light'] .code-theme-icon-dark {
+  display: none;
+}
+[data-code-theme='dark'] .code-theme-icon-light {
+  display: none;
+}
+[data-code-theme='dark'] .code-theme-icon-dark {
+  display: block;
+}
 
 /* ========================================
    Sticky Header
@@ -131,7 +240,7 @@
     color: var(--bs-body-color);
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .sidebar-toggler:hover {
@@ -144,11 +253,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1040;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
+    transition:
+      opacity 0.3s,
+      visibility 0.3s;
   }
 
   .sidebar-backdrop.show {
@@ -205,15 +316,15 @@
 }
 
 .sidebar .nav-link.active {
-  color: #6B46C1;
-  background-color: rgba(107, 70, 193, 0.1);
-  border-left-color: #6B46C1;
+  color: var(--sidebar-active-color, #6b46c1);
+  background-color: var(--sidebar-active-bg, rgba(107, 70, 193, 0.1));
+  border-left-color: var(--sidebar-active-color, #6b46c1);
   font-weight: 500;
 }
 
 /* Brand styling */
 .text-purple {
-  color: #6B46C1;
+  color: var(--bs-primary);
 }
 
 /* ========================================
@@ -225,7 +336,7 @@
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
-  content: "/";
+  content: '/';
   color: var(--bs-secondary-color);
 }
 
@@ -236,11 +347,11 @@
 }
 
 .breadcrumb-item a:hover {
-  color: #6B46C1;
+  color: var(--bs-primary);
 }
 
 .breadcrumb-item.active {
-  color: #6B46C1;
+  color: var(--bs-primary);
   font-weight: 500;
 }
 
@@ -269,13 +380,25 @@
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideOut {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(100%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 
 /* ========================================
@@ -283,16 +406,16 @@
    ======================================== */
 
 .code-tabs .nav-link.active {
-  color: #6B46C1;
-  border-bottom-color: #6B46C1;
+  color: #6b46c1;
+  border-bottom-color: #6b46c1;
 }
 
 .code-tabs .nav-link:focus-visible {
-  outline-color: #6B46C1;
+  outline-color: #6b46c1;
 }
 
 .code-tabs-container .tab-content {
-  background: #1E1E1E;
+  background: #1e1e1e;
   border-radius: 0 0 8px 8px;
 }
 
@@ -377,19 +500,19 @@
 }
 
 /* Theme Icon Visibility - Show active theme icon, hide inactive */
-.code-block-wrapper[data-code-theme="dark"] .theme-icon-light {
+.code-block-wrapper[data-code-theme='dark'] .theme-icon-light {
   display: none;
 }
 
-.code-block-wrapper[data-code-theme="dark"] .theme-icon-dark {
+.code-block-wrapper[data-code-theme='dark'] .theme-icon-dark {
   display: inline;
 }
 
-.code-block-wrapper[data-code-theme="light"] .theme-icon-light {
+.code-block-wrapper[data-code-theme='light'] .theme-icon-light {
   display: inline;
 }
 
-.code-block-wrapper[data-code-theme="light"] .theme-icon-dark {
+.code-block-wrapper[data-code-theme='light'] .theme-icon-dark {
   display: none;
 }
 
@@ -399,34 +522,38 @@
   color: #fff; /* Default for dark background */
 }
 
-.code-block-wrapper[data-code-theme="light"] .theme-toggle-button .theme-icon-light,
-.code-block-wrapper[data-code-theme="light"] .theme-toggle-button .theme-icon-dark {
+.code-block-wrapper[data-code-theme='light']
+  .theme-toggle-button
+  .theme-icon-light,
+.code-block-wrapper[data-code-theme='light']
+  .theme-toggle-button
+  .theme-icon-dark {
   color: #333; /* For light background */
 }
 
 /* Light Theme Styles for Code Blocks */
-.code-block-wrapper[data-code-theme="light"] pre {
+.code-block-wrapper[data-code-theme='light'] pre {
   background: #f5f2f0 !important;
 }
 
-.code-block-wrapper[data-code-theme="light"] pre code {
+.code-block-wrapper[data-code-theme='light'] pre code {
   color: #333 !important;
   text-shadow: none !important;
 }
 
-.code-block-wrapper[data-code-theme="light"] .theme-toggle-button,
-.code-block-wrapper[data-code-theme="light"] .copy-button {
+.code-block-wrapper[data-code-theme='light'] .theme-toggle-button,
+.code-block-wrapper[data-code-theme='light'] .copy-button {
   background: rgba(0, 0, 0, 0.1);
   border-color: rgba(0, 0, 0, 0.2);
   color: #333;
 }
 
-.code-block-wrapper[data-code-theme="light"] .theme-toggle-button:hover,
-.code-block-wrapper[data-code-theme="light"] .copy-button:hover {
+.code-block-wrapper[data-code-theme='light'] .theme-toggle-button:hover,
+.code-block-wrapper[data-code-theme='light'] .copy-button:hover {
   background: rgba(0, 0, 0, 0.15);
 }
 
-.code-block-wrapper[data-code-theme="light"] .copy-button.copied {
+.code-block-wrapper[data-code-theme='light'] .copy-button.copied {
   background: rgba(40, 167, 69, 0.3);
   border-color: rgba(40, 167, 69, 0.5);
   color: #155724;
@@ -444,7 +571,7 @@
 }
 
 .split-view-code {
-  background: #1E1E1E;
+  background: #1e1e1e;
 }
 
 .split-view-divider {
@@ -454,7 +581,7 @@
 
 .split-view-divider:hover,
 .split-view-divider:focus {
-  background: #6B46C1;
+  background: #6b46c1;
   outline: none;
 }
 
@@ -481,8 +608,8 @@
 }
 
 .mobile-view-tabs .nav-link.active {
-  color: #6B46C1;
-  border-bottom-color: #6B46C1;
+  color: #6b46c1;
+  border-bottom-color: #6b46c1;
 }
 
 /* ========================================
@@ -490,7 +617,9 @@
    ======================================== */
 
 @media (max-width: 1023px) {
-  .main-layout { flex-direction: column; }
+  .main-layout {
+    flex-direction: column;
+  }
 
   .split-view-container {
     flex-direction: column;
@@ -503,28 +632,46 @@
   }
 
   .split-view-divider,
-  .mobile-view-tabs { display: none; }
+  .mobile-view-tabs {
+    display: none;
+  }
 
-  .mobile-view-tabs { display: flex; }
+  .mobile-view-tabs {
+    display: flex;
+  }
 
   .split-view-code,
-  .split-view-demo { display: none; }
+  .split-view-demo {
+    display: none;
+  }
 
   .split-view-code.active,
   .split-view-demo.active,
-  .split-view-demo { display: block; }
+  .split-view-demo {
+    display: block;
+  }
 }
 
 @media (max-width: 576px) {
-  .split-view-code { height: 350px; }
+  .split-view-code {
+    height: 350px;
+  }
 }
 
 /* Dragging state */
-.split-view-container.dragging { user-select: none; }
-.split-view-container.dragging * { pointer-events: none; }
-.split-view-container.dragging .split-view-divider { pointer-events: auto; }
+.split-view-container.dragging {
+  user-select: none;
+}
+.split-view-container.dragging * {
+  pointer-events: none;
+}
+.split-view-container.dragging .split-view-divider {
+  pointer-events: auto;
+}
 .split-view-code.drag-active,
-.split-view-demo.drag-active { pointer-events: auto; }
+.split-view-demo.drag-active {
+  pointer-events: auto;
+}
 
 /* ========================================
    Search Modal & Results
@@ -554,20 +701,20 @@
 .search-result-item:hover,
 .search-result-item:focus,
 .search-result-item.active {
-  background-color: rgba(107, 70, 193, 0.1);
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
   color: var(--bs-body-color);
 }
 
 /* Keyboard navigation focus indicator - Story 4-3 */
 .search-result-item:focus-visible {
-  outline: 2px solid #6B46C1;
+  outline: 2px solid var(--bs-primary);
   outline-offset: -2px;
 }
 
 /* Active state (keyboard selected) gets stronger highlight */
 .search-result-item.active {
-  background-color: rgba(107, 70, 193, 0.15);
-  border-left: 3px solid #6B46C1;
+  background-color: rgba(var(--bs-primary-rgb), 0.15);
+  border-left: 3px solid var(--bs-primary);
 }
 
 .search-result-icon {
@@ -580,7 +727,7 @@
   background-color: var(--bs-tertiary-bg);
   border-radius: 0.375rem;
   margin-right: 0.75rem;
-  color: #6B46C1;
+  color: var(--bs-primary);
 }
 
 .search-result-content {
@@ -622,7 +769,7 @@
 
 /* Search modal adjustments */
 #search-input:focus {
-  border-color: #6B46C1;
+  border-color: var(--bs-primary);
   box-shadow: none;
 }
 
@@ -674,7 +821,7 @@
 }
 
 .recent-search-item:hover {
-  background-color: rgba(107, 70, 193, 0.1);
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
 }
 
 .recent-search-item .search-icon {

@@ -1,10 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Django + Datastar Examples</title>
+    <!-- Prevent theme flash - must be in head before any rendering -->
+    <script>
+      (function() {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      })();
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -30,61 +39,70 @@
     <nav class="navbar navbar-expand-lg border-bottom sticky-top bg-body-tertiary"
          id="sticky-header">
       <div class="container-fluid">
-        <a class="navbar-brand fw-semibold text-primary"
-           href="{% url 'examples:index' %}">
-          <i class="bi bi-code-slash me-1"></i>Django + Datastar
+        <a class="navbar-brand fw-semibold" href="{% url 'examples:index' %}">
+          <i class="bi bi-lightning-charge-fill logo-gradient me-1"></i><span class="logo-gradient">Django + Datastar</span>
         </a>
 
-        <div class="navbar-nav ms-auto align-items-center gap-2">
-          <!-- Search Trigger Button -->
-          <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
-                  id="search-trigger"
-                  aria-label="Search (Ctrl+K)"
-                  data-kbd-shortcut="Ctrl+K">
-            <i class="bi bi-search"></i>
-            <span class="d-none d-md-inline">Search</span>
-            <kbd class="kbd-shortcut" data-kbd-display>Ctrl+K</kbd>
-          </button>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-          <!-- GitHub Link (optional - placeholder URL) -->
-          <!-- TODO: Make configurable via Django settings -->
-          <a class="btn btn-link nav-link text-body"
-             href="https://github.com"
-             target="_blank"
-             rel="noopener noreferrer"
-             aria-label="GitHub">
-            <i class="bi bi-github" style="font-size: 1.25rem;"></i>
-          </a>
-
-          <!-- How to Build Button (shows offcanvas) -->
-          {% block howto_nav_button %}
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="navbar-nav ms-auto align-items-center gap-2">
+            <!-- Search Trigger Button -->
             <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#howtoOffcanvas"
-                    aria-controls="howtoOffcanvas"
-                    {% if not howto_slug %}style="display: none;"{% endif %}>
-              <i class="bi bi-book"></i>
-              <span class="d-none d-md-inline">How to Build</span>
+                    id="search-trigger"
+                    aria-label="Search (Ctrl+K)"
+                    data-kbd-shortcut="Ctrl+K">
+              <i class="bi bi-search"></i>
+              <span class="d-none d-md-inline">Search</span>
+              <kbd class="kbd-shortcut" data-kbd-display>Ctrl+K</kbd>
             </button>
-          {% endblock howto_nav_button %}
 
-          <!-- Code Block Theme Toggle -->
-          <button class="btn btn-link nav-link text-body p-2"
-                  id="codeThemeToggle"
-                  aria-label="Toggle code block theme"
-                  title="Toggle code block theme">
-            <i class="bi bi-code-square code-theme-icon code-theme-icon-dark"></i>
-            <i class="bi bi-code-slash code-theme-icon code-theme-icon-light"></i>
-          </button>
+            <a class="btn btn-link nav-link text-body"
+               href="https://github.com/ZendaInnocent/django-datastar-examples"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="GitHub">
+              <i class="bi bi-github fs-5"></i>
+            </a>
 
-          <!-- Page Theme Toggle -->
-          <button class="btn btn-link nav-link text-body p-2"
-                  id="themeToggle"
-                  aria-label="Toggle theme">
-            <i class="bi bi-sun-fill theme-icon theme-icon-light"></i>
-            <i class="bi bi-moon-fill theme-icon theme-icon-dark"></i>
-          </button>
+            <!-- How to Build Button (shows offcanvas) -->
+            {% block howto_nav_button %}
+              <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
+                      type="button"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#howtoOffcanvas"
+                      aria-controls="howtoOffcanvas"
+                      {% if not howto_slug %}style="display: none;"{% endif %}>
+                <i class="bi bi-book"></i>
+                <span class="d-none d-md-inline">How to Build</span>
+              </button>
+            {% endblock howto_nav_button %}
+
+            <!-- Code Block Theme Toggle -->
+            <button class="btn btn-link nav-link text-body p-2"
+                    id="codeThemeToggle"
+                    aria-label="Toggle code block theme"
+                    title="Toggle code block theme">
+              <i class="bi bi-code-square code-theme-icon code-theme-icon-dark"></i>
+              <i class="bi bi-code-slash code-theme-icon code-theme-icon-light"></i>
+            </button>
+
+            <!-- Page Theme Toggle -->
+            <button class="btn btn-link nav-link text-body p-2"
+                    id="themeToggle"
+                    aria-label="Toggle theme">
+              <i class="bi bi-sun-fill theme-icon theme-icon-light"></i>
+              <i class="bi bi-moon-fill theme-icon theme-icon-dark"></i>
+            </button>
+          </div>
         </div>
       </div>
     </nav>
@@ -131,6 +149,7 @@
     <!-- Main layout container -->
     <div class="d-flex">
       {% block sidebar %}
+        {% include 'includes/sidebar.html' %}
       {% endblock sidebar %}
       <div class="flex-grow-1 p-4">
         {% block breadcrumbs %}
@@ -142,6 +161,7 @@
 
     <!-- HowTo Panel (How to Build offcanvas) -->
     {% block howto_panel %}
+      {% include 'examples/fragments/howto_panel.html' %}
     {% endblock howto_panel %}
 
     <!-- Toast Container -->

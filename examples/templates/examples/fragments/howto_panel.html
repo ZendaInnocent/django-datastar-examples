@@ -1,31 +1,26 @@
 {% load static howto_tags %}
-{% block howto_panel %}
-  {# Button is now in the navbar - see base.html #}
 
-  <div class="offcanvas offcanvas-end"
-       tabindex="-1"
-       id="howtoOffcanvas"
-       aria-labelledby="howtoOffcanvasLabel"
-       style="width: 75%;
-              max-width: 900px">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="howtoOffcanvasLabel">
-        {{ howto_title|default:"How to Build" }}
-      </h5>
-      <button type="button"
-              class="btn-close"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      {# Render the HowTo content based on the current page slug #}
-      {% if howto_slug %}
-        {% howto_content howto_slug %}
-      {% else %}
-        <p class="text-muted">Select an example to view its How to Build guide.</p>
-      {% endif %}
-    </div>
+<div class="offcanvas offcanvas-end"
+     tabindex="-1"
+     id="howtoOffcanvas"
+     aria-labelledby="howtoOffcanvasLabel"
+     style="width: 75%;
+            max-width: 900px">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="howtoOffcanvasLabel">
+      {{ howto_title|default:"How to Build" }}
+    </h5>
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
   </div>
-
-  {# Code blocks JavaScript handles copy & theme buttons with hover behavior #}
-{% endblock howto_panel %}
+  <div class="offcanvas-body">
+    {# Render the HowTo content based on the current page slug #}
+    {% if howto_slug %}
+      {% howto_content howto_slug %}
+    {% else %}
+      <p class="text-muted">Select an example to view its How to Build guide.</p>
+    {% endif %}
+  </div>
+</div>

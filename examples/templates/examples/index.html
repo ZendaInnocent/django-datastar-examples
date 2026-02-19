@@ -1,276 +1,224 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container py-5">
-  <header class="text-center mb-5">
-    <h1 class="display-4 fw-bold">Django + Datastar</h1>
-    <p class="lead text-muted">Hypermedia-driven web applications the simple way</p>
-  </header>
-
-  <section class="card mb-5 shadow-sm">
-    <div class="card-body">
-      <p class="mb-3">
-        Welcome! This is a collection of examples demonstrating how to build
-        modern, reactive web applications using Django with
-        <a href="https://data-star.dev/" target="_blank" class="text-decoration-none">Datastar</a>.
+  <div class="container py-5">
+    <header class="text-center mb-5">
+      <h1 class="display-4 fw-bold">Django + Datastar</h1>
+      <p class="lead text-muted">
+        Hypermedia-driven web applications the simple way
       </p>
-      <p class="mb-0">
-        Datastar brings the power of Server-Sent Events (SSE) and fragment-based
-        updates to Django, letting you create dynamic UIs without writing JavaScript.
-      </p>
-    </div>
-  </section>
+    </header>
 
-  <section class="mb-5">
-    <h2 class="h4 mb-4">Examples</h2>
+    <section class="card mb-5 shadow-sm border bg-body">
+      <div class="card-body">
+        <p class="mb-3">
+          Welcome! This is a collection of examples demonstrating how to build
+          modern, reactive web applications using Django with
+          <a href="https://data-star.dev/"
+             target="_blank"
+             class="text-decoration-none">Datastar</a>.
+        </p>
+        <p class="mb-0">
+          Datastar brings the power of Server-Sent Events (SSE) and fragment-based
+          updates to Django, letting you create dynamic UIs without writing JavaScript.
+        </p>
+      </div>
+    </section>
 
-    <!-- Search Category -->
-    <div class="example-category mb-4">
-      <h3 class="h5 mb-3">
-        <span class="badge bg-primary me-2">Search</span>
-      </h3>
+    <section class="mb-5">
+      <h2 class="h4 mb-4">Examples</h2>
       <div class="row g-4">
+        <!-- Search -->
         <div class="col-md-6 col-lg-4">
-          <a href="{% url 'examples:active-search' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+          <a href="{% url 'examples:active-search' %}"
+             class="text-decoration-none">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge bg-primary mb-2">Search</span>
-                <h3 class="h5 card-title">Active Search</h3>
+                <i class="bi bi-search text-primary fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Active Search</h3>
                 <p class="card-text text-muted small">Search contacts with debounced input</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
-      </div>
-    </div>
 
-    <!-- CRUD Category -->
-    <div class="example-category mb-4">
-      <h3 class="h5 mb-3">
-        <span class="badge bg-success me-2">CRUD</span>
-      </h3>
-      <div class="row g-4">
+        <!-- CRUD -->
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:edit-row' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge bg-success mb-2">CRUD</span>
-                <h3 class="h5 card-title">Edit Row</h3>
+                <i class="bi bi-pencil text-success fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Edit Row</h3>
                 <p class="card-text text-muted small">Inline editing for table rows</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
+
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:delete-row' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge bg-success mb-2">CRUD</span>
-                <h3 class="h5 card-title">Delete Row</h3>
+                <i class="bi bi-trash text-danger fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Delete Row</h3>
                 <p class="card-text text-muted small">Remove rows with animation</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
+
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:bulk-update' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge bg-success mb-2">CRUD</span>
-                <h3 class="h5 card-title">Bulk Update</h3>
+                <i class="bi bi-check2-square text-success fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Bulk Update</h3>
                 <p class="card-text text-muted small">Select and update multiple items</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
-      </div>
-    </div>
 
-    <!-- Real-time Category -->
-    <div class="example-category mb-4">
-      <h3 class="h5 mb-3">
-        <span class="badge" style="background-color: #6B46C1;">Real-time</span>
-      </h3>
-      <div class="row g-4">
+        <!-- Real-time -->
         <div class="col-md-6 col-lg-4">
-          <a href="{% url 'examples:click-to-load' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+          <a href="{% url 'examples:click-to-load' %}"
+             class="text-decoration-none">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge mb-2" style="background-color: #6B46C1;">Real-time</span>
-                <h3 class="h5 card-title">Click to Load</h3>
+                <i class="bi bi-arrow-down-circle text-primary fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Click to Load</h3>
                 <p class="card-text text-muted small">Pagination with "Load More" button</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <a href="{% url 'examples:inline-validation' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
-              <div class="card-body">
-                <span class="badge mb-2" style="background-color: #6B46C1;">Real-time</span>
-                <h3 class="h5 card-title">Inline Validation</h3>
-                <p class="card-text text-muted small">Real-time form validation</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
-              </div>
-            </div>
-          </a>
-        </div>
-        <div class="col-md-6 col-lg-4">
-          <a href="{% url 'examples:infinite-scroll' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
-              <div class="card-body">
-                <span class="badge mb-2" style="background-color: #6B46C1;">Real-time</span>
-                <h3 class="h5 card-title">Infinite Scroll</h3>
-                <p class="card-text text-muted small">Auto-load more on scroll</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
-              </div>
-            </div>
-          </a>
-        </div>
-        <div class="col-md-6 col-lg-4">
-          <a href="{% url 'examples:notifications' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
-              <div class="card-body">
-                <span class="badge mb-2" style="background-color: #6B46C1;">Real-time</span>
-                <h3 class="h5 card-title">Notifications</h3>
-                <p class="card-text text-muted small">Real-time notification counter</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
 
-    <!-- Interactive Category -->
-    <div class="example-category mb-4">
-      <h3 class="h5 mb-3">
-        <span class="badge me-2" style="background-color: #FD7E14;">Interactive</span>
-      </h3>
-      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a href="{% url 'examples:inline-validation' %}"
+             class="text-decoration-none">
+            <div class="card h-100 shadow-sm example-card border bg-body">
+              <div class="card-body">
+                <i class="bi bi-check-circle text-primary fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Inline Validation</h3>
+                <p class="card-text text-muted small">Real-time form validation</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <a href="{% url 'examples:infinite-scroll' %}"
+             class="text-decoration-none">
+            <div class="card h-100 shadow-sm example-card border bg-body">
+              <div class="card-body">
+                <i class="bi bi-infinity text-primary fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Infinite Scroll</h3>
+                <p class="card-text text-muted small">Auto-load more on scroll</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <a href="{% url 'examples:notifications' %}"
+             class="text-decoration-none">
+            <div class="card h-100 shadow-sm example-card border bg-body">
+              <div class="card-body">
+                <i class="bi bi-bell text-warning fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Notifications</h3>
+                <p class="card-text text-muted small">Real-time notification counter</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Interactive -->
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:todo-mvc' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge mb-2" style="background-color: #FD7E14;">Interactive</span>
-                <h3 class="h5 card-title">TodoMVC</h3>
+                <i class="bi bi-list-check text-info fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">TodoMVC</h3>
                 <p class="card-text text-muted small">Classic todo app implementation</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
+
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:lazy-tabs' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge mb-2" style="background-color: #FD7E14;">Interactive</span>
-                <h3 class="h5 card-title">Lazy Tabs</h3>
+                <i class="bi bi-tablet text-info fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Lazy Tabs</h3>
                 <p class="card-text text-muted small">Load tab content on demand</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
+
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:file-upload' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge mb-2" style="background-color: #FD7E14;">Interactive</span>
-                <h3 class="h5 card-title">File Upload</h3>
+                <i class="bi bi-cloud-upload text-info fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">File Upload</h3>
                 <p class="card-text text-muted small">Upload with progress indicator</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
+
         <div class="col-md-6 col-lg-4">
           <a href="{% url 'examples:sortable' %}" class="text-decoration-none">
-            <div class="card h-100 shadow-sm example-card border-0">
+            <div class="card h-100 shadow-sm example-card border bg-body">
               <div class="card-body">
-                <span class="badge mb-2" style="background-color: #FD7E14;">Interactive</span>
-                <h3 class="h5 card-title">Sortable</h3>
+                <i class="bi bi-arrow-down-up text-info fs-4 mb-3 d-block"></i>
+                <h3 class="h5 card-title text-body">Sortable</h3>
                 <p class="card-text text-muted small">Drag-and-drop reordering</p>
-                <button class="btn btn-sm btn-outline-primary mt-2">View Example</button>
               </div>
             </div>
           </a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="docs" class="card shadow-sm mb-5">
-    <div class="card-body">
-      <h2 class="h4 mb-4">Documentation</h2>
-      <ol class="mb-0">
-        <li class="mb-2"><a href="https://data-star.dev/guide" target="_blank" class="text-decoration-none">Read the Datastar Guide</a></li>
-        <li class="mb-2"><a href="https://data-star.dev/reference" target="_blank" class="text-decoration-none">Check the Datastar Reference</a></li>
-        <li><a href="https://github.com/starfederation/datastar" target="_blank" class="text-decoration-none">Explore the GitHub Repo</a></li>
-      </ol>
-    </div>
-  </section>
-
-  <section id="learning" class="card shadow-sm mb-5">
-    <div class="card-body">
-      <h2 class="h4 mb-4">Learning Paths</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card h-100 border-0 bg-light">
-            <div class="card-body">
-              <h3 class="h5 card-title">Beginner Path</h3>
-              <p class="card-text text-muted small">Start here! Learn the basics of Datastar with simple examples.</p>
-              <ul class="list-unstyled small text-muted">
-                <li>1. Active Search</li>
-                <li>2. Click to Load</li>
-                <li>3. TodoMVC</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100 border-0 bg-light">
-            <div class="card-body">
-              <h3 class="h5 card-title">Intermediate Path</h3>
-              <p class="card-text text-muted small">Build on the basics with CRUD and real-time features.</p>
-              <ul class="list-unstyled small text-muted">
-                <li>1. Edit Row</li>
-                <li>2. Delete Row</li>
-                <li>3. Inline Validation</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100 border-0 bg-light">
-            <div class="card-body">
-              <h3 class="h5 card-title">Advanced Path</h3>
-              <p class="card-text text-muted small">Master advanced patterns and complex interactions.</p>
-              <ul class="list-unstyled small text-muted">
-                <li>1. Infinite Scroll</li>
-                <li>2. Lazy Tabs</li>
-                <li>3. Sortable</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+    <section id="docs" class="card shadow-sm border bg-body">
+      <div class="card-body">
+        <h2 class="h4 mb-4">Documentation</h2>
+        <ol class="mb-0">
+          <li class="mb-2">
+            <a href="https://data-star.dev/guide"
+               target="_blank"
+               class="text-decoration-none">Read the Datastar Guide</a>
+          </li>
+          <li class="mb-2">
+            <a href="https://data-star.dev/reference"
+               target="_blank"
+               class="text-decoration-none">Check the Datastar Reference</a>
+          </li>
+          <li>
+            <a href="https://github.com/starfederation/datastar"
+               target="_blank"
+               class="text-decoration-none">Explore the GitHub Repo</a>
+          </li>
+        </ol>
       </div>
-    </div>
-  </section>
-</div>
+    </section>
+  </div>
 
-<style>
-  .example-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .example-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
-  }
-</style>
+  <style>
+      .example-card {
+          transition: transform 0.2s, box-shadow 0.2s;
+          cursor: pointer;
+      }
+
+      .example-card:hover {
+          transform: translateY(-4px);
+      }
+
+      .example-card .card-title {
+          font-weight: 600;
+      }
+  </style>
 {% endblock content %}
