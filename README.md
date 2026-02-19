@@ -51,58 +51,18 @@ Key features:
 
 ## Examples
 
-This project includes 12 practical examples, each demonstrating a common Datastar pattern:
+This project includes practical examples, each demonstrating a common Datastar pattern
 
-| # | Example | Description |
-|---|---------|-------------|
-| 01 | [Active Search]({% url 'examples:active-search' %}) | Search contacts with debounced input |
-| 02 | [Click to Load]({% url 'examples:click-to-load' %}) | Pagination with "Load More" button |
-| 03 | [Edit Row]({% url 'examples:edit-row' %}) | Inline editing for table rows |
-| 04 | [Delete Row]({% url 'examples:delete-row' %}) | Remove rows with animation |
-| 05 | [TodoMVC]({% url 'examples:todo-mvc' %}) | Classic todo app implementation |
-| 06 | [Inline Validation]({% url 'examples:inline-validation' %}) | Real-time form validation |
-| 07 | [Infinite Scroll]({% url 'examples:infinite-scroll' %}) | Auto-load more on scroll |
-| 08 | [Lazy Tabs]({% url 'examples:lazy-tabs' %}) | Load tab content on demand |
-| 09 | [File Upload]({% url 'examples:file-upload' %}) | Upload with progress indicator |
-| 10 | [Sortable]({% url 'examples:sortable' %}) | Drag-and-drop reordering |
-| 11 | [Notifications]({% url 'examples:notifications' %}) | Real-time notification counter |
-| 12 | [Bulk Update]({% url 'examples:bulk-update' %}) | Select and update multiple items |
+### Screenshots
 
-## Project Structure
-
-```
-django-datastar-examples/
-├── config/
-│   ├── settings.py      # Django settings
-│   └── urls.py          # Root URL configuration
-├── examples/
-│   ├── models.py        # Example models (Contact, Todo, Notification, Item)
-│   ├── views.py         # View handlers for all examples
-│   ├── urls.py          # Example URLs (kebab-case)
-│   └── templates/
-│       └── examples/
-│           ├── index.html           # Main examples index
-│           └── *.html              # 12 example templates
-├── docs/
-│   └── datastar-guide/             # Comprehensive Datastar guide
-├── templates/
-│   └── base.html        # Base template with Datastar script
-└── manage.py
-```
-
-## Documentation
-
-Detailed documentation is available in the `docs/datastar-guide/` directory:
-
-- [Introduction](docs/datastar-guide/introduction.md) - What is Datastar?
-- [Installation](docs/datastar-guide/installation.md) - Setup guide
-- [Core Concepts](docs/datastar-guide/core-concepts.md) - Signals, SSE, fragments
-- [Django Integration](docs/datastar-guide/django-integration.md) - Using datastar-py
-- [Attributes Reference](docs/datastar-guide/datastar-attributes-reference.md) - Complete attribute reference
-- [Actions Reference](docs/datastar-guide/datastar-actions-reference.md) - Actions like @get, @post
-- [Common Patterns](docs/datastar-guide/common-patterns.md) - Ready-to-use patterns
-- [Best Practices](docs/datastar-guide/best-practices.md) - Recommended patterns
-- [Troubleshooting](docs/datastar-guide/troubleshooting.md) - Common issues and solutions
+| Example       | Screenshot                                      |
+| ------------- | ----------------------------------------------- |
+| Active Search | ![Active Search](screenshots/active-search.png) |
+| Click to Load | ![Click to Load](screenshots/click-to-load.png) |
+| Edit Row      | ![Edit Row](screenshots/edit-row.png)           |
+| File Upload   | ![File Upload](screenshots/file-upload.png)     |
+| Lazy Tabs     | ![Lazy Tabs](screenshots/lazy-tabs.png)         |
+| Sortable      | ![Sortable](screenshots/sortable.png)           |
 
 ## Adding a New Example
 
@@ -137,8 +97,7 @@ The project includes four models for demonstrations:
 ## Resources
 
 - [Datastar Documentation](https://data-star.dev/)
-- [datastar-py SDK](https://pypi.org/project/datastar-py/)
-- [Datastar GitHub](https://github.com/starfederation/datastar)
+- [Datastar Python SDK](https://github.com/starfederation/datastar-python/)
 
 ## License
 
