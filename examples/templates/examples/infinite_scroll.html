@@ -3,9 +3,6 @@
 {% block content %}
 
   <div class="container py-5">
-    <nav class="mb-4">
-      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-    </nav>
 
     <header class="mb-5">
       <h1 class="h2">Infinite Scroll</h1>
@@ -29,11 +26,11 @@
 
     {% include 'examples/fragments/contact_list.html' %}
 
-    <div data-json-signals=""></div>
     <div id="sentinel"
          data-signals="{page: 1}"
-         data-on:intersect="$page = $page + 1; @get('{% url "examples:infinite-scroll" %}')">
-      <div class="text-center py-4">
+         data-indicator:_fetching
+         data-on-intersect="$page = $page + 1; @get('{% url "examples:infinite-scroll" %}')">
+      <div class="text-center py-4" data-show="$_fetching">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>

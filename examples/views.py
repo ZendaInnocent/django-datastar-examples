@@ -317,10 +317,11 @@ def infinite_scroll_view(request):
     if request.headers.get('Datastar-Request'):
         signals = read_signals(request)
         page = signals.get('page')
+
         if page is not None:
             page_obj = paginator.get_page(page)
             html = render_to_string(
-                'examples/fragments/contact_list.html',
+                'examples/fragments/contact_list_append.html',
                 {'contacts': page_obj},
             )
             return DatastarResponse(
