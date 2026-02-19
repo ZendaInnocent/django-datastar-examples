@@ -13,8 +13,14 @@
 
 .theme-icon-light { color: var(--bs-warning); }
 .theme-icon-dark { color: var(--bs-secondary); }
-.code-theme-icon-light { color: var(--bs-warning); }
-.code-theme-icon-dark { color: var(--bs-secondary); }
+/* Code theme icons in navbar - use high contrast colors for visibility in both themes */
+/* Default (light page theme) */
+.code-theme-icon-dark { color: #495057; }  /* Dark grey - visible on light navbar */
+.code-theme-icon-light { color: #ffc107; }  /* Amber/gold - visible on light navbar */
+
+/* Dark page theme */
+[data-bs-theme="dark"] .code-theme-icon-dark { color: #e9ecef; }  /* Light grey - visible on dark navbar */
+[data-bs-theme="dark"] .code-theme-icon-light { color: #ffc107; }  /* Amber/gold - visible on dark navbar */
 
 [data-bs-theme="dark"] .theme-icon-light { display: block; }
 [data-bs-theme="dark"] .theme-icon-dark { display: none; }

@@ -10,8 +10,6 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from examples.forms import ContactForm
-
 from .models import Contact, Item, Notification, Todo
 
 
@@ -99,19 +97,16 @@ def edit_row_view(request):
     return render(request, 'examples/edit_row.html', {'contacts': contacts})
 
 
+@csrf_exempt
 def contact_update_view(request):
     signals = read_signals(request)
-    if signals is not None:
-        contact_id = signals.get('contactId')
-    else:
-        contact_id = 40
-
+    contact_id = signals.get('contactId')
     contact = get_object_or_404(Contact, pk=contact_id)
 
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
+        first_name = signals.get('first_name')
+        last_name = signals.get('last_name')
+        email = signals.get('email')
 
         contact.first_name = first_name
         contact.last_name = last_name
@@ -121,20 +116,15 @@ def contact_update_view(request):
             'examples/fragments/contact_row.html', {'contact': contact}
         )
         return DatastarResponse(
-            SSE.patch_elements(html, selector=f'#contact-{contact_id}'),
+            SSE.patch_elements(html, selector=f'#contact-{contact.pk}'),
         )
 
-    form = ContactForm(
-        initial={
-            'first_name': contact.first_name,
-            'last_name': contact.last_name,
-            'email': contact.email,
-            'phone': contact.phone,
-        }
-    )
     return DatastarResponse(
         SSE.patch_elements(
-            render_to_string('examples/fragments/contact_form.html', {'form': form}),
+            render_to_string(
+                'examples/fragments/contact_form.html',
+                {'contact': contact},
+            ),
             selector=f'#contact-{contact.pk}',
         )
     )
@@ -260,6 +250,15 @@ def todomvc_filter_view(request):
 
     html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
     yield SSE.patch_elements(html, selector='#todo-list')
+
+
+@datastar_response
+def get_contact_view(request):
+    signals = read_signals(request)
+    contact_id = signals.get('contactId')
+    contact = get_object_or_404(Contact, pk=contact_id)
+    html = render_to_string('examples/fragments/contact_row.html', {'contact': contact})
+    yield SSE.patch_elements(html, f'#contact-{contact.pk}')
 
 
 # ============================================================================

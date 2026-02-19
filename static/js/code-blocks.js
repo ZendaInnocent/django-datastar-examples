@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Also initialize when offcanvas is shown (in case content wasn't in DOM)
   document.addEventListener('shown.bs.offcanvas', function () {
-    console.log('Offcanvas shown - reinitializing code blocks')
     // Re-apply theme to ensure all blocks are synced from localStorage
     applyGlobalCodeTheme()
     // Re-wrap any unwrapped code blocks (in case offcanvas has new content)
@@ -103,8 +102,6 @@ function handleThemeToggleClick(event) {
   const button = event.target.closest('.theme-toggle-button')
   if (!button) return
 
-  console.log('Delegated theme toggle clicked', button)
-
   // Prevent default and stop propagation
   event.preventDefault()
   event.stopPropagation()
@@ -117,13 +114,9 @@ function handleThemeToggleClick(event) {
  * Toggle theme for ALL code blocks (global toggle)
  */
 function toggleCodeBlockTheme(codeId) {
-  console.log('toggleCodeBlockTheme called', { codeId })
-
   // Get current theme from localStorage or default to dark
   const currentTheme = localStorage.getItem(CODE_BLOCK_THEME_KEY) || 'dark'
-  console.log('Current theme:', currentTheme)
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
-  console.log('New theme:', newTheme)
 
   // Update ALL code block wrappers on the page
   document.querySelectorAll('.code-block-wrapper').forEach(function (wrapper) {
@@ -138,7 +131,6 @@ function toggleCodeBlockTheme(codeId) {
 
   // Store preference in localStorage
   localStorage.setItem(CODE_BLOCK_THEME_KEY, newTheme)
-  console.log('Theme saved to localStorage:', newTheme)
 
   // Dispatch event so navbar toggle can sync
   window.dispatchEvent(

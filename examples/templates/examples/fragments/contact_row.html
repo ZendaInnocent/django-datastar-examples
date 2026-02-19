@@ -8,6 +8,8 @@
   <td>
     <div>
       <button class="btn btn-outline-primary btn-sm"
+              data-indicator:_fetching
+              data-attr:disabled="$_fetching"
               data-on:click="$contactId = `{{ contact.id }}`; @get('{% url "examples:contact-update" %}')">
         Edit
       </button>

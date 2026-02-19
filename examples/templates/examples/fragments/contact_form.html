@@ -1,21 +1,39 @@
-<tr id="contact-{{ contact.id }}">
+<tr id="contact-{{ contact.pk }}">
   <td>
     <div class="d-flex gap-2">
-      {{ form.first_name }}
-      {{ form.last_name }}
+      <input type="text"
+             name="first_name"
+             value="{{ contact.first_name }}"
+             class="form-control form-control-sm"
+             data-bind:first_name>
+      <input type="text"
+             name="last_name"
+             value="{{ contact.last_name }}"
+             class="form-control form-control-sm"
+             data-bind:last_name>
     </div>
   </td>
-  <td>{{ form.email }}</td>
+  <td>
+    <input type="email"
+           name="email"
+           value="{{ contact.email }}"
+           class="form-control form-control-sm"
+           data-bind:email>
+  </td>
   <td>
     <div class="d-flex gap-2">
-      <button type="submit"
+      <button type="button"
               class="btn btn-success btn-sm"
-              data-on:click="@post('{% url 'examples:contact-update' %}', {contentType: 'form'})">
+              data-indicator:_fetching
+              data-attr:disabled="$_fetching"
+              data-on:click="@post('{% url 'examples:contact-update' %}')">
         Save
       </button>
-      <button type="button"
+      <button ype="button"
               class="btn btn-secondary btn-sm"
-              data-on:click="@get('{% url 'examples:contact-update' %}')">
+              data-indicator:_fetching
+              data-attr:disabled="$_fetching"
+              data-on:click="@get('{% url "examples:get-contact" %}')">
         Cancel
       </button>
     </div>

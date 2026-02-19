@@ -17,6 +17,7 @@ urlpatterns = [
     path('todo-mvc/add/', views.todomvc_add_view, name='todo-mvc-add'),
     path('todo-mvc/clear/', views.todomvc_clear_view, name='todo-mvc-clear'),
     path('todo-mvc/filter/', views.todomvc_filter_view, name='todo-mvc-filter'),
+    path('contact/', views.get_contact_view, name='get-contact'),
     path('inline-validation/', views.inline_validation_view, name='inline-validation'),
     path(
         'inline-validation/validate/',
