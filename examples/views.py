@@ -348,22 +348,27 @@ def infinite_scroll_view(request):
 
 
 def lazy_tabs_view(request):
-    return render(request, 'examples/lazy_tabs.html', {'tab': 'home'})
+    if request.headers.get('Datastar-Request'):
+        signals = read_signals(request)
+        tab = signals.get('activeTab', 'home')
 
+        content = {
+            'home': 'Welcome to the home tab! This content was loaded lazily.',
+            'about': 'About Us: We build modern web applications with Django and Datastar.',
+            'contact': 'Contact us at: hello@example.com',
+        }.get(tab, 'Content not found')
 
-@datastar_response
-def lazy_tabs_tab_view(request):
-    tab = request.GET.get('tab', 'home')
-    content = {
-        'home': 'Welcome to the home tab! This content was loaded lazily.',
-        'about': 'About Us: We build modern web applications with Django and Datastar.',
-        'contact': 'Contact us at: hello@example.com',
-    }.get(tab, 'Content not found')
+        html = render_to_string(
+            'examples/fragments/tab_content.html', {'content': content}
+        )
+        return DatastarResponse(
+            [
+                SSE.patch_elements(html, selector='#tab-content'),
+                SSE.patch_signals({'activeTab': tab}),
+            ]
+        )
 
-    html = render_to_string(
-        'examples/fragments/tab_content.html', {'tab': tab, 'content': content}
-    )
-    yield SSE.patch_elements(html, selector='#tab-content')
+    return render(request, 'examples/lazy_tabs.html')
 
 
 # ============================================================================

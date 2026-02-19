@@ -3,9 +3,6 @@
 {% block content %}
 
   <div class="container py-5">
-    <nav class="mb-4">
-      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-    </nav>
 
     <header class="mb-5">
       <h1 class="h2">Lazy Tabs</h1>
@@ -18,7 +15,7 @@
         <ol class="text-muted small">
           <li>Clicking a tab updates a signal with the tab name</li>
           <li>
-            Signal change triggers GET request to <code>/lazy-tabs/tab/</code>
+            Signal change triggers GET request to <code>/lazy-tabs/</code>
           </li>
           <li>Server returns content fragment for that tab</li>
           <li>Datastar merges the new content into the tab pane</li>
@@ -28,33 +25,40 @@
 
     <div class="card shadow-sm">
       <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs">
+        <ul class="nav nav-tabs card-header-tabs"
+            data-signals="{activeTab: 'home'}"
+            data-init="@get('{% url "examples:lazy-tabs" %}')">
           <li class="nav-item">
-            <button class="nav-link {% if tab == 'home' %}active{% endif %}"
-                    data-on:click="$activeTab = 'home'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=home')">
+            <button class="nav-link"
+                    data-class="{active: $activeTab == 'home'}"
+                    data-on:click="$activeTab = 'home'; @get('{% url "examples:lazy-tabs" %}')">
               Home
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link {% if tab == 'about' %}active{% endif %}"
-                    data-on:click="$activeTab = 'about'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=about')">
+            <button class="nav-link"
+                    data-class="{active: $activeTab == 'about'}"
+                    data-on:click="$activeTab = 'about'; @get('{% url "examples:lazy-tabs" %}')">
               About
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link {% if tab == 'contact' %}active{% endif %}"
-                    data-on:click="$activeTab = 'contact'; @get('{% url 'examples:lazy-tabs-tab' %}?tab=contact')">
+            <button class="nav-link"
+                    data-class="{active: $activeTab == 'contact'}"
+                    data-on:click="$activeTab = 'contact'; @get('{% url "examples:lazy-tabs" %}')">
               Contact
             </button>
           </li>
         </ul>
       </div>
-      <div class="card-body" id="tab-content">
-        <p>Select a tab to load content...</p>
+      <div class="card-body">
+        <div id="tab-content">
+          <p>Select a tab to load content...</p>
+        </div>
       </div>
     </div>
 
-    <section class="card shadow-sm mb-4">
+    <section class="card shadow-sm my-4">
       <div class="card-body">
         <h2 class="h5 mb-3">Learn More</h2>
         <ul class="mb-0">
