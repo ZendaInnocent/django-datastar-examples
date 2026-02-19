@@ -3,9 +3,6 @@
 {% block content %}
 
   <div class="container py-5">
-    <nav class="mb-4">
-      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-    </nav>
 
     <header class="mb-5">
       <h1 class="h2">Notifications</h1>
@@ -24,24 +21,44 @@
       </div>
     </section>
 
-    <div class="row">
+    <div class="row"
+         data-signals="{notificationCount: 0, notificationId: ''}"
+         data-init="@get('{% url "examples:notifications-count" %}')">
       <div class="col-md-6">
         <div class="card shadow-sm">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h5 class="mb-0">Notifications</h5>
-              <span class="badge bg-danger" id="notification-count">{{ unread_count }}</span>
+              <span class="badge bg-success"
+                    id="notification-count"
+                    data-text="`${$notificationCount} Unread`"></span>
             </div>
             <button class="btn btn-outline-primary btn-sm"
-                    data-on:click="@post('{% url 'examples:notifications-mark-read' %}')">
+                    data-show="$notificationCount > 0"
+                    data-on:click="$notificationId = ''; @post('{% url 'examples:notifications-mark-read' %}')">
               Mark all as read
+            </button>
+            <button class="btn btn-outline-success btn-sm"
+                    data-show="$notificationCount > 0"
+                    data-indicator:_fetching
+                    data-attr:disabled="$_fetching"
+                    data-on:click="@get('{% url 'examples:notifications-sse' %}')">
+              Read
+              <div class="spinner-border spinner-border-sm"
+                   role="status"
+                   data-show="$_fetching">
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </button>
           </div>
         </div>
       </div>
+      <div class="col-6">
+        <div id="notifications-list"></div>
+      </div>
     </div>
 
-    <section class="card shadow-sm mb-4">
+    <section class="card shadow-sm my-4">
       <div class="card-body">
         <h2 class="h5 mb-3">Learn More</h2>
         <ul class="mb-0">

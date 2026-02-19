@@ -39,11 +39,12 @@ urlpatterns = [
         views.notifications_mark_read_view,
         name='notifications-mark-read',
     ),
+    path('notifications/sse/', views.notifications_sse_view, name='notifications-sse'),
     path('bulk-update/', views.bulk_update_view, name='bulk-update'),
     path(
         'bulk-update/update/', views.bulk_update_update_view, name='bulk-update-update'
     ),
-    # Search (Story 4.1)
+    # Search
     path('search/', views.search_view, name='search'),
     path('search/instant/', views.search_instant_view, name='search-instant'),
 ]

@@ -1,0 +1,12 @@
+
+<div id="alert"
+     class="alert alert-{% if notification.read %}secondary{% else %}info{% endif %} alert-dismissible fade show"
+     role="alert">
+  {{ notification.message }}
+
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          data-on:click="$notificationId = {{ notification.pk }}; @post('{% url 'examples:notifications-mark-read' %}')"
+          aria-label="Close"></button>
+</div>

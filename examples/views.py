@@ -1,3 +1,5 @@
+import time
+
 from datastar_py import consts
 from datastar_py.django import DatastarResponse, datastar_response, read_signals
 from datastar_py.django import ServerSentEventGenerator as SSE
@@ -423,30 +425,58 @@ def sortable_view(request):
 
 
 def notifications_view(request):
-    notifications = Notification.objects.all()[:5]
-    unread_count = Notification.objects.filter(read=False).count()
     return render(
         request,
         'examples/notifications.html',
-        {'notifications': notifications, 'unread_count': unread_count},
     )
+
+
+@datastar_response
+def notifications_sse_view(request):
+    notifications = Notification.objects.filter(read=False)
+
+    for notification in notifications:
+        alert = render_to_string(
+            'examples/fragments/notification_alert.html',
+            {'notification': notification},
+        )
+
+        yield SSE.patch_elements(
+            alert, selector='#notifications-list', mode=consts.ElementPatchMode.APPEND
+        )
+        time.sleep(3)
 
 
 @datastar_response
 def notifications_count_view(request):
     unread_count = Notification.objects.filter(read=False).count()
-    yield SSE.patch_signals({'count': unread_count})
+    yield SSE.patch_signals({'notificationCount': unread_count})
 
 
+@csrf_exempt
 @datastar_response
 def notifications_mark_read_view(request):
-    Notification.objects.filter(read=False).update(read=True)
+    signals = read_signals(request)
+    notification_id = signals.get('notificationId')
 
-    html = render_to_string(
-        'examples/fragments/notification_list.html',
-        {'notifications': Notification.objects.all()[:5], 'unread_count': 0},
-    )
-    yield SSE.patch_elements(html, selector='#notifications-list')
+    if notification_id:
+        notification = get_object_or_404(Notification, pk=notification_id)
+        notification.read = True
+        notification.save()
+        yield SSE.patch_signals(
+            {'notificationCount': Notification.objects.filter(read=False).count()}
+        )
+    else:
+        Notification.objects.filter(read=False).update(read=True)
+
+        yield SSE.patch_signals(
+            {'notificationCount': Notification.objects.filter(read=False).count()}
+        )
+        html = render_to_string(
+            'examples/fragments/notification_list.html',
+            {'notifications': Notification.objects.filter(read=False)},
+        )
+        yield SSE.patch_elements(html, selector='#notifications-list')
 
 
 # ============================================================================

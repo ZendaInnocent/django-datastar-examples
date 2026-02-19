@@ -69,23 +69,29 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'Created {len(items_data)} items'))
 
-        # Create Notifications
+        # Create Notifications (one for each example)
         notifications_data = [
-            'Welcome to Django Datastar Examples!',
-            'New feature: Active Search is now available',
-            'Check out the Click to Load pattern',
-            'Inline validation now works in real-time',
-            'Try the new TodoMVC example',
-            'Notifications system has been updated',
-            'Bulk update feature added',
-            'Sortable lists are now supported',
+            'Active Search: Search contacts with debounced input',
+            'Click to Load: Pagination with Load More button',
+            'Edit Row: Inline editing for table rows',
+            'Delete Row: Remove rows with animation',
+            'TodoMVC: Classic todo app implementation',
+            'Inline Validation: Real-time form validation',
+            'Infinite Scroll: Auto-load more on scroll',
+            'Lazy Tabs: Load tab content on demand',
+            'File Upload: Upload with progress indicator',
+            'Sortable: Drag-and-drop reordering',
+            'Notifications: Real-time notification counter',
+            'Bulk Update: Select and update multiple items',
         ]
 
         for i, message in enumerate(notifications_data):
             Notification.objects.create(message=message, read=(i > 2))
 
         self.stdout.write(
-            self.style.SUCCESS(f'Created {len(notifications_data)} notifications')
+            self.style.SUCCESS(
+                f'Created {len(notifications_data)} notifications (one per example)'
+            )
         )
 
         self.stdout.write(self.style.SUCCESS('Successfully seeded database!'))

@@ -63,27 +63,7 @@ This project includes practical examples, each demonstrating a common Datastar p
 | File Upload   | ![File Upload](screenshots/file-upload.png)     |
 | Lazy Tabs     | ![Lazy Tabs](screenshots/lazy-tabs.png)         |
 | Sortable      | ![Sortable](screenshots/sortable.png)           |
-
-## Adding a New Example
-
-1. **Create a model** (if needed) in `examples/models.py`
-
-2. **Add views** in `examples/views.py`:
-   - Main view: renders the page with initial state
-   - AJAX endpoint: returns Datastar SSE response using `DjangoDatastar`
-
-3. **Create template** in `examples/templates/examples/`
-
-4. **Add URLs** in `examples/urls.py` using kebab-case
-
-5. **Update index** in `examples/templates/examples/index.html`
-
-6. **Run formatters:**
-
-   ```bash
-   ruff format .
-   djade .
-   ```
+| Notifications | ![Notifications](screenshots/notifications.png) |
 
 ## Models
 
