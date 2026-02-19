@@ -377,20 +377,21 @@ def lazy_tabs_view(request):
 
 
 def file_upload_view(request):
+    if request.headers.get('Datastar-Request'):
+        if request.method == 'POST':
+            uploaded_file = request.FILES.get('file')
+
+            if uploaded_file:
+                result = f'Uploaded: {uploaded_file.name} ({uploaded_file.size} bytes)'
+            else:
+                result = 'No file uploaded'
+
+            html = render_to_string(
+                'examples/fragments/upload_result.html', {'result': result}
+            )
+            return DatastarResponse(SSE.patch_elements(html, selector='#upload-result'))
+
     return render(request, 'examples/file_upload.html')
-
-
-@datastar_response
-def file_upload_upload_view(request):
-    uploaded_file = request.FILES.get('file')
-
-    if uploaded_file:
-        result = f'Uploaded: {uploaded_file.name} ({uploaded_file.size} bytes)'
-    else:
-        result = 'No file uploaded'
-
-    html = render_to_string('examples/fragments/upload_result.html', {'result': result})
-    yield SSE.patch_elements(html, selector='#upload-result')
 
 
 # ============================================================================

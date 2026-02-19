@@ -1,5 +1,7 @@
-{% if result %}
-<div class="alert alert-info">{{ result }}</div>
-{% else %}
-<div class="text-muted">No file uploaded yet</div>
-{% endif %}
+<div class="mt-4" id="upload-result">
+  {% if result %}
+    <div class="alert alert-info">{{ result }}</div>
+  {% else %}
+    <div class="text-muted">No file uploaded yet</div>
+  {% endif %}
+</div>
