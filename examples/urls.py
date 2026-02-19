@@ -28,7 +28,6 @@ urlpatterns = [
     path('lazy-tabs/', views.lazy_tabs_view, name='lazy-tabs'),
     path('file-upload/', views.file_upload_view, name='file-upload'),
     path('sortable/', views.sortable_view, name='sortable'),
-    path('sortable/reorder/', views.sortable_reorder_view, name='sortable-reorder'),
     path('notifications/', views.notifications_view, name='notifications'),
     path(
         'notifications/count/',

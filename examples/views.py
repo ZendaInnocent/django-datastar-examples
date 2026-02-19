@@ -4,7 +4,6 @@ from datastar_py.django import ServerSentEventGenerator as SSE
 from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
 from django.db import models
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
@@ -400,18 +399,22 @@ def file_upload_view(request):
 
 
 def sortable_view(request):
+    if request.headers.get('Datastar-Request'):
+        signals = read_signals(request)
+        current_order = signals.get('order')
+
+        new_ordered_todos = []
+
+        for index, item_pk in enumerate(current_order, start=1):
+            item = Item.objects.get(pk=item_pk)
+            item.order = index
+            new_ordered_todos.append(item)
+
+        Item.objects.bulk_update(new_ordered_todos, fields=['order'])
+        return
+
     items = Item.objects.all()
     return render(request, 'examples/sortable.html', {'items': items})
-
-
-@datastar_response
-def sortable_reorder_view(request):
-    item_ids = request.POST.getlist('ids[]')
-
-    for index, item_id in enumerate(item_ids):
-        Item.objects.filter(pk=item_id).update(order=index)
-
-    yield HttpResponse('Reordered')
 
 
 # ============================================================================

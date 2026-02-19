@@ -3,9 +3,6 @@
 {% block content %}
 
   <div class="container py-5">
-    <nav class="mb-4">
-      <a href="{% url 'examples:index' %}" class="text-decoration-none">&larr; Back to Examples</a>
-    </nav>
 
     <header class="mb-5">
       <h1 class="h2">Sortable</h1>
@@ -19,7 +16,7 @@
           <li>Items are rendered in a list</li>
           <li>Drag and drop to reorder using Datastar's sort modifier</li>
           <li>
-            On drop, POST to <code>/sortable/reorder/</code> with new order
+            On drop, GET to <code>/sortable/</code> with new order
           </li>
           <li>Server updates order field in database</li>
         </ol>
@@ -27,15 +24,15 @@
     </section>
 
     <div class="card shadow-sm">
-      <div class="card-body">
+      <div class="card-body"
+           data-signals="{orderInfo: 'Initial order', order: []}">
         <p class="text-muted small mb-3">Drag items to reorder</p>
-        <ul class="list-group" id="sortable-list">
+
+        <ul class="list-group"
+            id="sortable-list"
+            data-on:reordered="$order = event.detail.order; @get('{% url "examples:sortable" %}')">
           {% for item in items %}
-            <li class="list-group-item"
-                data-on:dragstart.window="$dragSrc = $event.target; $event.dataTransfer.effectAllowed = 'move'"
-                data-on:dragover.window="$event.preventDefault()"
-                data-on:drop.window="@post('{% url 'examples:sortable-reorder' %}', {params: {ids: [$dragSrc, $event.target].map(el => el.dataset.id)}}"
-                data-id="{{ item.id }}">{{ item.name }}</li>
+            <li id="{{ item.pk }}" class="list-group-item">{{ item.name }}</li>
           {% empty %}
             <li class="list-group-item text-muted">No items yet</li>
           {% endfor %}
@@ -43,7 +40,7 @@
       </div>
     </div>
 
-    <section class="card shadow-sm mb-4">
+    <section class="card shadow-sm my-4">
       <div class="card-body">
         <h2 class="h5 mb-3">Learn More</h2>
         <ul class="mb-0">
@@ -61,3 +58,26 @@
     </section>
   </div>
 {% endblock content %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
+  <script>
+    const sortContainer = document.querySelector('#sortable-list')
+
+    const sortable = new Sortable(sortContainer, {
+      animation: 150,
+      ghostClass: 'opacity-25',
+      onEnd: (evt) => {
+        sortContainer.dispatchEvent(
+          new CustomEvent('reordered', {
+            detail: {
+              order: Array.from(sortContainer.children)
+                .map(item => item.id)
+                .map(id => id.split('-').pop()),
+            }
+          })
+        )
+      }
+    })
+  </script>
+{% endblock scripts %}
