@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+  System Messages - Django + Datastar Examples
+{% endblock title %}
+
+{% block content %}
+  <div class="container py-5">
+    <header class="mb-5">
+      <h1 class="h2">System Messages</h1>
+      <p class="text-muted">
+        Test how Django messages integrate with Datastar responses
+      </p>
+    </header>
+
+    <section class="card shadow-sm mb-4" data-signals="{level: 'success'}">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>Click the "Emit Messages" button below</li>
+          <li>The Datastar endpoint adds messages and returns a response</li>
+          <li>
+            Middleware intercepts the response and injects messages into the page via SSE
+          </li>
+          <li>Messages appear without page refresh</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card shadow-sm">
+      <div class="card-header">
+        <h5 class="mb-0">Test Different Message Types</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-success"
+                  data-on:click="$level = 'success'; @post('{% url "examples:system-messages-emit" %}');">
+            Success
+          </button>
+          <button class="btn btn-info"
+                  data-on:click="$level = 'info'; @post('{% url "examples:system-messages-emit" %}');">
+            Info
+          </button>
+          <button class="btn btn-warning"
+                  data-on:click="$level = 'warning'; @post('{% url "examples:system-messages-emit" %}');">
+            Warning
+          </button>
+          <button class="btn btn-danger"
+                  data-on:click="$level = 'error'; @post('{% url "examples:system-messages-emit" %}');">
+            Error
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock content %}

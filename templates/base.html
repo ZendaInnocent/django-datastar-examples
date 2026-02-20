@@ -152,8 +152,18 @@
         {% include 'includes/sidebar.html' %}
       {% endblock sidebar %}
       <div class="flex-grow-1 p-4">
+        <!-- Alert -->
+        <div id="message-container">
+          {% if messages %}
+            {% for message in messages %}
+              {% include "examples/fragments/alert.html" %}
+            {% endfor %}
+          {% endif %}
+        </div>
+
         {% block breadcrumbs %}
         {% endblock breadcrumbs %}
+
         {% block content %}
         {% endblock content %}
       </div>

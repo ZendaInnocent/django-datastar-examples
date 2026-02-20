@@ -54,22 +54,23 @@ def search_view(request):
 
 ## Examples
 
-This project includes 12 practical examples, each demonstrating a common Datastar pattern:
+This project includes 13 practical examples, each demonstrating a common Datastar pattern:
 
-| #   | Example         | Description                                |
-| --- | --------------- | ------------------------------------------ |
-| 1   | Active Search   | Real-time search with debounced queries    |
-| 2   | Click to Load   | Load more content on button click          |
-| 3   | Edit Row        | Inline row editing with instant updates    |
-| 4   | File Upload     | Progress tracking for file uploads via SSE |
-| 5   | Infinite Scroll | Auto-load content as user scrolls          |
-| 6   | Lazy Tabs       | Tab content loaded on first activation     |
-| 7   | Merge Tags      | Fragment merging with ID matching          |
-| 8   | Modal           | Dynamic modal dialogs                      |
-| 9   | Notifications   | Real-time toast notifications              |
-| 10  | Sortable        | Drag-and-drop reordering                   |
-| 11  | TodoMVC         | Full CRUD Todo application                 |
-| 12  | Validation      | Form validation with error feedback        |
+| #   | Example          | Description                                |
+| --- | ---------------- | ------------------------------------------ |
+| 1   | Active Search    | Real-time search with debounced queries    |
+| 2   | Click to Load    | Load more content on button click         |
+| 3   | Edit Row         | Inline row editing with instant updates   |
+| 4   | File Upload      | Progress tracking for file uploads via SSE |
+| 5   | Infinite Scroll  | Auto-load content as user scrolls         |
+| 6   | Lazy Tabs        | Tab content loaded on first activation    |
+| 7   | Merge Tags       | Fragment merging with ID matching         |
+| 8   | Modal            | Dynamic modal dialogs                     |
+| 9   | Notifications    | Real-time toast notifications             |
+| 10  | Sortable         | Drag-and-drop reordering                  |
+| 11  | TodoMVC          | Full CRUD Todo application                |
+| 12  | Validation       | Form validation with error feedback       |
+| 13  | System Messages  | User feedback messages (success, error, info) |
 
 ### Home Page
 

@@ -373,6 +373,20 @@ path('edit-row/update/', views.edit_row_update_view, name='edit-row-update'),"""
         ],
         doc_links=[],
     ),
+    'system-messages': HowToExample(
+        slug='system-messages',
+        title='System Messages',
+        description='User feedback messages (success, error, info)',
+        steps=[
+            HowToStep(
+                title='The View',
+                description='Handle message display:',
+                code=extract_view_code(views.system_messages_view),
+                language='python',
+            ),
+        ],
+        doc_links=[],
+    ),
 }
 
 

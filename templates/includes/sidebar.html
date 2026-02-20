@@ -112,6 +112,13 @@
             <i class="bi bi-check2-square"></i><span class="nav-link-text">Bulk Update</span>
           </a>
         </li>
+        {% url 'examples:system-messages' as url %}
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == url %} active{% endif %}"
+             href="{{ url }}">
+            <i class="bi bi-chat-left-text"></i><span class="nav-link-text">System Messages</span>
+          </a>
+        </li>
       </ul>
     </div>
 

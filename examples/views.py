@@ -1,8 +1,9 @@
 import time
 
 from datastar_py import consts
-from datastar_py.django import DatastarResponse, datastar_response, read_signals
+from datastar_py.django import DatastarResponse, read_signals
 from datastar_py.django import ServerSentEventGenerator as SSE
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
 from django.db import models
@@ -11,10 +12,12 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+from .decorators import datastar_response
 from .models import Contact, Item, Notification, Todo
 
 
 def index_view(request):
+    messages.success(request, 'Welcome to Django + Datastar examples website.')
     return render(request, 'examples/index.html')
 
 
@@ -109,6 +112,7 @@ def edit_row_view(request):
 
 
 @csrf_exempt
+@datastar_response
 def contact_update_view(request):
     signals = read_signals(request)
     contact_id = signals.get('contactId')
@@ -123,21 +127,22 @@ def contact_update_view(request):
         contact.last_name = last_name
         contact.email = email
         contact.save()
+        messages.success(
+            request,
+            f'Contact "{contact.first_name} {contact.last_name}" updated successfully.',
+        )
         html = render_to_string(
             'examples/fragments/contact_row.html', {'contact': contact}
         )
-        return DatastarResponse(
-            SSE.patch_elements(html, selector=f'#contact-{contact.pk}'),
-        )
+        yield SSE.patch_elements(html, selector=f'#contact-{contact.pk}')
+        return
 
-    return DatastarResponse(
-        SSE.patch_elements(
-            render_to_string(
-                'examples/fragments/contact_form.html',
-                {'contact': contact},
-            ),
-            selector=f'#contact-{contact.pk}',
-        )
+    yield SSE.patch_elements(
+        render_to_string(
+            'examples/fragments/contact_form.html',
+            {'contact': contact},
+        ),
+        selector=f'#contact-{contact.pk}',
     )
 
 
@@ -161,9 +166,15 @@ def delete_row_view(request):
         signals = read_signals(request)
         contact_id = signals.get('contactId')
         contact = get_object_or_404(Contact, pk=contact_id)
+        contact_name = f'{contact.first_name} {contact.last_name}'
         contact.delete()
+        messages.success(request, f'Contact "{contact_name}" deleted successfully.')
 
-        return DatastarResponse(SSE.remove_elements(selector=f'#contact-{contact_id}'))
+        return DatastarResponse(
+            [
+                SSE.remove_elements(selector=f'#contact-{contact_id}'),
+            ]
+        )
 
     contacts = Contact.objects.all()
     return render(
@@ -211,6 +222,7 @@ def todomvc_add_view(request):
         max_order = Todo.objects.order_by('-order').first()
         new_order = (max_order.order + 1) if max_order else 0
         todo = Todo.objects.create(title=title, order=new_order)
+        messages.success(request, 'Todo created successfully.')
 
         html = render_to_string('examples/fragments/todo_item.html', {'todo': todo})
         yield SSE.patch_elements(
@@ -235,7 +247,10 @@ def todomvc_toggle_view(request):
     todo.is_completed = not todo.is_completed
     todo.save()
 
-    html = render_to_string('examples/fragments/todo_item.html', {'todo': todo})
+    html = render_to_string(
+        'examples/fragments/todo_item.html',
+        {'todo': todo},
+    )
 
     if filter == 'all':
         mode = consts.ElementPatchMode.REPLACE
@@ -260,7 +275,9 @@ def todomvc_delete_view(request):
     signals = read_signals(request)
     todo_id = signals.get('todoToggleId')
     todo = get_object_or_404(Todo, pk=todo_id)
+    todo_title = todo.title
     todo.delete()
+    messages.success(request, f'Todo "{todo_title}" deleted.')
 
     counts = get_todo_counts()
 
@@ -277,10 +294,15 @@ def todomvc_delete_view(request):
 @require_http_methods(['POST'])
 @datastar_response
 def todomvc_clear_view(request):
-    Todo.objects.filter(is_completed=True).delete()
+    deleted_count, _ = Todo.objects.filter(is_completed=True).delete()
+    if deleted_count > 0:
+        messages.success(request, f'Cleared {deleted_count} completed todo(s).')
 
     todos = Todo.objects.all()
-    html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
+    html = render_to_string(
+        'examples/fragments/todo_list.html',
+        {'todos': todos},
+    )
     yield SSE.patch_elements(html, selector='#todo-list')
     yield SSE.patch_signals({'filter': 'all'})
 
@@ -300,7 +322,10 @@ def todomvc_filter_view(request):
     elif filter_type == 'completed':
         todos = todos.filter(is_completed=True)
 
-    html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
+    html = render_to_string(
+        'examples/fragments/todo_list.html',
+        {'todos': todos},
+    )
     yield SSE.patch_elements(html, selector='#todo-list')
 
 
@@ -454,6 +479,7 @@ def file_upload_view(request):
 # ============================================================================
 
 
+@datastar_response
 def sortable_view(request):
     if request.headers.get('Datastar-Request'):
         signals = read_signals(request)
@@ -467,6 +493,7 @@ def sortable_view(request):
             new_ordered_todos.append(item)
 
         Item.objects.bulk_update(new_ordered_todos, fields=['order'])
+        messages.success(request, 'Items reordered successfully.')
         return
 
     items = Item.objects.all()
@@ -522,11 +549,16 @@ def notifications_mark_read_view(request):
         notification = get_object_or_404(Notification, pk=notification_id)
         notification.read = True
         notification.save()
+        messages.success(request, 'Notification marked as read.')
         yield SSE.patch_signals(
             {'notificationCount': Notification.objects.filter(read=False).count()}
         )
     else:
-        Notification.objects.filter(read=False).update(read=True)
+        updated_count = Notification.objects.filter(read=False).update(read=True)
+        if updated_count > 0:
+            messages.success(
+                request, f'Marked {updated_count} notification(s) as read.'
+            )
 
         yield SSE.patch_signals(
             {'notificationCount': Notification.objects.filter(read=False).count()}
@@ -559,10 +591,16 @@ def bulk_update_update_view(request):
     action = request.POST.get('action')
 
     if action == 'activate' and selected_ids:
-        Contact.objects.filter(pk__in=selected_ids).update(is_active=True)
+        updated_count = Contact.objects.filter(pk__in=selected_ids).update(
+            is_active=True
+        )
+        messages.success(request, f'Activated {updated_count} contact(s).')
 
     if action == 'deactivate' and selected_ids:
-        Contact.objects.filter(pk__in=selected_ids).update(is_active=False)
+        updated_count = Contact.objects.filter(pk__in=selected_ids).update(
+            is_active=False
+        )
+        messages.success(request, f'Deactivated {updated_count} contact(s).')
 
     contacts = Contact.objects.all()[:10]
     html = render_to_string(
@@ -613,3 +651,41 @@ def search_instant_view(request):
         'examples/fragments/search_results.html', {'results': results, 'query': query}
     )
     yield SSE.patch_elements(html, selector='#search-results')
+
+
+# ============================================================================
+# System Messages
+# ============================================================================
+
+
+def system_messages_view(request):
+    return render(
+        request,
+        'examples/system_messages.html',
+        {'howto_slug': 'system-messages'},
+    )
+
+
+@csrf_exempt
+@datastar_response
+def system_messages_emit_view(request):
+    """Endpoint to emit messages via Datastar.
+
+    Messages are automatically handled by DatastarMessagesMiddleware.
+    The middleware extracts Django messages and injects them into the response.
+    """
+
+    signals = read_signals(request)
+    level = signals.get('level')
+
+    if level == 'success':
+        messages.success(request, 'Operation completed successfully!')
+    elif level == 'error':
+        messages.error(request, 'For some reason, operation failed.')
+    elif level == 'warning':
+        messages.warning(request, 'Operation completed with warnings.')
+    elif level == 'info':
+        messages.info(request, 'Operation completed with info.')
+
+    # Return a signal to indicate the action was performed
+    yield SSE.patch_signals({'lastAction': 'something has been done'})

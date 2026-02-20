@@ -92,6 +92,12 @@ def breadcrumbs_context(request):
             'howto_slug': 'bulk-update',
             'howto_title': 'How to Build: Bulk Update',
         },
+        'examples:system-messages': {
+            'title': 'System Messages',
+            'show_breadcrumbs': True,
+            'howto_slug': 'system-messages',
+            'howto_title': 'How to Build: System Messages',
+        },
     }
 
     # Try to match current path to a known route

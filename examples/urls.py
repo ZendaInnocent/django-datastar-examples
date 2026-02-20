@@ -47,4 +47,11 @@ urlpatterns = [
     # Search
     path('search/', views.search_view, name='search'),
     path('search/instant/', views.search_instant_view, name='search-instant'),
+    # system messages
+    path('system-messages/', views.system_messages_view, name='system-messages'),
+    path(
+        'system-messages/emit/',
+        views.system_messages_emit_view,
+        name='system-messages-emit',
+    ),
 ]
