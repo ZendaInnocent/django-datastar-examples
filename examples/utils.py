@@ -1,4 +1,5 @@
 from datastar_py import ServerSentEventGenerator as SSE
+from datastar_py import consts
 from datastar_py.django import DatastarResponse
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -12,7 +13,12 @@ class DatastarWithMessagesResponse(DatastarResponse):
         for msg in current_messages:
             html = render_to_string('examples/fragments/alert.html', {'message': msg})
             message_events.append(
-                SSE.patch_elements(html, '#message-container', use_view_transition=True)
+                SSE.patch_elements(
+                    html,
+                    '#message-container',
+                    consts.ElementPatchMode.APPEND,
+                    use_view_transition=True,
+                )
             )
 
         all_events = message_events + (

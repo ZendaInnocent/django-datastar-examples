@@ -497,11 +497,7 @@ def sortable_view(request):
             new_ordered_todos.append(item)
 
         Item.objects.bulk_update(new_ordered_todos, fields=['order'])
-        messages.success(request, 'Items reordered successfully.')
-        return DatastarWithMessagesResponse(
-            request,
-            SSE.patch_signals({'order': current_order}),
-        )
+        return
 
     items = Item.objects.all()
     return render(

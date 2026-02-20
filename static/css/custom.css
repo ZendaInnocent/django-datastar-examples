@@ -436,7 +436,7 @@ a:not(.btn):not(.nav-link):not(.card):not([class*="text-"]):hover {
 }
 
 /* ========================================
-   Code Tabs - Active state uses Datastar Purple
+   Search Modal & Results
    ======================================== */
 
 .code-tabs .nav-link.active {
