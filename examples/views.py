@@ -319,29 +319,32 @@ def inline_validation_view(request):
 
 @datastar_response
 def inline_validation_validate_view(request):
-    field = request.GET.get('field')
-    value = request.GET.get('value', '')
+    signals = read_signals(request)
+    field = signals.get('field')
 
     errors = {}
     if field == 'email':
+        value = signals.get('email')
         try:
             validate_email(value)
         except ValidationError:
             errors['email'] = 'Please enter a valid email address'
 
     if field == 'username':
+        value = signals.get('username')
         if len(value) < 3:
             errors['username'] = 'Username must be at least 3 characters'
         elif not value.isalnum():
             errors['username'] = 'Username must contain only letters and numbers'
 
     if field == 'password':
+        value = signals.get('password')
         if len(value) < 6:
             errors['password'] = 'Password must be at least 6 characters'
 
     html = render_to_string(
         'examples/fragments/validation_error.html',
-        {'field': field, 'errors': errors},
+        {'field': field, 'error': errors.get(field)},
     )
     yield SSE.patch_elements(html, selector=f'#{field}-error')
 

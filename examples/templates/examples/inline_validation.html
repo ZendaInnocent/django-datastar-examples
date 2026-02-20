@@ -24,34 +24,35 @@
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <form>
+        <form method="post" data-signals="{field: ''}">
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email"
                    name="email"
                    class="form-control"
                    placeholder="Enter email"
-                   data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=email&value=' + $event.target.value)" />
+                   data-bind:email
+                   data-on:blur="$field = 'email'; @get('{% url "examples:inline-validation-validate" %}'); console.log('Email field blurred')" />
             <div id="email-error"></div>
           </div>
-
           <div class="mb-3">
             <label class="form-label">Username</label>
             <input type="text"
                    name="username"
                    class="form-control"
                    placeholder="Enter username (min 3 chars)"
-                   data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=username&value=' + $event.target.value)" />
+                   data-bind:username
+                   data-on:blur="$field = 'username'; @get('{% url "examples:inline-validation-validate" %}'); console.log('Username field blurred')" />
             <div id="username-error"></div>
           </div>
-
           <div class="mb-3">
             <label class="form-label">Password</label>
             <input type="password"
                    name="password"
                    class="form-control"
                    placeholder="Enter password (min 6 chars)"
-                   data-on:blur="@get('{% url 'examples:inline-validation-validate' %}?field=password&value=' + $event.target.value)" />
+                   data-bind:password
+                   data-on:blur="$password = 'email'; @get('{% url "examples:inline-validation-validate" %}'); console.log('Password field blurred')" />
             <div id="password-error"></div>
           </div>
 
@@ -60,7 +61,7 @@
       </div>
     </div>
 
-    <section class="card shadow-sm mb-4">
+    <section class="card shadow-sm my-4">
       <div class="card-body">
         <h2 class="h5 mb-3">Learn More</h2>
         <ul class="mb-0">
