@@ -15,5 +15,9 @@ class DatastarWithMessagesResponse(DatastarResponse):
                 SSE.patch_elements(html, '#message-container', use_view_transition=True)
             )
 
-        all_events = message_events + (events if events else [])
+        all_events = message_events + (
+            [events]
+            if events and not isinstance(events, list)
+            else (events if events else [])
+        )
         super().__init__(all_events, **kwargs)

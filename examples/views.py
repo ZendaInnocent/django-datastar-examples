@@ -19,7 +19,6 @@ from .models import Contact, Item, Notification, Todo
 
 
 def index_view(request):
-    messages.success(request, 'Welcome to Django + Datastar examples website.')
     return render(request, 'examples/index.html')
 
 
@@ -485,7 +484,6 @@ def file_upload_view(request):
 # ============================================================================
 
 
-@datastar_response
 def sortable_view(request):
     if request.headers.get('Datastar-Request'):
         signals = read_signals(request)
@@ -500,7 +498,10 @@ def sortable_view(request):
 
         Item.objects.bulk_update(new_ordered_todos, fields=['order'])
         messages.success(request, 'Items reordered successfully.')
-        return
+        return DatastarWithMessagesResponse(
+            request,
+            SSE.patch_signals({'order': current_order}),
+        )
 
     items = Item.objects.all()
     return render(

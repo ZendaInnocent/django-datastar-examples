@@ -24,6 +24,7 @@ def datastar_response(view_func):
                     render_to_string('examples/fragments/alert.html', {'message': msg}),
                     '#message-container',
                     consts.ElementPatchMode.APPEND,
+                    use_view_transition=True,
                 )
 
         return DatastarResponse(stream())
