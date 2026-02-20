@@ -35,7 +35,7 @@
 
     <div class="card shadow-sm">
       <div class="card-body"
-           data-signals="{activeCount: `{{ active_count }}`, filter: 'all'}">
+           data-signals="{activeCount: `{{ count_todos_active }}`, completedCount: `{{ count_todos_completed }}`, filter: 'all'}">
         <form class="d-flex gap-2 mb-4"
               data-on:submit="@post('{% url 'examples:todo-mvc-add' %}', {contentType: 'form'}); $title=''">
           {% csrf_token %}
@@ -50,7 +50,7 @@
         {% include 'examples/fragments/todo_list.html' %}
 
         <div class="d-flex justify-content-between align-items-center text-muted small">
-          <span data-text="`${$activeCount} items left`"></span>
+          <span data-text="`${$activeCount} active items left`"></span>
           <div class="btn-group">
 
             <button data-on:click="$filter='all'; @get('{% url "examples:todo-mvc-filter" %}')"
@@ -63,16 +63,12 @@
                     data-class="{'btn-secondary': $filter == 'active', 'btn-outline-secondary': $filter != 'active'}">
               Active
             </button>
-            <button data-on:click="$filter='completed'; @get('{% url "examples:todo-mvc-filter" %}')"
-              class="btn btn-sm" data-class="{'btn-secondary': $filter == 'completed', 'btn-outline-secondary': $filter != 'completed'}"">Completed
-            </button>
-          </div>
-          {% if completed_count > 0 %}
-            <button class="btn btn-sm btn-outline-danger"
-                    data-on:click="confirm('You are clearning all completed tasks. Are you sure?') && @post('{% url 'examples:todo-mvc-clear' %}')">
-              Clear completed
-            </button>
-          {% endif %}
+            <button data-on:click="$filter='completed'; @get('{% url "examples:todo-mvc-filter" %}')" class="btn btn-sm" data-class="{'btn-secondary': $filter == 'completed', 'btn-outline-secondary': $filter != 'completed'}"">Completed </button> </div>
+          <button class="btn btn-sm btn-outline-danger" data-show="$completedCount>
+            0"
+            data-on:click="confirm('You are clearning all completed tasks. Are you sure?') && @post('{% url 'examples:todo-mvc-clear' %}')">
+            Clear completed
+          </button>
         </div>
       </div>
     </div>

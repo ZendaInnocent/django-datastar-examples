@@ -18,7 +18,7 @@ class Contact(models.Model):
 
 class Todo(models.Model):
     title = models.CharField(max_length=200)
-    completed = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 

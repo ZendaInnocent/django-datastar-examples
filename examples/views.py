@@ -46,7 +46,11 @@ def active_search_view(request):
         )
 
     contacts = Contact.objects.all()[:10]
-    return render(request, 'examples/active_search.html', {'contacts': contacts})
+    return render(
+        request,
+        'examples/active_search.html',
+        {'contacts': contacts, 'howto_slug': 'active-search'},
+    )
 
 
 # ============================================================================
@@ -86,7 +90,7 @@ def click_to_load_view(request):
     return render(
         request,
         'examples/click_to_load.html',
-        {'contacts': page_obj},
+        {'contacts': page_obj, 'howto_slug': 'click-to-load'},
     )
 
 
@@ -97,7 +101,11 @@ def click_to_load_view(request):
 
 def edit_row_view(request):
     contacts = Contact.objects.all()[:10]
-    return render(request, 'examples/edit_row.html', {'contacts': contacts})
+    return render(
+        request,
+        'examples/edit_row.html',
+        {'contacts': contacts, 'howto_slug': 'edit-row'},
+    )
 
 
 @csrf_exempt
@@ -133,6 +141,15 @@ def contact_update_view(request):
     )
 
 
+@datastar_response
+def get_contact_view(request):
+    signals = read_signals(request)
+    contact_id = signals.get('contactId')
+    contact = get_object_or_404(Contact, pk=contact_id)
+    html = render_to_string('examples/fragments/contact_row.html', {'contact': contact})
+    yield SSE.patch_elements(html, f'#contact-{contact.pk}')
+
+
 # ============================================================================
 # 4. Delete Row
 # ============================================================================
@@ -149,7 +166,11 @@ def delete_row_view(request):
         return DatastarResponse(SSE.remove_elements(selector=f'#contact-{contact_id}'))
 
     contacts = Contact.objects.all()
-    return render(request, 'examples/delete_row.html', {'contacts': contacts})
+    return render(
+        request,
+        'examples/delete_row.html',
+        {'contacts': contacts, 'howto_slug': 'delete-row'},
+    )
 
 
 # ============================================================================
@@ -157,16 +178,26 @@ def delete_row_view(request):
 # ============================================================================
 
 
+def get_todo_counts():
+    counts = Todo.objects.aggregate(
+        completed=models.Count('pk', filter=models.Q(is_completed=True)),
+        active=models.Count('pk', filter=models.Q(is_completed=False)),
+    )
+    return counts
+
+
 def todomvc_view(request):
     todos = Todo.objects.all()
+    counts = get_todo_counts()
+
     return render(
         request,
         'examples/todomvc.html',
         {
             'todos': todos,
-            'total_count': Todo.objects.count(),
-            'active_count': Todo.objects.filter(completed=False).count(),
-            'completed_count': Todo.objects.filter(completed=True).count(),
+            'count_todos_active': counts.get('active'),
+            'count_todos_completed': counts.get('completed'),
+            'howto_slug': 'todo-mvc',
         },
     )
 
@@ -188,6 +219,9 @@ def todomvc_add_view(request):
             mode=consts.ElementPatchMode.PREPEND,
         )
 
+        counts = get_todo_counts()
+        yield SSE.patch_signals({'activeCount': counts.get('active')})
+
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -195,20 +229,26 @@ def todomvc_add_view(request):
 def todomvc_toggle_view(request):
     signals = read_signals(request)
     todo_id = signals.get('todoToggleId')
+    filter = signals.get('filter')
 
     todo = get_object_or_404(Todo, pk=todo_id)
-    todo.completed = not todo.completed
+    todo.is_completed = not todo.is_completed
     todo.save()
 
     html = render_to_string('examples/fragments/todo_item.html', {'todo': todo})
-    yield SSE.patch_elements(
-        html,
-        selector=f'#todo-{todo_id}',
-        mode=consts.ElementPatchMode.REPLACE,
-    )
+
+    if filter == 'all':
+        mode = consts.ElementPatchMode.REPLACE
+    else:
+        mode = consts.ElementPatchMode.REMOVE
+
+    counts = get_todo_counts()
+
+    yield SSE.patch_elements(html, selector=f'#todo-{todo_id}', mode=mode)
     yield SSE.patch_signals(
         {
-            'activeCount': Todo.objects.filter(completed=False).count(),
+            'activeCount': counts.get('active'),
+            'completedCount': counts.get('completed'),
         }
     )
 
@@ -222,14 +262,22 @@ def todomvc_delete_view(request):
     todo = get_object_or_404(Todo, pk=todo_id)
     todo.delete()
 
+    counts = get_todo_counts()
+
     yield SSE.remove_elements(selector=f'#todo-{todo_id}')
+    yield SSE.patch_signals(
+        {
+            'activeCount': counts.get('active'),
+            'completedCount': counts.get('completed'),
+        }
+    )
 
 
 @csrf_exempt
 @require_http_methods(['POST'])
 @datastar_response
 def todomvc_clear_view(request):
-    Todo.objects.filter(completed=True).delete()
+    Todo.objects.filter(is_completed=True).delete()
 
     todos = Todo.objects.all()
     html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
@@ -248,21 +296,12 @@ def todomvc_filter_view(request):
     todos = Todo.objects.all()
 
     if filter_type == 'active':
-        todos = todos.filter(completed=False)
+        todos = todos.filter(is_completed=False)
     elif filter_type == 'completed':
-        todos = todos.filter(completed=True)
+        todos = todos.filter(is_completed=True)
 
     html = render_to_string('examples/fragments/todo_list.html', {'todos': todos})
     yield SSE.patch_elements(html, selector='#todo-list')
-
-
-@datastar_response
-def get_contact_view(request):
-    signals = read_signals(request)
-    contact_id = signals.get('contactId')
-    contact = get_object_or_404(Contact, pk=contact_id)
-    html = render_to_string('examples/fragments/contact_row.html', {'contact': contact})
-    yield SSE.patch_elements(html, f'#contact-{contact.pk}')
 
 
 # ============================================================================
@@ -271,7 +310,11 @@ def get_contact_view(request):
 
 
 def inline_validation_view(request):
-    return render(request, 'examples/inline_validation.html')
+    return render(
+        request,
+        'examples/inline_validation.html',
+        {'howto_slug': 'inline-validation'},
+    )
 
 
 @datastar_response
@@ -339,7 +382,7 @@ def infinite_scroll_view(request):
     return render(
         request,
         'examples/infinite_scroll.html',
-        {'contacts': page_obj},
+        {'contacts': page_obj, 'howto_slug': 'infinite-scroll'},
     )
 
 
@@ -369,7 +412,11 @@ def lazy_tabs_view(request):
             ]
         )
 
-    return render(request, 'examples/lazy_tabs.html')
+    return render(
+        request,
+        'examples/lazy_tabs.html',
+        {'howto_slug': 'lazy-tabs'},
+    )
 
 
 # ============================================================================
@@ -392,7 +439,11 @@ def file_upload_view(request):
             )
             return DatastarResponse(SSE.patch_elements(html, selector='#upload-result'))
 
-    return render(request, 'examples/file_upload.html')
+    return render(
+        request,
+        'examples/file_upload.html',
+        {'howto_slug': 'file-upload'},
+    )
 
 
 # ============================================================================
@@ -416,7 +467,11 @@ def sortable_view(request):
         return
 
     items = Item.objects.all()
-    return render(request, 'examples/sortable.html', {'items': items})
+    return render(
+        request,
+        'examples/sortable.html',
+        {'items': items, 'howto_slug': 'sortable'},
+    )
 
 
 # ============================================================================
@@ -428,6 +483,7 @@ def notifications_view(request):
     return render(
         request,
         'examples/notifications.html',
+        {'howto_slug': 'notifications'},
     )
 
 
@@ -486,7 +542,11 @@ def notifications_mark_read_view(request):
 
 def bulk_update_view(request):
     contacts = Contact.objects.all()[:10]
-    return render(request, 'examples/bulk_update.html', {'contacts': contacts})
+    return render(
+        request,
+        'examples/bulk_update.html',
+        {'contacts': contacts, 'howto_slug': 'bulk-update'},
+    )
 
 
 @csrf_exempt

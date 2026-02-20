@@ -1,7 +1,7 @@
 [project]
 name = "django-datastar-examples"
 version = "0.1.0"
-description = "Add your description here"
+description = "A comprehensive collection of examples demonstrating hypermedia-driven web apps with Django + Datastar"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

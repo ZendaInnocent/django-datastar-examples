@@ -3,10 +3,10 @@
 
   <input type="checkbox"
          class="form-check-input me-2"
-         {% if todo.completed %}checked{% endif %}
+         {% if todo.is_completed %}checked{% endif %}
          id="checkbox-todo-{{ todo.id }}"
          data-on:change="$todoToggleId={{ todo.id }}; @post('{% url "examples:todo-mvc-toggle" %}')" />
-  <span class="{% if todo.completed %}text-decoration-line-through{% endif %} flex-grow-1">
+  <span class="{% if todo.is_completed %}text-decoration-line-through{% endif %} flex-grow-1">
     {{ todo.title }}
   </span>
   <button class="btn btn-outline-danger btn-sm"
