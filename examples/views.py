@@ -12,6 +12,8 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+from examples.utils import DatastarWithMessagesResponse
+
 from .decorators import datastar_response
 from .models import Contact, Item, Notification, Todo
 
@@ -170,10 +172,11 @@ def delete_row_view(request):
         contact.delete()
         messages.success(request, f'Contact "{contact_name}" deleted successfully.')
 
-        return DatastarResponse(
+        return DatastarWithMessagesResponse(
+            request,
             [
                 SSE.remove_elements(selector=f'#contact-{contact_id}'),
-            ]
+            ],
         )
 
     contacts = Contact.objects.all()
@@ -465,7 +468,10 @@ def file_upload_view(request):
             html = render_to_string(
                 'examples/fragments/upload_result.html', {'result': result}
             )
-            return DatastarResponse(SSE.patch_elements(html, selector='#upload-result'))
+            return DatastarWithMessagesResponse(
+                request,
+                SSE.patch_elements(html, selector='#upload-result'),
+            )
 
     return render(
         request,
