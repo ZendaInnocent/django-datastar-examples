@@ -7,6 +7,6 @@ services:
     startCommand: 'uv run gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker'
     envVars:
       - key: PYTHON_VERSION
-        value: "3.13"
+        value: '3.13.3'
       - key: SECRET_KEY
         generateValue: true
