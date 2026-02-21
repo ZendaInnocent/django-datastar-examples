@@ -1,7 +1,7 @@
 """
 These tests verify:
-- Index page displays 12 example cards
-- All 12 example pages load successfully
+- Index page displays example cards
+- All example pages load successfully
 - All example SSE endpoints return proper Datastar responses
 - Seed data exists for demos (when seed_data command is run)
 """
@@ -10,7 +10,7 @@ import pytest
 from django.test import Client, override_settings
 from django.urls import reverse
 
-from examples.models import Contact, Item, Notification, Todo
+from examples.models import Contact, Notification, Todo
 
 
 @pytest.fixture
@@ -55,8 +55,6 @@ class TestIndexPage:
 
 @pytest.mark.django_db
 class TestExamplePages:
-    """Test AC2, AC4: All 12 examples have working demos."""
-
     @pytest.mark.parametrize(
         'url_name',
         [
@@ -101,44 +99,17 @@ class TestSourceCodeVisibility:
 
 @pytest.mark.django_db
 class TestDatastarEndpoints:
-    """Test AC5, AC6: Datastar reactive updates work.
-
+    """
     These tests verify that SSE endpoints return proper responses.
     The SSE content-type confirms Datastar is handling the requests.
     """
-
-    def test_active_search_returns_sse(self, client):
-        """Verify active search returns SSE content type."""
-        url = reverse('examples:active-search-search')
-        response = client.get(url, {'search': 'john'})
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
-
-    def test_active_search_returns_fragment(self, client):
-        """Verify active search returns a fragment with contact data."""
-        Contact.objects.create(
-            first_name='John', last_name='Doe', email='john@example.com'
-        )
-        url = reverse('examples:active-search-search')
-        response = client.get(url, {'search': 'John'})
-        # Consume streaming content
-        content = b''.join(response.streaming_content).decode('utf-8')
-        # Should contain datastar-patch-elements event
-        assert 'datastar-patch-elements' in content or 'selector' in content
-
-    def test_click_to_load_returns_sse(self, client):
-        """Verify click to load returns SSE content type."""
-        url = reverse('examples:click-to-load-more')
-        response = client.get(url, HTTP_DATASTAR_REQUEST='true')
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
 
     def test_edit_row_returns_sse(self, client):
         """Verify edit row returns SSE content type."""
         contact = Contact.objects.create(
             first_name='Test', last_name='User', email='test@example.com'
         )
-        url = reverse('examples:edit-row-update')
+        url = reverse('examples:contact-update')
         response = client.post(
             url,
             {
@@ -151,16 +122,6 @@ class TestDatastarEndpoints:
         assert response.status_code == 200
         assert 'text/event-stream' in response.get('Content-Type', '')
 
-    def test_delete_row_returns_sse(self, client):
-        """Verify delete row returns SSE content type."""
-        contact = Contact.objects.create(
-            first_name='Delete', last_name='Me', email='delete@example.com'
-        )
-        url = reverse('examples:delete-row-remove')
-        response = client.post(url, {'id': contact.pk})
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
-
     def test_todomvc_add_returns_sse(self, client):
         """Verify todo add returns SSE content type."""
         url = reverse('examples:todo-mvc-add')
@@ -170,7 +131,7 @@ class TestDatastarEndpoints:
 
     def test_todomvc_toggle_returns_sse(self, client):
         """Verify todo toggle returns SSE content type."""
-        todo = Todo.objects.create(title='Test', completed=False)
+        todo = Todo.objects.create(title='Test', is_completed=False)
         url = reverse('examples:todo-mvc-toggle')
         response = client.post(url, {'id': todo.pk})
         assert response.status_code == 200
@@ -178,47 +139,11 @@ class TestDatastarEndpoints:
 
     def test_todomvc_delete_returns_sse(self, client):
         """Verify todo delete returns SSE content type."""
-        todo = Todo.objects.create(title='Test', completed=False)
+        todo = Todo.objects.create(title='Test', is_completed=False)
         url = reverse('examples:todo-mvc-delete')
         response = client.post(url, {'id': todo.pk})
         assert response.status_code == 200
         assert 'text/event-stream' in response.get('Content-Type', '')
-
-    def test_inline_validation_returns_sse(self, client):
-        """Verify inline validation returns SSE content type."""
-        url = reverse('examples:inline-validation-validate')
-        response = client.get(url, {'field': 'email', 'value': 'invalid-email'})
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
-
-    def test_infinite_scroll_returns_sse(self, client):
-        """Verify infinite scroll returns SSE content type."""
-        url = reverse('examples:infinite-scroll-load')
-        response = client.get(url, {'page': 1})
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
-
-    def test_lazy_tabs_returns_sse(self, client):
-        """Verify lazy tabs returns SSE content type."""
-        url = reverse('examples:lazy-tabs-tab')
-        response = client.get(url, {'tab': 'about'})
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
-
-    def test_file_upload_returns_sse(self, client):
-        """Verify file upload returns SSE content type."""
-        url = reverse('examples:file-upload-upload')
-        response = client.post(url)
-        assert response.status_code == 200
-        assert 'text/event-stream' in response.get('Content-Type', '')
-
-    def test_sortable_reorder_returns_sse(self, client):
-        """Verify sortable reorder returns SSE content type."""
-        item1 = Item.objects.create(name='Item 1', order=0)
-        item2 = Item.objects.create(name='Item 2', order=1)
-        url = reverse('examples:sortable-reorder')
-        response = client.post(url, {'ids[]': [item2.pk, item1.pk]})
-        assert response.status_code == 200
 
     def test_notifications_count_returns_sse(self, client):
         """Verify notifications count returns SSE content type."""

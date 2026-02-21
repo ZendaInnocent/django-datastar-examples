@@ -739,7 +739,7 @@ a:not(.btn):not(.nav-link):not(.card):not([class*="text-"]):hover {
   color: var(--bs-body-color);
 }
 
-/* Keyboard navigation focus indicator - Story 4-3 */
+/* Keyboard navigation focus indicator */
 .search-result-item:focus-visible {
   outline: 2px solid var(--bs-primary);
   outline-offset: -2px;
@@ -819,7 +819,7 @@ a:not(.btn):not(.nav-link):not(.card):not([class*="text-"]):hover {
 }
 
 /* ========================================
-   Recent Searches - Story 4-4
+   Recent Searches
    ======================================== */
 
 .recent-searches {

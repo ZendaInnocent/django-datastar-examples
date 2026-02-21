@@ -26,14 +26,14 @@ contact_with_phone = Recipe(
 todo = Recipe(
     Todo,
     title=baker.seq('Task'),
-    completed=False,
+    is_completed=False,
     order=baker.seq(1),
 )
 
 todo_completed = Recipe(
     Todo,
     title=baker.seq('Completed Task'),
-    completed=True,
+    is_completed=True,
     order=baker.seq(1),
 )
 

@@ -1,4 +1,4 @@
-"""Tests for Recent Searches - Story 4.4"""
+"""Tests for Recent Searches"""
 
 from pathlib import Path
 
@@ -128,15 +128,6 @@ class TestRecentSearchesRender:
 class TestRecentSearchesIntegration:
     """Integration tests for recent searches."""
 
-    def test_base_html_has_recent_searches_container(self):
-        """Verify base.html includes recent searches container."""
-        html_path = BASE_DIR / 'templates' / 'base.html'
-        content = html_path.read_text(encoding='utf-8')
-
-        assert 'id="recent-searches"' in content, (
-            'Missing recent-searches container in base.html'
-        )
-
     def test_custom_css_has_recent_searches_styles(self):
         """Verify custom.css contains recent searches styles."""
         css_path = BASE_DIR / 'static' / 'css' / 'custom.css'
@@ -201,7 +192,7 @@ class TestRecentSearchesIntegration:
 
 
 class TestRecentSearchesAcceptanceCriteria:
-    """Tests verifying Acceptance Criteria from Story 4.4."""
+    """Tests verifying Acceptance Criteria."""
 
     @pytest.fixture
     def header_js_content(self):

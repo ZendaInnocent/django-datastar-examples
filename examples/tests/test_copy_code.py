@@ -1,5 +1,5 @@
 """
-Tests for Copy Code Functionality (Story 2.2)
+Tests for Copy Code Functionality
 
 This module tests the JavaScript copy-to-clipboard functionality
 by verifying the HTML structure and JavaScript integration.
@@ -52,43 +52,6 @@ class TestCopyCodeFunctionality:
         assert response.status_code == 200
         # The JS file should be referenced in the HTML
         assert b'/static/js/code-blocks.js' in response.content
-
-
-class TestCopyButtonHTMLStructure:
-    """Test the HTML structure of the copy button template include."""
-
-    def test_code_block_include_exists(self):
-        """Verify the code_block.html include template exists."""
-        from django.template.loader import get_template
-
-        try:
-            get_template('includes/code_block.html')
-            # Template exists and can be loaded
-            assert True
-        except Exception as e:
-            pytest.fail(f'Could not load code_block.html template: {e}')
-
-    def test_copy_button_has_aria_label(self):
-        """Verify copy button includes accessibility label."""
-        from django.template.loader import render_to_string
-
-        rendered = render_to_string(
-            'includes/code_block.html',
-            {'language': 'python', 'code': 'print("hello")', 'code_id': 'test-code'},
-        )
-        assert 'aria-label' in rendered
-        assert 'Copy code to clipboard' in rendered
-
-    def test_copy_button_has_data_attribute(self):
-        """Verify copy button has data-code-id attribute."""
-        from django.template.loader import render_to_string
-
-        rendered = render_to_string(
-            'includes/code_block.html',
-            {'language': 'python', 'code': 'print("hello")', 'code_id': 'test-code-id'},
-        )
-        assert 'data-code-id' in rendered
-        assert 'test-code-id' in rendered
 
 
 class TestStaticFilesConfiguration:

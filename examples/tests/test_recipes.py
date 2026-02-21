@@ -45,12 +45,12 @@ class TestTodoRecipe:
         """Create a single todo using recipe."""
         todo = baker.make_recipe('examples.todo')
         assert todo.id is not None
-        assert todo.completed is False
+        assert todo.is_completed is False
 
     def test_make_completed_todo(self):
         """Create a completed todo."""
         todo = baker.make_recipe('examples.todo_completed')
-        assert todo.completed is True
+        assert todo.is_completed is True
 
     def test_make_multiple_todos(self):
         """Create multiple todos with baker.baker.sequential ordering."""

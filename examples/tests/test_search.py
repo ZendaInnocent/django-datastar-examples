@@ -325,7 +325,7 @@ class TestExamplesData:
 
 
 class TestAcceptanceCriteria:
-    """Tests verifying Acceptance Criteria from Story 4.2."""
+    """Tests verifying Acceptance Criteria."""
 
     def test_ac1_index_includes_all_12_examples(self):
         """AC1: Index should include all 12 example titles."""
