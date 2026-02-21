@@ -89,12 +89,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
-        conn_max_age=600,
-    )
-}
+# Use SQLite in development, PostgreSQL in production
+
+if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config('DATABASE_URL', default=None),
+            conn_max_age=600,
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -126,6 +136,22 @@ TIME_ZONE = 'Africa/Dar_es_Salaam'
 USE_I18N = True
 
 USE_TZ = True
+
+
+# Production Security Settings
+# https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+
+if not DEBUG:
+    # HTTPS settings
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+    # Force HTTPS
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Static files (CSS, JavaScript, Images)
@@ -176,3 +202,35 @@ MESSAGE_TAGS = {
 }
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+
+# Logging Configuration
+# https://docs.djangoproject.com/en/6.0/topics/logging/
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}

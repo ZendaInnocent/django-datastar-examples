@@ -51,7 +51,7 @@ class Command(BaseCommand):
         ]
 
         for i, title in enumerate(todos_data):
-            Todo.objects.create(title=title, completed=(i % 3 == 0), order=i)
+            Todo.objects.create(title=title, is_completed=(i % 3 == 0), order=i)
 
         self.stdout.write(self.style.SUCCESS(f'Created {len(todos_data)} todos'))
 

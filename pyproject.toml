@@ -20,6 +20,7 @@ dependencies = [
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["test_*.py", "*_test.py"]
 testpaths = ["examples/tests"]
+addopts = "--reuse-db -v"
 
 [tool.ruff]
 exclude = ["docs", "migrations"]

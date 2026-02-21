@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 [![Datastar](https://img.shields.io/badge/Datastar-0.8+-orange)](https://data-star.dev/)
 
+**Live Demo:** https://django-datastar-examples.onrender.com/
+
 A comprehensive collection of examples demonstrating how to build hypermedia-driven web applications using [Datastar](https://data-star.dev/) with Django.
 
 ## Table of Contents
