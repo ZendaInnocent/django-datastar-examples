@@ -9,6 +9,11 @@ dependencies = [
     "django>=6.0.2",
     "model-bakery>=1.23.0",
     "python-decouple>=3.8",
+    "psycopg2-binary",
+    "dj-database-url",
+    "gunicorn",
+    "uvicorn",
+    "whitenoise[brotli]",
 ]
 
 [tool.pytest.ini_options]

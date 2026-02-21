@@ -1,0 +1,12 @@
+services:
+  - type: web
+    plan: free
+    name: django-datastar-examples
+    runtime: python
+    buildCommand: './build.sh'
+    startCommand: 'uv run gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker'
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13"
+      - key: SECRET_KEY
+        generateValue: true
