@@ -6,8 +6,6 @@ from datastar_py import consts
 from datastar_py.django import DatastarResponse, read_signals
 from datastar_py.django import ServerSentEventGenerator as SSE
 from django.contrib import messages
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
 from django.db import models
@@ -461,6 +459,10 @@ def lazy_tabs_view(request):
 @csrf_exempt
 def file_upload_view(request):
     if request.headers.get('Datastar-Request'):
+        from .utils import cleanup_temp_files, save_temp_file
+
+        cleanup_temp_files()
+
         data = json.loads(request.body)
         files_list = data.get('files', [])
         saved_files = []
@@ -471,12 +473,9 @@ def file_upload_view(request):
 
             if file_name and base64_content:
                 decoded_file = base64.b64decode(base64_content)
-
-                content_file = ContentFile(decoded_file, name=file_name)
-                path = default_storage.save(f'uploads/{file_name}', content_file)
+                path = save_temp_file(file_name, decoded_file)
                 saved_files.append(path)
 
-        # Render the result fragment with the saved files
         result_html = render_to_string(
             'examples/fragments/upload_result.html',
             {'result': f'Uploaded: {", ".join(saved_files)}'},
