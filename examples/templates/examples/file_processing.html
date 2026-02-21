@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="container py-3">
+    <header class="mb-5">
+      <h1 class="h2">File Processing</h1>
+      <p class="text-muted">
+        Process uploaded files with real-time progress updates
+      </p>
+    </header>
+
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>Select a file to process (CSV, JSON, or Text)</li>
+          <li>Click "Process File" to start processing</li>
+          <li>Server processes the file and streams progress updates</li>
+          <li>Real-time progress bar shows completion status</li>
+          <li>Results are displayed when processing completes</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <!-- Initialize signals for progress tracking -->
+        <div data-signals="{processing: false, progress: 0}"></div>
+
+        <form method="post"
+              enctype="multipart/form-data"
+              data-on:submit="@post('{% url "examples:file-processing-api" %}', {contentType: 'form'});">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Choose File (CSV, JSON, or Text)</label>
+            <input type="file" name="file" class="form-control" accept=".csv,.json,.txt" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Processing Option</label>
+            <select name="process_type" class="form-select">
+              <option value="analyze">Analyze File</option>
+              <option value="transform">Transform Data</option>
+              <option value="validate">Validate Content</option>
+            </select>
+          </div>
+          <button type="submit"
+                  class="btn btn-primary"
+                  data-indicator:_fetching
+                  data-attr:disabled="$_fetching">Process File</button>
+        </form>
+
+        <!-- Progress Bar - shown when processing -->
+        <div id="processing-progress" class="mt-4" data-show="$processing">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Processing...</span>
+            <span data-text="$progress + '%'">0%</span>
+          </div>
+
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                 role="progressbar"
+                 data-style:width="$progress + '%'"
+                 aria-valuenow="0"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Processing Result -->
+        <div id="processing-result" class="mt-4"></div>
+      </div>
+    </div>
+
+    <section class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Learn More</h2>
+        <ul class="mb-0">
+          <li>
+            <a href="" class="text-decoration-none">File Upload Pattern</a>
+          </li>
+          <li>
+            <a href="" class="text-decoration-none">Server-Sent Events for Progress</a>
+          </li>
+          <li>
+            <a href="" class="text-decoration-none">Streaming Responses</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+{% endblock content %}

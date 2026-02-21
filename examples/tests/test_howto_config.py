@@ -31,8 +31,8 @@ class TestHowToExamples:
         assert isinstance(EXAMPLES, dict)
 
     def test_has_13_examples(self):
-        """EXAMPLES has 13 examples (12 examples + system-messages)."""
-        assert len(EXAMPLES) == 13
+        """EXAMPLES has 14 examples (13 examples + system-messages)."""
+        assert len(EXAMPLES) == 14
 
     def test_all_examples_have_slugs(self):
         """All examples have slug field."""
@@ -77,6 +77,7 @@ class TestHowToExamples:
             'infinite-scroll',
             'lazy-tabs',
             'file-upload',
+            'file-processing',
             'sortable',
             'notifications',
             'bulk-update',

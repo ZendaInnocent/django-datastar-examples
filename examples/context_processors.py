@@ -74,6 +74,12 @@ def breadcrumbs_context(request):
             'howto_slug': 'file-upload',
             'howto_title': 'How to Build: File Upload',
         },
+        'examples:file-processing': {
+            'title': 'File Processing',
+            'show_breadcrumbs': True,
+            'howto_slug': 'file-processing',
+            'howto_title': 'How to Build: File Processing',
+        },
         'examples:sortable': {
             'title': 'Sortable',
             'show_breadcrumbs': True,

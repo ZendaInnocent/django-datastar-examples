@@ -658,52 +658,174 @@ def build_file_upload_steps() -> list[HowToStep]:
     """Build comprehensive steps for File Upload example."""
     return [
         HowToStep(
-            title='1. The View',
-            description='Handle file upload via POST request:',
+            title='1. The View (Backend)',
+            description='Handle file uploads via Datastar requests. Files are sent as base64 in the request body. Use read_signals() to access file data and ContentFile for saving:',
             code=extract_view_code(views.file_upload_view),
             language='python',
         ),
         HowToStep(
             title='2. The URL',
-            description='Add route for the file upload endpoint:',
+            description='Add route for the file upload endpoint. Use kebab-case for consistency:',
             code="""path('file-upload/', views.file_upload_view, name='file-upload'),""",
             language='python',
         ),
         HowToStep(
-            title='3. The Upload Form',
-            description='Use data-on:change to trigger upload when file is selected:',
-            code="""<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <input type="file" name="file"
-         data-on:change="@post('{% url "examples:file-upload" %}')" />
-</form>
-
-<div id="upload-result">
-  <!-- Upload result appears here -->
-</div>""",
+            title='3. The Template - File Input',
+            description='Use data-bind:files to bind the file input to Datastar. This enables automatic base64 encoding of selected files:',
+            code="""<input type="file" data-bind:files multiple class="form-control mb-3" />""",
             language='html',
         ),
         HowToStep(
-            title='4. Handling Files',
-            description='Access uploaded files via request.FILES:',
-            code="""if request.method == 'POST':
-    uploaded_file = request.FILES.get('file')
-    if uploaded_file:
-        # Process the file
-        filename = uploaded_file.name
-        size = uploaded_file.size
-        content = uploaded_file.read()""",
+            title='4. The Upload Button',
+            description='Use a button with data-on:click that checks if files exist and POSTs to the endpoint. The $files variable contains the selected files:',
+            code="""<button class="btn btn-warning"
+        data-on:click="$files.length && @post('{% url "examples:file-upload" %}')"
+        data-attr:aria-disabled="`${!$files.length}`">
+  Upload
+</button>""",
+            language='html',
+        ),
+        HowToStep(
+            title='5. Handling Base64 Files',
+            description='Access files from request.body as JSON. Files are base64-encoded with name and contents:',
+            code="""import json
+import base64
+from django.core.files.base import ContentFile
+
+if request.headers.get('Datastar-Request'):
+    data = json.loads(request.body)
+    files_list = data.get('files', [])
+
+    for file_obj in files_list:
+        file_name = file_obj.get('name')
+        base64_content = file_obj.get('contents')
+
+        if file_name and base64_content:
+            decoded_file = base64.b64decode(base64_content)
+            content_file = ContentFile(decoded_file, name=file_name)
+            path = default_storage.save(f'uploads/{file_name}', content_file)""",
             language='python',
         ),
         HowToStep(
             title='Key Concepts',
-            description='File uploads work like regular forms with enctype="multipart/form-data". Use data-on:change to auto-submit when file is selected.',
-            code="""# Handle file upload
-uploaded_file = request.FILES.get('file')
+            description='Datastar handles file uploads differently than traditional forms. Use data-bind:files to bind the input, which automatically converts files to base64. The @post() action sends files as JSON in the request body.',
+            code="""# Key file upload concepts:
+# 1. data-bind:files - binds file input to Datastar's $files signal
+# 2. @post() - sends files as base64-encoded JSON in request body
+# 3. request.headers.get('Datastar-Request') - check for Datastar requests
+# 4. ContentFile - Django wrapper for in-memory file content
+# 5. default_storage.save() - saves file to configured storage backend""",
+            language='python',
+        ),
+    ]
 
-# Return result HTML
-html = render_to_string('upload_result.html', {'result': 'Uploaded: ...'})
-SSE.patch_elements(html, selector='#upload-result')""",
+
+# ============================================================================
+# File Processing Example
+# ============================================================================
+
+
+def build_file_processing_steps() -> list[HowToStep]:
+    """Build comprehensive steps for File Processing example."""
+    return [
+        HowToStep(
+            title='1. The Main View',
+            description='Render the processing form page. This is a regular Django view that displays the form:',
+            code=extract_view_code(views.file_processing_view),
+            language='python',
+        ),
+        HowToStep(
+            title='2. The API View (SSE)',
+            description='Handle file processing with real-time progress updates using @datastar_response. Use yield to stream SSE events:',
+            code=extract_view_code(views.file_processing_api_view),
+            language='python',
+        ),
+        HowToStep(
+            title='3. The URLs',
+            description='Add routes for both the page view and the API endpoint:',
+            code="""path('file-processing/', views.file_processing_view, name='file-processing'),
+path('file-processing/api/', views.file_processing_api_view, name='file-processing-api'),""",
+            language='python',
+        ),
+        HowToStep(
+            title='4. The Template - Signals',
+            description='Initialize signals for tracking processing state and progress. Use data-signals to set initial values:',
+            code="""<!-- Initialize signals for progress tracking -->
+<div data-signals="{processing: false, progress: 0}"></div>""",
+            language='html',
+        ),
+        HowToStep(
+            title='5. The Processing Form',
+            description='Create a form with file input and processing options. Use data-on:submit with {contentType: form} to send form data:',
+            code="""<form method="post"
+      enctype="multipart/form-data"
+      data-on:submit="@post('{% url "examples:file-processing-api" %}', {contentType: 'form'});">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">Choose File (CSV, JSON, or Text)</label>
+    <input type="file" name="file" class="form-control" accept=".csv,.json,.txt" />
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Processing Option</label>
+    <select name="process_type" class="form-select">
+      <option value="analyze">Analyze File</option>
+      <option value="transform">Transform Data</option>
+      <option value="validate">Validate Content</option>
+    </select>
+  </div>
+  <button type="submit" data-indicator:_fetching data-attr:disabled="$_fetching">Process File</button>
+</form>""",
+            language='html',
+        ),
+        HowToStep(
+            title='6. Progress Bar Display',
+            description='Show progress bar when processing signal is true. Use data-show to conditionally display:',
+            code="""<div id="processing-progress" data-show="$processing">
+  <div class="d-flex justify-content-between mb-1">
+    <span>Processing...</span>
+    <span data-text="$progress + '%'">0%</span>
+  </div>
+  <div class="progress" style="height: 20px;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated"
+         role="progressbar"
+         data-style:width="$progress + '%'"
+         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+    </div>
+  </div>
+</div>""",
+            language='html',
+        ),
+        HowToStep(
+            title='7. Streaming Progress Updates',
+            description='Use yield to stream SSE events for real-time progress. Each yield sends a separate SSE message:',
+            code="""@datastar_response
+def file_processing_api_view(request):
+    if request.headers.get('Datastar-Request'):
+        # Show progress bar
+        yield SSE.patch_signals({'processing': True, 'progress': 0})
+
+        # Process with progress updates
+        for progress in range(10, 101, 10):
+            time.sleep(0.15)  # Simulate processing
+            yield SSE.patch_signals({'progress': progress})
+
+        # Return final result
+        html = render_to_string('results.html', {'result': result})
+        yield SSE.patch_elements(html, selector='#processing-result')
+        yield SSE.remove_elements(selector='#processing-progress')
+        yield SSE.patch_signals({'processing': False, 'progress': 0})""",
+            language='python',
+        ),
+        HowToStep(
+            title='Key Concepts',
+            description='The @datastar_response decorator enables generator-based views that yield SSE events. Each yield sends a Server-Sent Event to the client. Use data-show for conditional rendering and data-indicator for loading states.',
+            code="""# Key file processing concepts:
+# 1. @datastar_response - decorator for SSE-enabled views
+# 2. yield SSE.patch_signals() - stream signal updates to client
+# 3. yield SSE.patch_elements() - update DOM elements
+# 4. yield SSE.remove_elements() - remove elements after completion
+# 5. {contentType: 'form'} - send form data as multipart/form-data
+# 6. data-indicator:_fetching - show loading state during request""",
             language='python',
         ),
     ]
@@ -1176,6 +1298,22 @@ EXAMPLES: dict[str, HowToExample] = {
             },
         ],
     ),
+    'file-processing': HowToExample(
+        slug='file-processing',
+        title='File Processing',
+        description='Process uploaded files with real-time progress updates',
+        steps=build_file_processing_steps(),
+        doc_links=[
+            {
+                'title': 'File Uploads',
+                'url': '/docs/datastar-guide/django-integration.md#file-uploads',
+            },
+            {
+                'title': 'SSE Progress Updates',
+                'url': '/docs/datastar-guide/core-concepts.md#sse-events',
+            },
+        ],
+    ),
     'sortable': HowToExample(
         slug='sortable',
         title='Sortable',
@@ -1273,6 +1411,7 @@ BUILDERS = {
     'infinite-scroll': build_infinite_scroll_steps,
     'lazy-tabs': build_lazy_tabs_steps,
     'file-upload': build_file_upload_steps,
+    'file-processing': build_file_processing_steps,
     'sortable': build_sortable_steps,
     'notifications': build_notifications_steps,
     'bulk-update': build_bulk_update_steps,

@@ -1,9 +1,13 @@
+import base64
+import json
 import time
 
 from datastar_py import consts
 from datastar_py.django import DatastarResponse, read_signals
 from datastar_py.django import ServerSentEventGenerator as SSE
 from django.contrib import messages
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 from django.core.validators import ValidationError, validate_email
 from django.db import models
@@ -454,23 +458,37 @@ def lazy_tabs_view(request):
 # ============================================================================
 
 
+@csrf_exempt
 def file_upload_view(request):
     if request.headers.get('Datastar-Request'):
-        if request.method == 'POST':
-            uploaded_file = request.FILES.get('file')
+        data = json.loads(request.body)
+        files_list = data.get('files', [])
+        saved_files = []
 
-            if uploaded_file:
-                result = f'Uploaded: {uploaded_file.name} ({uploaded_file.size} bytes)'
-            else:
-                result = 'No file uploaded'
+        for file_obj in files_list:
+            file_name = file_obj.get('name')
+            base64_content = file_obj.get('contents')
 
-            html = render_to_string(
-                'examples/fragments/upload_result.html', {'result': result}
-            )
-            return DatastarWithMessagesResponse(
-                request,
-                SSE.patch_elements(html, selector='#upload-result'),
-            )
+            if file_name and base64_content:
+                decoded_file = base64.b64decode(base64_content)
+
+                content_file = ContentFile(decoded_file, name=file_name)
+                path = default_storage.save(f'uploads/{file_name}', content_file)
+                saved_files.append(path)
+
+        # Render the result fragment with the saved files
+        result_html = render_to_string(
+            'examples/fragments/upload_result.html',
+            {'result': f'Uploaded: {", ".join(saved_files)}'},
+        )
+
+        messages.success(request, 'File(s) uploaded successfully.')
+        return DatastarWithMessagesResponse(
+            request,
+            [
+                SSE.patch_elements(result_html, selector='#upload-result'),
+            ],
+        )
 
     return render(
         request,
@@ -692,3 +710,68 @@ def system_messages_emit_view(request):
 
     # Return a signal to indicate the action was performed
     yield SSE.patch_signals({'lastAction': 'something has been done'})
+
+
+# ============================================================================
+# File Processing
+# ============================================================================
+
+
+def file_processing_view(request):
+    return render(
+        request,
+        'examples/file_processing.html',
+        {'howto_slug': 'file-processing'},
+    )
+
+
+@datastar_response
+def file_processing_api_view(request):
+    """Handle file processing with real-time progress updates via SSE."""
+    if request.headers.get('Datastar-Request'):
+        if request.method == 'POST':
+            uploaded_file = request.FILES.get('file')
+            process_type = request.POST.get('process_type', 'analyze')
+
+            if uploaded_file:
+                # Show progress bar
+                yield SSE.patch_signals({'processing': True, 'progress': 0})
+
+                # Read file content in chunks to simulate processing
+                content = uploaded_file.read()
+                file_size = len(content)
+                filename = uploaded_file.name
+                filetype = uploaded_file.content_type or 'unknown'
+
+                # Simulate processing with progress updates
+                for progress in range(10, 101, 10):
+                    time.sleep(0.15)  # Simulate processing time
+                    yield SSE.patch_signals({'progress': progress})
+
+                # Determine line count based on file type
+                if filetype == 'text/plain' or filename.endswith('.txt'):
+                    lines = len(content.decode('utf-8', errors='ignore').splitlines())
+                elif filename.endswith('.csv'):
+                    lines = len(content.decode('utf-8', errors='ignore').splitlines())
+                elif filename.endswith('.json'):
+                    lines = 1  # JSON is typically one object/array
+                else:
+                    lines = 0
+
+                # Build result
+                result = {
+                    'filename': filename,
+                    'size': file_size,
+                    'filetype': filetype,
+                    'lines': lines,
+                    'process_type': process_type,
+                }
+
+                html = render_to_string(
+                    'examples/fragments/file_processing_results.html',
+                    {'result': result},
+                )
+
+                yield SSE.patch_elements(html, selector='#processing-result')
+                yield SSE.remove_elements(selector='#processing-progress')
+                yield SSE.patch_signals({'processing': False, 'progress': 0})

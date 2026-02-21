@@ -5,18 +5,18 @@
   <div class="container py-3">
     <header class="mb-5">
       <h1 class="h2">File Upload</h1>
-      <p class="text-muted">Upload files with progress indicator</p>
+      <p class="text-muted">Upload files</p>
     </header>
 
     <section class="card shadow-sm mb-4">
       <div class="card-body">
         <h2 class="h5 mb-3">How it Works</h2>
         <ol class="text-muted small">
-          <li>Select a file using the file input</li>
+          <li>Select a file(s) using the file input</li>
           <li>
-            Form submission sends POST to <code>/file-upload/</code>
+            Submission sends POST to <code>/file-upload/</code>
           </li>
-          <li>Server processes the file and returns result fragment</li>
+          <li>Server processes the file(s), save to disk and returns result fragment</li>
           <li>Datastar merges the result into the upload area</li>
         </ol>
       </div>
@@ -24,19 +24,11 @@
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <form method="post"
-              enctype="multipart/form-data"
-              data-on:submit="@post('{% url "examples:file-upload" %}', {contentType: 'form'})">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label class="form-label">Choose File</label>
-            <input type="file" name="file" class="form-control" />
-          </div>
-          <button type="submit"
-                  class="btn btn-primary"
-                  data-indicator:_fetching
-                  data-attr:disabled="$_fetching">Upload</button>
-        </form>
+        <input type="file" data-bind:files multiple class="form-control mb-3" />
+
+        <button class="btn btn-warning"
+                data-on:click="$files.length && @post('{% url "examples:file-upload" %}')"
+                data-attr:aria-disabled="`${!$files.length}`">Upload</button>
 
         {% include 'examples/fragments/upload_result.html' %}
       </div>
@@ -59,4 +51,5 @@
       </div>
     </section>
   </div>
+
 {% endblock content %}

@@ -27,6 +27,12 @@ urlpatterns = [
     path('infinite-scroll/', views.infinite_scroll_view, name='infinite-scroll'),
     path('lazy-tabs/', views.lazy_tabs_view, name='lazy-tabs'),
     path('file-upload/', views.file_upload_view, name='file-upload'),
+    path('file-processing/', views.file_processing_view, name='file-processing'),
+    path(
+        'file-processing-api/',
+        views.file_processing_api_view,
+        name='file-processing-api',
+    ),
     path('sortable/', views.sortable_view, name='sortable'),
     path('notifications/', views.notifications_view, name='notifications'),
     path(
