@@ -132,16 +132,16 @@ class TestSearchIndex:
     """Tests for SearchIndex class."""
 
     def test_search_index_builds_all_examples(self):
-        """SearchIndex should index all 12 examples."""
+        """SearchIndex should index all examples."""
         index = SearchIndex()
         examples = [e for e in index.entries if e.type == 'example']
         assert len(examples) == 12
 
     def test_search_index_builds_all_docs(self):
-        """SearchIndex should index documentation files."""
+        """Docs are not indexed for user search (agent-only)."""
         index = SearchIndex()
         docs = [e for e in index.entries if e.type == 'doc']
-        assert len(docs) >= 6  # At least the main docs
+        assert len(docs) == 0  # Docs disabled for user search
 
     def test_search_returns_empty_for_empty_query(self):
         """Search should return empty list for empty query."""
@@ -193,7 +193,7 @@ class TestSearchIndex:
         """get_all_entries should return all indexed entries."""
         index = SearchIndex()
         entries = index.get_all_entries()
-        assert len(entries) >= 18  # 12 examples + docs
+        assert len(entries) == 12  # Only examples (docs disabled for users)
 
     def test_rebuild_clears_and_rebuilds(self):
         """rebuild should clear and rebuild the index."""
@@ -236,11 +236,9 @@ class TestSearchService:
             assert ex['type'] == 'example'
 
     def test_get_all_docs_returns_only_docs(self):
-        """get_all_docs should return only doc type entries."""
+        """get_all_docs returns empty since docs are disabled for user search."""
         docs = get_all_docs()
-        assert len(docs) >= 6
-        for doc in docs:
-            assert doc['type'] == 'doc'
+        assert len(docs) == 0  # Docs disabled for user search
 
     def test_get_index_stats(self):
         """get_index_stats should return correct statistics."""
@@ -249,8 +247,8 @@ class TestSearchService:
         assert 'examples_count' in stats
         assert 'docs_count' in stats
         assert stats['examples_count'] == 12
-        assert stats['docs_count'] >= 6
-        assert stats['total_entries'] == stats['examples_count'] + stats['docs_count']
+        assert stats['docs_count'] == 0  # Docs disabled for user search
+        assert stats['total_entries'] == stats['examples_count']
 
     def test_rebuild_index_returns_index(self):
         """rebuild_index should return a SearchIndex instance."""
@@ -335,15 +333,10 @@ class TestAcceptanceCriteria:
         assert example_titles == expected_titles
 
     def test_ac1_index_includes_documentation(self):
-        """AC1: Index should include documentation titles and content."""
+        """AC1: Docs are disabled for user search (agent-only)."""
         index = SearchIndex()
         docs = [e for e in index.entries if e.type == 'doc']
-        assert len(docs) > 0
-        # Each doc should have title, description, and content
-        for doc in docs:
-            assert doc.title
-            assert doc.description is not None
-            assert doc.content is not None
+        assert len(docs) == 0  # Docs disabled for user search
 
     def test_ac1_uses_q_objects_for_filtering(self):
         """AC1: Search should use Django Q objects for filtering."""
@@ -369,8 +362,17 @@ class TestAcceptanceCriteria:
             assert results[0]['title'] == 'Active Search'
 
     def test_ac2_returns_docs_mentioning_search(self):
-        """AC2: Results should include docs mentioning search."""
+        """AC2: Docs are disabled for user search."""
         results = search('search')
         doc_results = [r for r in results if r['type'] == 'doc']
-        # Should have some doc results
-        assert len(doc_results) > 0
+        assert len(doc_results) == 0  # Docs disabled for user search
+
+    def test_ac2_examples_have_learn_more_url(self):
+        """AC2: Examples should have learn_more_url linking to docs."""
+        results = search('active')
+        example_results = [r for r in results if r['type'] == 'example']
+        assert len(example_results) > 0
+        # Each example should have learn_more_url
+        for ex in example_results:
+            assert 'learn_more_url' in ex
+            assert ex['learn_more_url'].startswith('/docs/')

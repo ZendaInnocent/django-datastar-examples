@@ -3,6 +3,11 @@ Search functionality for Django Datastar Examples.
 
 This module provides an in-memory search index using Django Q objects
 for filtering and relevance ranking.
+
+Auto-discovery:
+    Examples are auto-discovered from EXAMPLES_DATA below. To add a new example:
+    1. Add entry to EXAMPLES_DATA with id, title, description, url, category
+    2. The search index will automatically include it
 """
 
 from dataclasses import dataclass
@@ -27,16 +32,20 @@ class SearchIndexEntry:
     url: str
     type: str  # "example" | "doc"
     category: str
+    learn_more_url: Optional[str] = None  # Link to docs (for examples)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for template rendering."""
-        return {
+        result = {
             'title': self.title,
             'description': self.description,
             'url': self.url,
             'type': self.type,
             'category': self.category,
         }
+        if self.learn_more_url:
+            result['learn_more_url'] = self.learn_more_url
+        return result
 
     def get_q_field_value(self, field_name: str) -> str:
         """
@@ -159,6 +168,96 @@ EXAMPLES_DATA = [
     },
 ]
 
+# Routes to exclude from auto-discovery (exact matches only)
+# These are child routes, API endpoints, and utility routes
+EXCLUDED_NAMES = frozenset(
+    (
+        'index',
+        'search',
+        'search-instant',
+        'get-contact',
+    )
+)
+
+
+def _kebab_to_title(name: str) -> str:
+    """Convert kebab-case to Title Case."""
+    return ' '.join(word.capitalize() for word in name.replace('-', ' ').split())
+
+
+def auto_discover_examples() -> List[Dict[str, str]]:
+    """
+    Auto-discover examples from urls.py using Django's reverse().
+
+    This function uses Django's URL resolver to get exact paths.
+    For each URL:
+    - Uses reverse() to get exact URL path
+    - Generates title from URL name (e.g., 'active-search' -> 'Active Search')
+    - Uses description from EXAMPLES_DATA if available
+    - Falls back to placeholder if not
+
+    Returns:
+        List of example dictionaries with id, title, description, url, category
+    """
+    from django.urls import reverse
+
+    example_ids = {item['id'] for item in EXAMPLES_DATA}
+    discovered = []
+
+    # Get all URL patterns from examples.urls
+    from examples import urls
+
+    for pattern in urls.urlpatterns:
+        name = pattern.name
+        if not name:
+            continue
+
+        # Skip exact excluded names
+        if name in EXCLUDED_NAMES:
+            continue
+
+        # Skip child routes (names with multiple hyphens that aren't in EXAMPLES_DATA)
+        # e.g., 'todo-mvc-toggle', 'todo-mvc-delete' are child routes
+        # But 'active-search' is a main route (single hyphen is OK)
+        if '-' in name and name not in example_ids:
+            continue
+
+        # Get URL path using Django's reverse
+        try:
+            url_path = reverse(f'examples:{name}')
+        except Exception:
+            continue
+
+        # Check if we have rich data in EXAMPLES_DATA
+        if name in example_ids:
+            existing = next(item for item in EXAMPLES_DATA if item['id'] == name)
+            # Update URL with exact path from reverse
+            existing = existing.copy()
+            existing['url'] = url_path
+            # Add learn_more link to docs
+            existing['learn_more_url'] = f'/docs/{name}/'
+            discovered.append(existing)
+        else:
+            # Auto-generate entry
+            discovered.append(
+                {
+                    'id': name,
+                    'title': _kebab_to_title(name),
+                    'description': f'Example: {_kebab_to_title(name)}',
+                    'content': f'Example demonstrating {_kebab_to_title(name).lower()} with Datastar.',
+                    'url': url_path,
+                    'category': 'Auto-discovered',
+                    'learn_more_url': f'/docs/{name}/',
+                }
+            )
+
+    return discovered
+
+
+# Auto-discovered examples (combines manual + discovered)
+# To update: run auto_discover_examples() and merge with EXAMPLES_DATA
+AUTO_DISCOVERED_EXAMPLES = auto_discover_examples()
+
 
 def _load_docs_data() -> List[Dict[str, str]]:
     """Load documentation data from markdown files."""
@@ -248,7 +347,10 @@ def _load_docs_data() -> List[Dict[str, str]]:
     return docs
 
 
-DOCS_DATA = _load_docs_data()
+# Docs are for agents only - disabled for user search
+# To enable: uncomment the line below
+# DOCS_DATA = _load_docs_data()
+DOCS_DATA: List[Dict[str, str]] = []
 
 
 class SearchIndex:
@@ -267,8 +369,8 @@ class SearchIndex:
 
     def _build_index(self):
         """Build the search index from examples and documentation."""
-        # Index examples
-        for item in EXAMPLES_DATA:
+        # Index examples (auto-discovered from urls.py + EXAMPLES_DATA)
+        for item in AUTO_DISCOVERED_EXAMPLES:
             self.entries.append(
                 SearchIndexEntry(
                     title=item['title'],
@@ -277,6 +379,7 @@ class SearchIndex:
                     url=item['url'],
                     type='example',
                     category=item['category'],
+                    learn_more_url=item.get('learn_more_url'),
                 )
             )
 
