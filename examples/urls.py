@@ -6,6 +6,8 @@ app_name = 'examples'
 
 urlpatterns = [
     path('', views.index_view, name='index'),
+    path('quiz/', views.quiz_index_view, name='quiz-index'),
+    path('quiz/question/', views.quiz_question_view, name='quiz-question'),
     path('active-search/', views.active_search_view, name='active-search'),
     path('click-to-load/', views.click_to_load_view, name='click-to-load'),
     path('edit-row/', views.edit_row_view, name='edit-row'),

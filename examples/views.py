@@ -17,7 +17,7 @@ from django.views.decorators.http import require_http_methods
 from examples.utils import DatastarWithMessagesResponse
 
 from .decorators import datastar_response
-from .models import Contact, Item, Notification, Todo
+from .models import Contact, Item, Notification, Question, Todo
 
 
 def index_view(request):
@@ -774,3 +774,23 @@ def file_processing_api_view(request):
                 yield SSE.patch_elements(html, selector='#processing-result')
                 yield SSE.remove_elements(selector='#processing-progress')
                 yield SSE.patch_signals({'processing': False, 'progress': 0})
+
+
+# ============================================================================
+# Quiz App
+# ============================================================================
+
+
+def quiz_index_view(request):
+    return render(request, 'examples/quiz_index.html')
+
+
+@datastar_response
+def quiz_question_view(request):
+    question = Question.objects.first()
+    yield SSE.patch_elements(
+        render_to_string(
+            'examples/fragments/quiz_question_card.html', {'question': question}
+        ),
+        '#question-card',
+    )

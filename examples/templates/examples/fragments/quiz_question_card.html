@@ -1,0 +1,25 @@
+<div class="card border-0" id="question-card">
+  <div class="card-header border-0">
+    <h5 class="text-muted small text-uppercase fw-bold pt-2">Question 1 of 10</h5>
+  </div>
+
+  <div class="card-body px-4 pb-4">
+    <h3 class="card-title h4 mb-4">{{ question.text }}</h3>
+
+    <!-- Answers List -->
+    <ul class="list-group">
+      {% for answer in question.answers.all %}
+        <li class="list-group-item">
+          <input class="form-check-input me-1"
+                 type="radio"
+                 name="answerChoices"
+                 value="{{ answer.text }}"
+                 id="answer-{{ answer.pk }}">
+          <label class="form-check-label" for="answer-{{ answer.pk }}">
+            {{ answer.text }}
+          </label>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
