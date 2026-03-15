@@ -9,16 +9,17 @@
       <p class="text-muted">A quiz app with Django and Datastar questions.</p>
     </header>
 
-    <section class="card shadow-sm mb-4">
+    <section class="card shadow-sm mb-4"
+             data-init="@get('{% url "examples:quiz-question" %}');">
       <div class="card-body">
         <h2 class="h5 mb-3">How it Works</h2>
         <ol class="text-muted small">
-          <li>Clicking a tab updates a signal with the tab name</li>
           <li>
-            Signal change triggers GET request to <code>/lazy-tabs/</code>
+            On page load, a request is sent to <code>/quiz-question/</code> get a random question
           </li>
-          <li>Server returns content fragment for that tab</li>
-          <li>Datastar merges the new content into the tab pane</li>
+          <li>Signal change triggers GET request to get another question</li>
+          <li>Server returns content fragment for that question</li>
+          <li>Datastar merges the new content into the question card</li>
         </ol>
       </div>
     </section>

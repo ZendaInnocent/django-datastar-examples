@@ -786,11 +786,22 @@ def quiz_index_view(request):
 
 
 @datastar_response
-def quiz_question_view(request):
-    question = Question.objects.first()
-    yield SSE.patch_elements(
-        render_to_string(
-            'examples/fragments/quiz_question_card.html', {'question': question}
-        ),
-        '#question-card',
-    )
+def get_question_view(request):
+    seen_ids = request.session.get('seen_question_ids', [])
+    question = Question.objects.exclude(id__in=seen_ids).order_by('?').first()
+
+    if not question:
+        yield SSE.patch_elements(
+            render_to_string('examples/fragments/quiz_report.html')
+        )
+    else:
+        seen_ids.append(question.pk)
+        request.session['seen_question_ids'] = seen_ids
+        request.session.modified = True
+
+        yield SSE.patch_elements(
+            render_to_string(
+                'examples/fragments/quiz_question_card.html', {'question': question}
+            ),
+            '#question-card',
+        )
