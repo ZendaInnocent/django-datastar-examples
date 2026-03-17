@@ -105,4 +105,11 @@
       <i class="bi bi-chat-left-text"></i><span class="nav-link-text">System Messages</span>
     </a>
   </li>
+  {% url 'examples:quiz-index' as url %}
+  <li class="nav-item">
+    <a class="nav-link{% if request.path == url %} active{% endif %}"
+       href="{{ url }}">
+      <i class="bi bi-question-circle"></i><span class="nav-link-text">Quiz</span>
+    </a>
+  </li>
 </ul>

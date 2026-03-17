@@ -22,15 +22,15 @@ def client():
 
 @pytest.mark.django_db
 class TestIndexPage:
-    """Test AC1: Index page displays 12 example cards."""
+    """Test AC1: Index page displays example cards."""
 
     def test_index_page_loads_successfully(self, client):
         """Verify index page returns 200."""
         response = client.get(reverse('examples:index'))
         assert response.status_code == 200
 
-    def test_all_12_example_links_present(self, client):
-        """Verify all 12 example links are in the index page."""
+    def test_all_example_links_present(self, client):
+        """Verify all example links are in the index page."""
         response = client.get(reverse('examples:index'))
         content = response.content.decode()
 
@@ -47,6 +47,7 @@ class TestIndexPage:
             'sortable',
             'notifications',
             'bulk-update',
+            'quiz/',
         ]
 
         for example in examples:
@@ -70,6 +71,7 @@ class TestExamplePages:
             'examples:sortable',
             'examples:notifications',
             'examples:bulk-update',
+            'examples:quiz-index',
         ],
     )
     def test_example_page_loads(self, client, url_name):

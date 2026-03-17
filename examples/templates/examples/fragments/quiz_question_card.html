@@ -1,25 +1,50 @@
-<div class="card border-0" id="question-card">
-  <div class="card-header border-0">
-    <h5 class="text-muted small text-uppercase fw-bold pt-2">Question 1 of 10</h5>
+<div class="card border-0 shadow-sm" id="question-card">
+  <div class="card-header border-0 bg-body">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="text-muted small text-uppercase fw-bold mb-0">
+        Question {{ question_number }} of {{ total_questions }}
+      </h5>
+    </div>
   </div>
 
   <div class="card-body px-4 pb-4">
     <h3 class="card-title h4 mb-4">{{ question.text }}</h3>
 
-    <!-- Answers List -->
-    <ul class="list-group">
-      {% for answer in question.answers.all %}
-        <li class="list-group-item">
-          <input class="form-check-input me-1"
-                 type="radio"
-                 name="answerChoices"
-                 value="{{ answer.text }}"
-                 id="answer-{{ answer.pk }}">
-          <label class="form-check-label" for="answer-{{ answer.pk }}">
-            {{ answer.text }}
-          </label>
-        </li>
-      {% endfor %}
-    </ul>
+    <form id="quiz-form"
+          data-signals="{selectedAnswer: ''}"
+          data-on:submit="@post('{% url 'examples:quiz-answer' %}', {contentType: 'form'});">
+      {% csrf_token %}
+      <input type="hidden" name="question_id" value="{{ question.pk }}">
+
+      <ul class="list-group list-group-flush mb-4">
+        {% for answer in question.answers.all %}
+          <li class="list-group-item px-0 py-3 border-0">
+            <div class="form-check">
+              <input class="form-check-input"
+                     type="radio"
+                     name="answer_id"
+                     value="{{ answer.pk }}"
+                     id="answer-{{ answer.pk }}"
+                     data-on:change="$selectedAnswer = '{{ answer.pk }}'">
+              <label class="form-check-label w-100" for="answer-{{ answer.pk }}">
+                {{ answer.text }}
+              </label>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="d-flex justify-content-between gap-3">
+        <button type="button"
+                class="btn btn-outline-secondary"
+                data-on:click="@post('{% url 'examples:quiz-skip' %}', {contentType: 'form'});">
+          <i class="bi bi-skip-forward me-1"></i>
+          Skip
+        </button>
+        <button type="submit"
+                class="btn btn-primary px-4"
+                data-attr:disabled="!$selectedAnswer">Submit Answer</button>
+      </div>
+    </form>
   </div>
 </div>

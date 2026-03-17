@@ -10,7 +10,7 @@ Tests the Contact, Todo, Notification, and Item models including:
 
 import pytest
 
-from examples.models import Contact, Item, Notification, Todo
+from examples.models import Answer, Contact, Item, Notification, Question, Todo
 
 
 @pytest.mark.django_db
@@ -224,3 +224,70 @@ class TestModelMeta:
     def test_item_meta_ordering(self):
         """Item model has correct ordering."""
         assert Item._meta.ordering == ['order']
+
+
+@pytest.mark.django_db
+class TestQuestionModel:
+    """Tests for Question model."""
+
+    def test_create_question(self):
+        """Question can be created with required fields."""
+        question = Question.objects.create(text='What is Datastar?')
+        assert question.pk is not None
+        assert question.text == 'What is Datastar?'
+
+    def test_question_str(self):
+        """Question string representation returns text."""
+        question = Question.objects.create(text='What is SSE?')
+        assert str(question) == 'What is SSE?'
+
+
+@pytest.mark.django_db
+class TestAnswerModel:
+    """Tests for Answer model."""
+
+    def test_create_answer(self):
+        """Answer can be created with required fields."""
+        question = Question.objects.create(text='What is Datastar?')
+        answer = Answer.objects.create(
+            question=question, text='A hypermedia framework', is_correct=True
+        )
+        assert answer.pk is not None
+        assert answer.text == 'A hypermedia framework'
+        assert answer.is_correct is True
+
+    def test_answer_str(self):
+        """Answer string representation returns text."""
+        question = Question.objects.create(text='What is Django?')
+        answer = Answer.objects.create(question=question, text='A web framework')
+        assert str(answer) == 'A web framework'
+
+    def test_answer_foreign_key_to_question(self):
+        """Answer is linked to a question."""
+        question = Question.objects.create(text='What is Python?')
+        answer = Answer.objects.create(question=question, text='A programming language')
+        assert answer.question == question
+
+    def test_answer_default_not_correct(self):
+        """Answer is incorrect by default."""
+        question = Question.objects.create(text='Test question?')
+        answer = Answer.objects.create(question=question, text='Test answer')
+        assert answer.is_correct is False
+
+    def test_question_can_have_multiple_answers(self):
+        """A question can have multiple answers."""
+        question = Question.objects.create(text='Which are valid HTTP methods?')
+        Answer.objects.create(question=question, text='GET', is_correct=True)
+        Answer.objects.create(question=question, text='POST', is_correct=True)
+        Answer.objects.create(question=question, text='DELETE', is_correct=False)
+        assert question.answers.count() == 3
+
+    def test_correct_answer_lookup(self):
+        """Can find the correct answer for a question."""
+        question = Question.objects.create(text='What is 2+2?')
+        Answer.objects.create(question=question, text='3', is_correct=False)
+        Answer.objects.create(question=question, text='4', is_correct=True)
+        Answer.objects.create(question=question, text='5', is_correct=False)
+
+        correct = question.answers.filter(is_correct=True).first()
+        assert correct.text == '4'

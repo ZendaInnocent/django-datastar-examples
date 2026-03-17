@@ -1,1 +1,47 @@
-<h3>Quiz report</h3>
+<div class="card border-0 shadow-sm" id="question-card">
+  <div class="card-body text-center py-5">
+    <div class="mb-4">
+      <i class="bi bi-trophy-fill text-warning" style="font-size: 4rem;"></i>
+    </div>
+
+    <h2 class="mb-3">Quiz Complete!</h2>
+
+    <div class="display-4 mb-4">
+      <span class="text-success">{{ correct_count }}</span>
+      <span class="text-muted">/</span>
+      <span>{{ total_questions }}</span>
+    </div>
+
+    <p class="text-muted mb-4">
+      You got {{ correct_count }} out of {{ total_questions }} questions correct.
+    </p>
+
+    {% if correct_count == total_questions %}
+      <div class="alert alert-success mb-4">
+        <i class="bi bi-star-fill me-1"></i>
+        Perfect score! You're a Django & Datastar expert!
+      </div>
+    {% elif correct_count >= total_questions|add:"-2" %}
+      <div class="alert alert-primary mb-4">
+        <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+        Great job! You know your stuff!
+      </div>
+    {% elif correct_count >= total_questions|divisibleby:"2" %}
+      <div class="alert alert-secondary mb-4">
+        <i class="bi bi-book me-1"></i>
+        Good effort! Keep learning!
+      </div>
+    {% else %}
+      <div class="alert alert-info mb-4">
+        <i class="bi bi-lightbulb me-1"></i>
+        Keep practicing! You'll improve!
+      </div>
+    {% endif %}
+
+    <button class="btn btn-primary btn-lg px-5"
+            data-on:click="@post('{% url "examples:quiz-restart" %}');">
+      <i class="bi bi-arrow-clockwise me-2"></i>
+      Start New Quiz
+    </button>
+  </div>
+</div>
