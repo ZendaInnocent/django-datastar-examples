@@ -142,8 +142,6 @@ class TestSubmitAnswerView:
 
         session = client.session
         session['correct_count'] = 0
-        session['total_questions'] = 10
-        session['current_question'] = 1
         session['seen_question_ids'] = [question.pk]
         session.save()
 
@@ -165,8 +163,6 @@ class TestSkipQuestionView:
 
         session = client.session
         session['seen_question_ids'] = []
-        session['current_question'] = 1
-        session['total_questions'] = 10
         session.save()
 
         response = client.post(
@@ -184,8 +180,6 @@ class TestSkipQuestionView:
 
         session = client.session
         session['seen_question_ids'] = []
-        session['current_question'] = 1
-        session['total_questions'] = 10
         session.save()
 
         response = client.post(

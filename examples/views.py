@@ -837,6 +837,10 @@ def get_question_view(request):
 @csrf_exempt
 @datastar_response
 def submit_answer_view(request):
+    signals = read_signals(request) or {}
+    current_question = signals.get('currentQuestion', 1)
+    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
+
     question_id = request.POST.get('question_id')
     answer_id = request.POST.get('answer_id')
 
@@ -849,10 +853,6 @@ def submit_answer_view(request):
         correct_count = request.session.get('correct_count', 0) + 1
         request.session['correct_count'] = correct_count
         request.session.modified = True
-
-    signals = read_signals(request) or {}
-    current_question = signals.get('currentQuestion', 1)
-    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
 
     yield SSE.patch_elements(
         render_to_string(
@@ -872,6 +872,10 @@ def submit_answer_view(request):
 @csrf_exempt
 @datastar_response
 def skip_question_view(request):
+    signals = read_signals(request) or {}
+    current_question = signals.get('currentQuestion', 1)
+    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
+
     question_id = request.POST.get('question_id')
 
     seen_ids = request.session.get('seen_question_ids', [])
@@ -879,10 +883,6 @@ def skip_question_view(request):
         seen_ids.append(int(question_id))
         request.session['seen_question_ids'] = seen_ids
         request.session.modified = True
-
-    signals = read_signals(request) or {}
-    current_question = signals.get('currentQuestion', 1)
-    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
 
     question = Question.objects.exclude(id__in=seen_ids).order_by('?').first()
 
@@ -899,8 +899,6 @@ def skip_question_view(request):
         )
     else:
         current_question += 1
-        request.session['current_question'] = current_question
-        request.session.modified = True
 
         yield SSE.patch_signals(
             {
@@ -924,7 +922,6 @@ def skip_question_view(request):
 @datastar_response
 def restart_quiz_view(request):
     request.session['seen_question_ids'] = []
-    request.session['current_question'] = 1
     request.session['correct_count'] = 0
     request.session['total_questions'] = QUIZ_TOTAL_QUESTIONS
     request.session.modified = True
@@ -932,7 +929,6 @@ def restart_quiz_view(request):
     question = Question.objects.order_by('?').first()
 
     if question:
-        request.session['current_question'] = 1
         request.session['seen_question_ids'] = [question.pk]
         request.session.modified = True
 

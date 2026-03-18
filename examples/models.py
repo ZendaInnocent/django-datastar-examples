@@ -72,5 +72,8 @@ class Answer(models.Model):
     text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['?']
+
     def __str__(self):
         return self.text
