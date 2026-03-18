@@ -813,6 +813,8 @@ def get_question_view(request):
     else:
         seen_ids.append(question.pk)
         request.session['seen_question_ids'] = seen_ids
+        request.session['current_question'] = current_question
+        request.session['total_questions'] = total_questions
         request.session.modified = True
 
         yield SSE.patch_signals(
@@ -838,8 +840,12 @@ def get_question_view(request):
 @datastar_response
 def submit_answer_view(request):
     signals = read_signals(request) or {}
-    current_question = signals.get('currentQuestion', 1)
-    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
+    current_question = signals.get('currentQuestion') or request.session.get(
+        'current_question', 1
+    )
+    total_questions = signals.get('totalQuestions') or request.session.get(
+        'total_questions', QUIZ_TOTAL_QUESTIONS
+    )
 
     question_id = request.POST.get('question_id')
     answer_id = request.POST.get('answer_id')
@@ -873,8 +879,12 @@ def submit_answer_view(request):
 @datastar_response
 def skip_question_view(request):
     signals = read_signals(request) or {}
-    current_question = signals.get('currentQuestion', 1)
-    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
+    current_question = signals.get('currentQuestion') or request.session.get(
+        'current_question', 1
+    )
+    total_questions = signals.get('totalQuestions') or request.session.get(
+        'total_questions', QUIZ_TOTAL_QUESTIONS
+    )
 
     question_id = request.POST.get('question_id')
 
@@ -899,6 +909,9 @@ def skip_question_view(request):
         )
     else:
         current_question += 1
+        request.session['current_question'] = current_question
+        request.session['total_questions'] = total_questions
+        request.session.modified = True
 
         yield SSE.patch_signals(
             {
@@ -919,11 +932,13 @@ def skip_question_view(request):
         )
 
 
+@csrf_exempt
 @datastar_response
 def restart_quiz_view(request):
     request.session['seen_question_ids'] = []
     request.session['correct_count'] = 0
     request.session['total_questions'] = QUIZ_TOTAL_QUESTIONS
+    request.session['current_question'] = 1
     request.session.modified = True
 
     question = Question.objects.order_by('?').first()
