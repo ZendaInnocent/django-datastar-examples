@@ -904,7 +904,7 @@ def skip_question_view(request):
 
         yield SSE.patch_signals(
             {
-                'currentQuestion': current_question + 1,
+                'currentQuestion': current_question,
                 'totalQuestions': total_questions,
             }
         )
@@ -913,7 +913,7 @@ def skip_question_view(request):
                 'examples/fragments/quiz_question_card.html',
                 {
                     'question': question,
-                    'question_number': current_question + 1,
+                    'question_number': current_question,
                     'total_questions': total_questions,
                 },
             ),
