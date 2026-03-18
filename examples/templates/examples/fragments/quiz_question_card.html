@@ -1,10 +1,10 @@
 <div class="card border-0 shadow-sm"
      id="question-card"
-     data-signals="{selectedAnswer: '', currentQuestion: {{ question_number }}, totalQuestions: {{ total_questions }} }">
+     data-signals="{selectedAnswer: ''}">
   <div class="card-header border-0 bg-body">
     <div class="d-flex justify-content-between align-items-center">
-      <h5 class="text-muted small text-uppercase fw-bold mb-0">
-        Question {{ question_number }} of {{ total_questions }}
+      <h5 class="text-muted small text-uppercase fw-bold mb-0"
+          data-text="`Question ${$currentQuestion} of ${$totalQuestions}`">
       </h5>
     </div>
   </div>

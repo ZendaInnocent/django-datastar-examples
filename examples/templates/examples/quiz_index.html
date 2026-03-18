@@ -11,19 +11,7 @@
       </p>
     </header>
 
-    <section class="card shadow-sm mb-4">
-      <div class="card-body">
-        <h2 class="h5 mb-3">How it Works</h2>
-        <ol class="text-muted small">
-          <li>On page load, a random question is fetched via SSE</li>
-          <li>Select an answer and submit to see immediate feedback</li>
-          <li>Correct answers increment your score</li>
-          <li>After 10 questions, see your final results</li>
-        </ol>
-      </div>
-    </section>
-
-    <div data-signals="{currentQuestion: 1, totalQuestions: 10}">
+    <div data-signals="{currentQuestion: {{ current_question }}, totalQuestions: 10}">
       <div class="progress mb-4" style="height: 10px">
         <div class="progress-bar bg-success"
              role="progressbar"
@@ -46,6 +34,18 @@
         </div>
       </div>
     </div>
+
+    <section class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How it Works</h2>
+        <ol class="text-muted small">
+          <li>On page load, a random question is fetched via SSE</li>
+          <li>Select an answer and submit to see immediate feedback</li>
+          <li>Correct answers increment your score</li>
+          <li>After 10 questions, see your final results</li>
+        </ol>
+      </div>
+    </section>
 
     <section class="card shadow-sm my-4">
       <div class="card-body">

@@ -784,60 +784,72 @@ QUIZ_TOTAL_QUESTIONS = 10
 
 
 def quiz_index_view(request):
-    return render(request, 'examples/quiz_index.html')
+    if request.session.get('current_question') is not None:
+        current_question = request.session.get('current_question')
+    else:
+        current_question = 1
+
+    context = {'current_question': current_question}
+    return render(request, 'examples/quiz_index.html', context)
 
 
-@datastar_response
 def get_question_view(request):
     signals = read_signals(request) or {}
-    current_question = signals.get('currentQuestion', 1)
+    current_question = signals.get('currentQuestion') or 1
+    request.session['current_question'] = current_question
 
     seen_ids = request.session.get('seen_question_ids', [])
     correct_count = request.session.get('correct_count', 0)
     total_questions = request.session.get('total_questions', QUIZ_TOTAL_QUESTIONS)
 
+    if current_question > total_questions:
+        return _render_report(correct_count, total_questions)
+
     question = Question.objects.exclude(id__in=seen_ids).order_by('?').first()
 
-    if not question or current_question > total_questions:
-        correct_count = request.session.get('correct_count', 0)
-        total_questions = request.session.get('total_questions', QUIZ_TOTAL_QUESTIONS)
-        yield SSE.patch_elements(
-            render_to_string(
-                'examples/fragments/quiz_report.html',
-                {
-                    'correct_count': correct_count,
-                    'total_questions': total_questions,
-                },
-            )
-        )
-    else:
-        seen_ids.append(question.pk)
-        request.session['seen_question_ids'] = seen_ids
-        request.session['current_question'] = current_question
-        request.session['total_questions'] = total_questions
-        request.session.modified = True
+    if not question:
+        return _render_report(correct_count, total_questions)
 
-        yield SSE.patch_signals(
-            {
-                'currentQuestion': current_question,
-                'totalQuestions': total_questions,
-            }
-        )
-        yield SSE.patch_elements(
-            render_to_string(
-                'examples/fragments/quiz_question_card.html',
-                {
-                    'question': question,
-                    'question_number': current_question,
-                    'total_questions': total_questions,
-                },
+    seen_ids.append(question.pk)
+    request.session['seen_question_ids'] = seen_ids
+    request.session['total_questions'] = total_questions
+
+    return DatastarResponse(
+        [
+            SSE.patch_signals(
+                {'currentQuestion': current_question, 'totalQuestions': total_questions}
             ),
-            '#question-card',
-        )
+            SSE.patch_elements(
+                render_to_string(
+                    'examples/fragments/quiz_question_card.html', {'question': question}
+                ),
+                '#question-card',
+            ),
+        ]
+    )
+
+
+def _render_report(correct_count, total_questions):
+    return DatastarResponse(
+        [
+            SSE.patch_signals(
+                {'currentQuestion': total_questions, 'totalQuestions': total_questions}
+            ),
+            SSE.patch_elements(
+                render_to_string(
+                    'examples/fragments/quiz_report.html',
+                    {
+                        'correct_count': correct_count,
+                        'total_questions': total_questions,
+                    },
+                ),
+                '#question-card',
+            ),
+        ]
+    )
 
 
 @csrf_exempt
-@datastar_response
 def submit_answer_view(request):
     signals = read_signals(request) or {}
     current_question = signals.get('currentQuestion') or request.session.get(
@@ -858,20 +870,25 @@ def submit_answer_view(request):
     if is_correct:
         correct_count = request.session.get('correct_count', 0) + 1
         request.session['correct_count'] = correct_count
-        request.session.modified = True
 
-    yield SSE.patch_elements(
-        render_to_string(
-            'examples/fragments/quiz_feedback.html',
-            {
-                'is_correct': is_correct,
-                'question': question,
-                'correct_answer': question.answers.filter(is_correct=True).first(),
-                'current_question': current_question,
-                'total_questions': total_questions,
-            },
-        ),
-        '#question-card',
+    return DatastarResponse(
+        [
+            SSE.patch_elements(
+                render_to_string(
+                    'examples/fragments/quiz_feedback.html',
+                    {
+                        'is_correct': is_correct,
+                        'question': question,
+                        'correct_answer': question.answers.filter(
+                            is_correct=True
+                        ).first(),
+                        'current_question': current_question,
+                        'total_questions': total_questions,
+                    },
+                ),
+                '#question-card',
+            )
+        ]
     )
 
 
@@ -892,7 +909,6 @@ def skip_question_view(request):
     if question_id and int(question_id) not in seen_ids:
         seen_ids.append(int(question_id))
         request.session['seen_question_ids'] = seen_ids
-        request.session.modified = True
 
     question = Question.objects.exclude(id__in=seen_ids).order_by('?').first()
 
@@ -911,7 +927,6 @@ def skip_question_view(request):
         current_question += 1
         request.session['current_question'] = current_question
         request.session['total_questions'] = total_questions
-        request.session.modified = True
 
         yield SSE.patch_signals(
             {
@@ -939,18 +954,17 @@ def restart_quiz_view(request):
     request.session['correct_count'] = 0
     request.session['total_questions'] = QUIZ_TOTAL_QUESTIONS
     request.session['current_question'] = 1
-    request.session.modified = True
 
     question = Question.objects.order_by('?').first()
 
     if question:
         request.session['seen_question_ids'] = [question.pk]
-        request.session.modified = True
 
         yield SSE.patch_signals(
             {
                 'currentQuestion': 1,
                 'totalQuestions': QUIZ_TOTAL_QUESTIONS,
+                'correctCount': 0,
             }
         )
         yield SSE.patch_elements(
