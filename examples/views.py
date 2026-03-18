@@ -789,14 +789,16 @@ def quiz_index_view(request):
 
 @datastar_response
 def get_question_view(request):
+    signals = read_signals(request) or {}
+    current_question = signals.get('currentQuestion', 1)
+
     seen_ids = request.session.get('seen_question_ids', [])
-    current_question = request.session.get('current_question', 0)
     correct_count = request.session.get('correct_count', 0)
     total_questions = request.session.get('total_questions', QUIZ_TOTAL_QUESTIONS)
 
     question = Question.objects.exclude(id__in=seen_ids).order_by('?').first()
 
-    if not question or current_question >= total_questions:
+    if not question or current_question > total_questions:
         correct_count = request.session.get('correct_count', 0)
         total_questions = request.session.get('total_questions', QUIZ_TOTAL_QUESTIONS)
         yield SSE.patch_elements(
@@ -809,9 +811,7 @@ def get_question_view(request):
             )
         )
     else:
-        current_question += 1
         seen_ids.append(question.pk)
-        request.session['current_question'] = current_question
         request.session['seen_question_ids'] = seen_ids
         request.session.modified = True
 
@@ -850,8 +850,9 @@ def submit_answer_view(request):
         request.session['correct_count'] = correct_count
         request.session.modified = True
 
-    current_question = request.session.get('current_question', 0)
-    total_questions = request.session.get('total_questions', QUIZ_TOTAL_QUESTIONS)
+    signals = read_signals(request) or {}
+    current_question = signals.get('currentQuestion', 1)
+    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
 
     yield SSE.patch_elements(
         render_to_string(
@@ -879,8 +880,9 @@ def skip_question_view(request):
         request.session['seen_question_ids'] = seen_ids
         request.session.modified = True
 
-    current_question = request.session.get('current_question', 0)
-    total_questions = request.session.get('total_questions', QUIZ_TOTAL_QUESTIONS)
+    signals = read_signals(request) or {}
+    current_question = signals.get('currentQuestion', 1)
+    total_questions = signals.get('totalQuestions', QUIZ_TOTAL_QUESTIONS)
 
     question = Question.objects.exclude(id__in=seen_ids).order_by('?').first()
 
@@ -902,7 +904,7 @@ def skip_question_view(request):
 
         yield SSE.patch_signals(
             {
-                'currentQuestion': current_question,
+                'currentQuestion': current_question + 1,
                 'totalQuestions': total_questions,
             }
         )
@@ -911,7 +913,7 @@ def skip_question_view(request):
                 'examples/fragments/quiz_question_card.html',
                 {
                     'question': question,
-                    'question_number': current_question,
+                    'question_number': current_question + 1,
                     'total_questions': total_questions,
                 },
             ),
@@ -922,7 +924,7 @@ def skip_question_view(request):
 @datastar_response
 def restart_quiz_view(request):
     request.session['seen_question_ids'] = []
-    request.session['current_question'] = 0
+    request.session['current_question'] = 1
     request.session['correct_count'] = 0
     request.session['total_questions'] = QUIZ_TOTAL_QUESTIONS
     request.session.modified = True

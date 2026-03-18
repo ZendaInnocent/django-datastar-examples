@@ -23,8 +23,8 @@
       </div>
     </section>
 
-    <div data-signals="{currentQuestion: 0, totalQuestions: 10}"
-         data-init="@get('{% url "examples:quiz-question" %}');">
+    <div data-json-signals=""></div>
+    <div data-signals="{currentQuestion: 1, totalQuestions: 10}">
       <div class="progress mb-4" style="height: 10px">
         <div class="progress-bar bg-success"
              role="progressbar"
@@ -34,12 +34,9 @@
              aria-valuemax="100"></div>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-muted small"
-              data-text="`Question ${$currentQuestion} of ${$totalQuestions}`"></span>
-      </div>
-
-      <div id="question-card" class="mb-4">
+      <div id="question-card"
+           data-init="@get('{% url "examples:quiz-question" %}');"
+           class="mb-4">
         <div class="card shadow-sm">
           <div class="card-body text-center py-5">
             <div class="spinner-border text-primary" role="status">
